@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Base.Theme.BreadHeadsInventoryManager" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/medium_green</item>
-        <item name="colorPrimaryDark">@color/medium_green</item>
+        <item name="colorPrimaryDark">@color/dark_green</item>
         <item name="colorAccent">@color/light_green</item>
         <item name="android:textColor">@color/black</item>
     </style>
