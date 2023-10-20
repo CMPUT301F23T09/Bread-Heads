@@ -12,8 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-
 /**
  * Main activity
  *
@@ -52,13 +50,5 @@ public class MainActivity extends AppCompatActivity {
 
         // TODO: finish this functionality and move it to UserList class
         userDB = database.collection("users");
-        /*
-        // testing
-        HashMap<String, String> data = new HashMap<>();
-        data.put("Make", "Toyota");
-        data.put("Model", "Tacoma");
-        itemDB.document().set(data);
-        
-         */
     }
 }

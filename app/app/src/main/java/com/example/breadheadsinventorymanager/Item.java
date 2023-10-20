@@ -1,15 +1,28 @@
 package com.example.breadheadsinventorymanager;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents an item in the inventory and all the data it contains
  *
- * TODO: interface with Firestore database, probably via another class
+ * Currently only suppports sending data TO Firestore, not retrieving FROM Firestore
+ * That is typically better done by adapters anyway!
  *
  * @version
  * 1.1
  */
 public class Item {
     // attributes
+    private String databaseID; // ID of the item in the firestore database
     private String date;
     private String description;
     private String make;
@@ -18,6 +31,12 @@ public class Item {
     private int value; // in cents
     private String comment = ""; // comment is optional
     // private ArrayList<Photo> photos; // second half
+    // private TagList tags; // second half
+
+    /**
+     * Empty constructor
+     */
+    public Item() {};
 
     /**
      * Constructor given a serial number
@@ -42,6 +61,41 @@ public class Item {
         this.make = make;
         this.model = model;
         this.value = value;
+    }
+
+    /**
+     * Gets the data associated with the object in a format suitable for Firestore
+     * @return
+     * A HashMap containing the object's data that can be added to Firestore
+     */
+    public HashMap<String, Object> getData() {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("date", date);
+        map.put("description", description);
+        map.put("make", make);
+        map.put("model", model);
+        map.put("serialNum", serialNum);
+        map.put("value", value);
+        map.put("comment", comment);
+        // TODO SECOND HALF: photos and tags
+
+        return map;
+    }
+
+    /**
+     * Attempts to put the object into a Firestore collection
+     * @param collection
+     * Reference to the collection to insert the object into
+     */
+    public void put(CollectionReference collection) {
+        if (databaseID != null) {
+            collection.document(databaseID).set(getData());
+        }
+        else {
+            DocumentReference doc = collection.document(); // firestore will generate ID for us
+            doc.set(getData());
+            this.databaseID = doc.getId(); // make sure this item's ID matches firestore's
+        }
     }
 
     /**
@@ -131,5 +185,13 @@ public class Item {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getDatabaseID() {
+        return databaseID;
+    }
+
+    public void setDatabaseID(String databaseID) {
+        this.databaseID = databaseID;
     }
 }
