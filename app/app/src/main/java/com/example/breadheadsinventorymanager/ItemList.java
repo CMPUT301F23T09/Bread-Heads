@@ -1,20 +1,27 @@
 package com.example.breadheadsinventorymanager;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
-public class ItemList{
+public class ItemList extends ArrayList<Item> {
+    private double sum = 0.0; // Initialize the running sum to 0.0
 
-    private final HashMap<String, Item> itemGrid;
-
-    public ItemList() {
-        this.itemGrid = new HashMap<>();
+    @Override
+    public boolean add(Item item) {
+        sum += item.getValue();
+        return super.add(item);
     }
 
-    public void addItem(Item item){
-        itemGrid.put(item.getSerialNum(), item);
+    @Override
+    public boolean remove(Object item) {
+        if (super.remove(item)) {
+            // Item was removed, update the running sum
+            sum -= ((Item) item).getValue();
+            return true;
+        }
+        return false;
     }
 
-    public Item getItem(String serialNumber){
-        return itemGrid.get(serialNumber);
+    public double getSum() {
+        return sum;
     }
 }
