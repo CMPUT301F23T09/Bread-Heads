@@ -80,9 +80,11 @@ public class ItemList extends ArrayList<Item> {
     }
 
     /**
-     *
-     * @param collection
-     * @return a task to be used
+     * Task to populate this object with the contents of the given collection.
+     * Must return as a task because of inherent delays in accessing Firestore.
+     * Execution is asynchronous so we must listen for the data to be available!
+     * @param collection Firestore collection reference of Item documents (must be correct format)
+     * @return a Task; use .addOnSuccessListener() to run code after data retrieval
      */
     public Task<QuerySnapshot> populateFromCollection(CollectionReference collection) {
         return collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

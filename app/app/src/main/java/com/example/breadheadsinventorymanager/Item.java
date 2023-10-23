@@ -47,8 +47,8 @@ public class Item {
     }
 
     /**
-     * Constructor given a document snapshot containing the parameters of the field
-     * @param document From the Firestore database
+     * Constructor given an Item document snapshot containing the parameters of the field
+     * @param document From the Firestore database; must be formatted correctly as an Item
      */
     public Item(QueryDocumentSnapshot document) {
         databaseID = document.getId();
