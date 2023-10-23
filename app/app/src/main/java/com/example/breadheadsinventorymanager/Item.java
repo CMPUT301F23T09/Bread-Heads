@@ -2,6 +2,7 @@ package com.example.breadheadsinventorymanager;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 
@@ -22,7 +23,7 @@ public class Item {
     private String make;
     private String model;
     private String serialNum;
-    private int value; // in cents
+    private long value; // in cents
     private String comment = ""; // comment is optional
     // private ArrayList<Photo> photos; // second half
     // private TagList tags; // second half
@@ -33,10 +34,10 @@ public class Item {
     public Item() {};
 
     /**
-     * Constructor given a serial number
+     * Constructor given most fields, incl. serial number
      */
     public Item(String date, String description, String make,
-                String model, String serialNum, int value) {
+                String model, String serialNum, long value) {
         this.date = date;
         this.description = description;
         this.make = make;
@@ -46,10 +47,26 @@ public class Item {
     }
 
     /**
-     * Constructor when not given a serial number
+     * Constructor given a document snapshot containing the parameters of the field
+     * @param document From the Firestore database
+     */
+    public Item(QueryDocumentSnapshot document) {
+        databaseID = document.getId();
+        date = document.getString("date");
+        description = document.getString("description");
+        make = document.getString("make");
+        model = document.getString("model");
+        serialNum = document.getString("serialNum");
+        value = (long) document.get("value");
+        comment = document.getString("comment");
+        // TODO PART 2: photos and tags
+    }
+
+    /**
+     * Constructor given most fields, not incl. serial number.
      * [01.01.01] only requires a serial number "when applicable"
      */
-    public Item(String date, String description, String make, String model, int value) {
+    public Item(String date, String description, String make, String model, long value) {
         this.date = date;
         this.description = description;
         this.make = make;
@@ -100,9 +117,9 @@ public class Item {
      * @return
      * String in format 0.00; for example, a cents amount of 1305 would give 13.05
      */
-    public static String toDollarString(int cents) {
-        int justCents = cents % 100; // taking mod 100 extracts the last 2 digits
-        int dollars = cents / 100; // integer division by 100 removes the last 2 digits
+    public static String toDollarString(long cents) {
+        long justCents = cents % 100; // taking mod 100 extracts the last 2 digits
+        long dollars = cents / 100; // integer division by 100 removes the last 2 digits
 
         // format as dollars.cents where cents is always 2 digits (e.g. 1305 is $13.05, not $13.5)
         // line adapted from https://stackoverflow.com/a/15358131
@@ -144,7 +161,7 @@ public class Item {
         return serialNum;
     }
 
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 
@@ -173,7 +190,7 @@ public class Item {
         this.serialNum = serialNum;
     }
 
-    public void setValue(int value) {
+    public void setValue(long value) {
         this.value = value;
     }
 

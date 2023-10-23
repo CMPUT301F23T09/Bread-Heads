@@ -1,8 +1,17 @@
 package com.example.breadheadsinventorymanager;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Stores a list of items
@@ -11,7 +20,7 @@ import java.util.Iterator;
  * 1.0
  */
 public class ItemList extends ArrayList<Item> {
-    private int sum = 0; // Initialize the running sum to 0
+    private long sum = 0; // Initialize the running sum to 0
 
     /**
      * No-arg constructor
@@ -26,9 +35,8 @@ public class ItemList extends ArrayList<Item> {
      */
     public ItemList(Collection<? extends Item> c) {
         super(c);
-        Iterator<com.example.breadheadsinventorymanager.Item> it = this.iterator();
-        while (it.hasNext()) {
-            this.sum += ((Item) it.next()).getValue();
+        for (Item item : this) {
+            this.sum += item.getValue();
         }
     }
 
@@ -72,9 +80,50 @@ public class ItemList extends ArrayList<Item> {
     }
 
     /**
+     *
+     * @param collection
+     * @return a task to be used
+     */
+    public Task<QuerySnapshot> populateFromCollection(CollectionReference collection) {
+        return collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d("ItemList.java", document.getId() + " => " + document.getData());
+                        add(new Item(document));
+                    }
+                } else {
+                    Log.d("ItemList.java", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    /**
      * Gets sum of all Items in this list
      */
     public double getSum() {
         return sum;
     }
 }
+
+/* example of how to call data from firestore to populate an ItemList
+public void firestoreExample() {
+    CollectionReference collection = FirebaseFirestore.getInstance().collection("test");
+    ItemList list = new ItemList();
+    Task<QuerySnapshot> task = list.populateFromCollection(collection);
+    // do some sort of "loading/please wait" screen
+    task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        @Override
+        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            // end our "loading/please wait" screen
+
+            // logging for testing:
+            if (2 != list.size()) { throw new RuntimeException("oops");}
+            Log.i("main", list.get(0).getData().toString());
+            Log.i("main", list.get(1).getData().toString());
+        }
+    });
+}
+ */
