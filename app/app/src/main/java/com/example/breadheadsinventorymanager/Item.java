@@ -1,15 +1,9 @@
 package com.example.breadheadsinventorymanager;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents an item in the inventory and all the data it contains
@@ -150,7 +144,7 @@ public class Item {
         return serialNum;
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 
