@@ -98,6 +98,24 @@ public class FirestoreInteract {
         });
     }
 
+    /**
+     * Task to delete the item from the items collection with the specified ID
+     * @param id The ID of the item to delete
+     * @return The task; use .addOnSuccessListener() to do something after deletion
+     */
+    public Task<Void> deleteItem(String id) {
+        return itemDB.document(id).delete();
+    }
+
+    /**
+     * Task to delete a FirestorePuttable object from the items collection
+     * @param obj The item to delete; getId() is used to index in the Firestore database
+     * @return The task; use .addOnSuccessListener() to do something after deletion
+     */
+    public Task<Void> deleteItem(FirestorePuttable obj) {
+        return deleteItem(obj.getId());
+    }
+
     public FirebaseFirestore getDatabase() {
         return database;
     }
