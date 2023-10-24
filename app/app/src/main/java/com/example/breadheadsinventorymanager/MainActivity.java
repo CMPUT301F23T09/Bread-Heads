@@ -22,9 +22,6 @@ import com.google.firebase.firestore.QuerySnapshot;
  * 0.1
  */
 public class MainActivity extends AppCompatActivity {
-    private FirebaseFirestore database;
-    private CollectionReference itemDB;
-    private CollectionReference userDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,29 +29,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
-
-        // initialize firestore database
-        // adapted from lab 5 instructions https://eclass.srv.ualberta.ca/pluginfile.php/10037758/mod_resource/content/3/Lab%205%20Instructions.pdf
-        database = FirebaseFirestore.getInstance();
-
-        // TODO: finish this functionality and move it to ItemList class
-        itemDB = database.collection("items");
-        itemDB.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error != null) { // error handling
-                    Log.e("Firestore", error.toString());
-                    return;
-                }
-
-                if (value != null) {
-                    // TODO: update contents of class, etc.
-                }
-            }
-        });
-
-        // TODO: finish this functionality and move it to UserList class
-        userDB = database.collection("users");
     }
 
     @Override
