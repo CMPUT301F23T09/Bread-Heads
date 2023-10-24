@@ -1,17 +1,25 @@
 package com.example.breadheadsinventorymanager;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Stores a list of items
  *
- * @version
- * 1.0
+ * @version 1.1
  */
 public class ItemList extends ArrayList<Item> {
-    private int sum = 0; // Initialize the running sum to 0
+    private long sum = 0; // Initialize the running sum to 0
 
     /**
      * No-arg constructor
@@ -26,9 +34,8 @@ public class ItemList extends ArrayList<Item> {
      */
     public ItemList(Collection<? extends Item> c) {
         super(c);
-        Iterator<com.example.breadheadsinventorymanager.Item> it = this.iterator();
-        while (it.hasNext()) {
-            this.sum += ((Item) it.next()).getValue();
+        for (Item item : this) {
+            this.sum += item.getValue();
         }
     }
 
@@ -70,6 +77,7 @@ public class ItemList extends ArrayList<Item> {
         // Item was removed, update the running sum
         return item;
     }
+
 
     /**
      * Gets sum of all Items in this list

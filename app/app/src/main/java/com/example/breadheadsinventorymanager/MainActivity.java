@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,8 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 /**
  * Main activity
  *
- * @version
- * 0.1
+ * @version 0
  */
 public class MainActivity extends AppCompatActivity {
 

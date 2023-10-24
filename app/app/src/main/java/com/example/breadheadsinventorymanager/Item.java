@@ -1,42 +1,40 @@
 package com.example.breadheadsinventorymanager;
 
+import android.content.res.Resources;
+
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.HashMap;
 
 /**
- * Represents an item in the inventory and all the data it contains
- *
- * Currently only suppports sending data TO Firestore, not retrieving FROM Firestore
- * That is typically better done by adapters anyway!
- *
- * @version
- * 1.1
+ * Represents an item in the inventory and all the data it contains.
+ * @version 1.2
  */
-public class Item {
+public class Item implements FirestorePuttable {
     // attributes
-    private String databaseID; // ID of the item in the firestore database
+    private String id = null; // ID of the item in the firestore database
     private String date;
     private String description;
     private String make;
     private String model;
     private String serialNum;
-    private int value; // in cents
+    private long value; // in cents
     private String comment = ""; // comment is optional
     // private ArrayList<Photo> photos; // second half
     // private TagList tags; // second half
 
     /**
-     * Empty constructor
+     * Empty constructor.
      */
-    public Item() {};
+    public Item() {}
 
     /**
-     * Constructor given a serial number
+     * Constructor given most fields, incl. serial number.
      */
     public Item(String date, String description, String make,
-                String model, String serialNum, int value) {
+                String model, String serialNum, long value) {
         this.date = date;
         this.description = description;
         this.make = make;
@@ -46,10 +44,42 @@ public class Item {
     }
 
     /**
-     * Constructor when not given a serial number
+     * Constructor given an Item document snapshot containing the parameters of the field.
+     * @param document From the Firestore database; must be formatted correctly as an Item.
+     */
+    public Item(DocumentSnapshot document) {
+        id = document.getId();
+        date = document.getString("date");
+        description = document.getString("description");
+        make = document.getString("make");
+        model = document.getString("model");
+        serialNum = document.getString("serialNum");
+        value = (long) document.get("value");
+        comment = document.getString("comment");
+        // TODO PART 2: photos and tags
+    }
+
+    /**
+     * Constructor given an Item document snapshot containing the parameters of the field.
+     * @param document From the Firestore database; must be formatted correctly as an Item.
+     */
+    public Item(QueryDocumentSnapshot document) {
+        id = document.getId();
+        date = document.getString("date");
+        description = document.getString("description");
+        make = document.getString("make");
+        model = document.getString("model");
+        serialNum = document.getString("serialNum");
+        value = (long) document.get("value");
+        comment = document.getString("comment");
+        // TODO PART 2: photos and tags
+    }
+
+    /**
+     * Constructor given most fields, not incl. serial number.
      * [01.01.01] only requires a serial number "when applicable"
      */
-    public Item(String date, String description, String make, String model, int value) {
+    public Item(String date, String description, String make, String model, long value) {
         this.date = date;
         this.description = description;
         this.make = make;
@@ -58,12 +88,42 @@ public class Item {
     }
 
     /**
-     * Gets the data associated with the object in a format suitable for Firestore
+     * Helper function to convert an integer amount of cents to a dollar representation
+     * Adapted from Timothy's submitted code for CMPUT 301 Assignment 1
+     * @param cents
+     * Amount of cents
      * @return
-     * A HashMap containing the object's data that can be added to Firestore
+     * String in format 0.00; for example, a cents amount of 1305 would give 13.05
      */
-    public HashMap<String, Object> getData() {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+    public static String toDollarString(long cents) {
+        long justCents = cents % 100; // taking mod 100 extracts the last 2 digits
+        long dollars = cents / 100; // integer division by 100 removes the last 2 digits
+
+        // format as dollars.cents where cents is always 2 digits (e.g. 1305 is $13.05, not $13.5)
+        // line adapted from https://stackoverflow.com/a/15358131
+        return dollars + "." + String.format(Resources.getSystem()
+                .getConfiguration().getLocales().get(0), "%02d", justCents);
+    }
+
+    /**
+     * Gets the item's value as a nicely-formatted string
+     * Dollar sign prefix is not included, so append that if necessary
+     * @return
+     * String in format 0.00; for example, a value of 1305 would give 13.05
+     */
+    public String getValueDollarString() {
+        return toDollarString(value);
+    }
+
+
+
+    /*
+    ============================================
+    Implement the FirestorePuttable interface
+    ============================================
+     */
+    public HashMap<String, Object> formatForFirestore() {
+        HashMap<String, Object> map = new HashMap<>();
         map.put("date", date);
         map.put("description", description);
         map.put("make", make);
@@ -76,47 +136,8 @@ public class Item {
         return map;
     }
 
-    /**
-     * Attempts to put the object into a Firestore collection
-     * @param collection
-     * Reference to the collection to insert the object into
-     */
     public void put(CollectionReference collection) {
-        if (databaseID != null) {
-            collection.document(databaseID).set(getData());
-        }
-        else {
-            DocumentReference doc = collection.document(); // firestore will generate ID for us
-            doc.set(getData());
-            this.databaseID = doc.getId(); // make sure this item's ID matches firestore's
-        }
-    }
 
-    /**
-     * Helper function to convert an integer amount of cents to a dollar representation
-     * Adapted from Timothy's submitted code for CMPUT 301 Assignment 1
-     * @param cents
-     * Amount of cents
-     * @return
-     * String in format 0.00; for example, a cents amount of 1305 would give 13.05
-     */
-    public static String toDollarString(int cents) {
-        int justCents = cents % 100; // taking mod 100 extracts the last 2 digits
-        int dollars = cents / 100; // integer division by 100 removes the last 2 digits
-
-        // format as dollars.cents where cents is always 2 digits (e.g. 1305 is $13.05, not $13.5)
-        // line adapted from https://stackoverflow.com/a/15358131
-        return dollars + "." + String.format("%02d", justCents);
-    }
-
-    /**
-     * Gets the item's value as a nicely-formatted string
-     * Dollar sign prefix is not included, so append that if necessary
-     * @return
-     * String in format 0.00; for example, a value of 1305 would give 13.05
-     */
-    public String getValueDollarString() {
-        return toDollarString(value);
     }
 
     /*
@@ -144,7 +165,7 @@ public class Item {
         return serialNum;
     }
 
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 
@@ -173,7 +194,7 @@ public class Item {
         this.serialNum = serialNum;
     }
 
-    public void setValue(int value) {
+    public void setValue(long value) {
         this.value = value;
     }
 
@@ -181,11 +202,11 @@ public class Item {
         this.comment = comment;
     }
 
-    public String getDatabaseID() {
-        return databaseID;
+    public String getId() {
+        return id;
     }
 
-    public void setDatabaseID(String databaseID) {
-        this.databaseID = databaseID;
+    public void setId(String id) {
+        this.id = this.id;
     }
 }
