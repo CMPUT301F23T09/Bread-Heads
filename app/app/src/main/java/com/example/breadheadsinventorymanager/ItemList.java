@@ -16,8 +16,7 @@ import java.util.Collection;
 /**
  * Stores a list of items
  *
- * @version
- * 1.0
+ * @version 1.1
  */
 public class ItemList extends ArrayList<Item> {
     private long sum = 0; // Initialize the running sum to 0
@@ -79,28 +78,6 @@ public class ItemList extends ArrayList<Item> {
         return item;
     }
 
-    /**
-     * Task to populate this object with the contents of the given collection.
-     * Must return as a task because of inherent delays in accessing Firestore.
-     * Execution is asynchronous so we must listen for the data to be available!
-     * @param collection Firestore collection reference of Item documents (must be correct format)
-     * @return a Task; use .addOnSuccessListener() to run code after data retrieval
-     */
-    public Task<QuerySnapshot> populateFromCollection(CollectionReference collection) {
-        return collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("ItemList.java", document.getId() + " => " + document.getData());
-                        add(new Item(document));
-                    }
-                } else {
-                    Log.d("ItemList.java", "Error getting documents: ", task.getException());
-                }
-            }
-        });
-    }
 
     /**
      * Gets sum of all Items in this list
@@ -109,23 +86,3 @@ public class ItemList extends ArrayList<Item> {
         return sum;
     }
 }
-
-/* example of how to call data from firestore to populate an ItemList
-public void firestoreExample() {
-    CollectionReference collection = FirebaseFirestore.getInstance().collection("test");
-    ItemList list = new ItemList();
-    Task<QuerySnapshot> task = list.populateFromCollection(collection);
-    // do some sort of "loading/please wait" screen
-    task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-        @Override
-        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-            // end our "loading/please wait" screen
-
-            // logging for testing:
-            if (2 != list.size()) { throw new RuntimeException("oops");}
-            Log.i("main", list.get(0).getData().toString());
-            Log.i("main", list.get(1).getData().toString());
-        }
-    });
-}
- */
