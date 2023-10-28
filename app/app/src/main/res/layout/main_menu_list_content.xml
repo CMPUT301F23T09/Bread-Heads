@@ -6,39 +6,40 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+
     <TextView
         android:id="@+id/item_description_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:textSize="35sp"></TextView>
+        android:textSize="35sp" />
 
     <TextView
         android:id="@+id/item_make_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:textSize="15sp"></TextView>
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/item_model_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:textSize="15sp"></TextView>
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/item_acquisition_date_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:textSize="15sp"></TextView>
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/item_value_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:textSize="25sp"></TextView>
+        android:textSize="25sp" />
 
 </LinearLayout>
