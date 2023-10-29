@@ -1,8 +1,12 @@
 package com.example.breadheadsinventorymanager;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -10,6 +14,8 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Main activity
@@ -18,10 +24,6 @@ import java.util.ArrayList;
  */
 public class MainActivity extends AppCompatActivity {
 
-    // Buttons for handling filter menu
-    private MenuItem filterButton;
-    private MenuItem makeButton;
-    
     // make list is used to store all the makes,
     // TODO create a makeList class to check for repeat "makes" 
     private ArrayList<String> makeList;
@@ -51,14 +53,14 @@ public class MainActivity extends AppCompatActivity {
         itemListView.setAdapter(itemArrayAdapter);
 
         // test cases for sample data
-        Item item1 = new Item("22/01/2000", "this is test case 1", "make", "model", "123456789", 12);
-        Item item2 = new Item("22/01/2000", "this is test case 2", "make", "model", "123456789", 12);
-        Item item3 = new Item("22/01/2000", "this is test case 3", "make", "model", "123456789", 12);
-        Item item4 = new Item("22/01/2000", "this is test case 4", "make", "model", "123456789", 12);
+        Item item1 = new Item("22/01/2000", "this is test case 1", "make1", "model", "123456789", 12);
+        Item item2 = new Item("22/01/2000", "this is test case 2", "make1", "model", "123456789", 12);
+        Item item3 = new Item("22/01/2000", "this is test case 3", "make2", "model", "123456789", 12);
+        Item item4 = new Item("22/01/2000", "this is test case 4", "make3", "model", "123456789", 12);
         itemList.add(item1);
         itemList.add(item2);
-        itemList.add(item3);
-        itemList.add(item4);
+        //itemList.add(item3);
+        //itemList.add(item4);
         itemArrayAdapter.notifyDataSetChanged();
 
         // END OF ADAPTER SETUP DELETE BEFORE MERGING!
@@ -76,8 +78,9 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.topbar, menu);
 
         // get the top bar filter button id
-        filterButton = menu.findItem(R.id.filter_popup);
-        makeButton = menu.findItem(R.id.make_menu);
+        // Buttons for handling filter menu
+        MenuItem filterButton = menu.findItem(R.id.filter_popup);
+        MenuItem makeButton = menu.findItem(R.id.make_menu);
         return true;
     }
 
@@ -123,22 +126,30 @@ public class MainActivity extends AppCompatActivity {
         // Switch cases do not work with android ID's idk why
         if(itemClick  == R.id.date) {
             //TODO make stuff happen when this is clicked
-            //Log.d("WE CLICKED DATE", "WE CLICKED DATE");
 
             return true;
         } else if (itemClick == R.id.description) {
             //TODO make stuff happen when this is clicked
-            //Log.d("WE CLICKED DESCRIPTION", "WE CLICKED DESCRIPTION");
 
             return true;
         } else if (itemClick == R.id.make_menu) {
-            //TODO make stuff happen when this is clicked
-            //Log.d("WE CLICKED MAKE", "WE CLICKED MAKE");
-            // Create a dialog that shows all makes, select one (or more idk) then update list accordingly
+            // create "make" submenu
             showMakeSubMenu();
+            return true;
+        } else if (itemClick == R.id.remove_filter) {
+            removeFilter();
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Removes the filter set on items
+     */
+    private void removeFilter() {
+        for(int i = 0; i < itemList.size(); i++) {
+            itemListView.getChildAt(i).setLayoutParams(new ListView.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         }
     }
 
@@ -146,39 +157,38 @@ public class MainActivity extends AppCompatActivity {
      * Handles submenu creation for make
      */
     private void showMakeSubMenu() {
-
-
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.filter_popup));
 
-        popup.setOnMenuItemClickListener(this::onMakeMenuClick);
+        // populate test list
+        // DELETE BEFORE MERGING!!!
 
         makeList = new ArrayList<String>();
+        String makeString;
+        // I do not like the performance issues this might have
         for(int i = 0; i < itemList.size(); i++) {
-            String makeString = itemList.get(i).getMake();
-            popup.getMenu().add(makeString);
+             makeString = itemList.get(i).getMake();
+             Log.d("ITEM LIST MAKE", makeString);
+             //for(int j = 0; j < makeList.size(); j++) {
+                // if(makeString.equals(makeList.get(j))) {
+                     //break;
+                // }
+             popup.getMenu().add(makeString);
+            //}
         }
-
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                //TODO update list to only display objects with that make
+                for(int i = 0; i < itemList.size(); i++) {
+                    // if the two makes are different, toggle visibility
+                   if(!(item.getTitle() == itemList.get(i).getMake())) {
+                       itemListView.getChildAt(i).setLayoutParams(new ListView.LayoutParams(1, 1));
+                   }
+                }
+                return false;
+            }
+        });
         popup.getMenuInflater().inflate(R.menu.filter_make_submenu, popup.getMenu());
-
-
-
         popup.show();
-    }
-
-    /**
-     * Handles click events for clicking the make submenu
-     * @param menuItem the item that was clicked
-     * @return true if a menu item was clicked, false otherwise
-     */
-    private boolean onMakeMenuClick(MenuItem menuItem) {
-        int itemClick = menuItem.getItemId();
-        if(itemClick == menuItem.getItemId()) {
-            //TODO make stuff happen when this is clicked
-            //Log.d("WE CLICKED THE SUBMENU", "WE CLICKED THE SUBMENU");
-
-            return true;
-        } else {
-            return false;
-        }
     }
 }

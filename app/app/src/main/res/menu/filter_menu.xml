@@ -10,4 +10,8 @@
         <!-- make submenu -->
         <menu></menu>
     </item>
+    <item
+        android:id="@+id/remove_filter"
+        android:title="Remove Filter">
+    </item>
 </menu>
