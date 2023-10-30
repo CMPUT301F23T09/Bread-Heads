@@ -41,4 +41,21 @@ public class ItemListTest {
         Assert.assertThrows(IndexOutOfBoundsException.class, () -> list1.remove(0));
         assertFalse(list1.remove(item1));
     }
+
+    @Test
+    public void getMakeListTests() {
+        ItemList list1 = new ItemList();
+
+        Item item1 = new Item("Jan 23", "Item 1", "Apple", "My Model", "151SERIAL", 1050);
+        Item item2 = new Item("Jan 23", "Item 2", "Banana", "My Model", "151SERIAL", 25);
+        Item item3 = new Item("Jan 23", "Item 3", "Banana", "My Model", "151SERIAL", 25);
+
+        list1.add(item1);
+        list1.add(item2);
+        list1.add(item3);
+
+        // makeList should only have unique makes in it
+        assertEquals(2, list1.getMakeList().size());
+    }
+
 }

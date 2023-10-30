@@ -1,15 +1,5 @@
 package com.example.breadheadsinventorymanager;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -84,5 +74,20 @@ public class ItemList extends ArrayList<Item> {
      */
     public double getSum() {
         return sum;
+    }
+
+    /**
+     * Gets all unique makes from ItemList and puts them in an array
+     * @return the list of unique "makes" in ItemList
+     */
+    public ArrayList<String> getMakeList() {
+        ArrayList<String> makeList = new ArrayList<String>();
+        for(int i = 0; i < this.size(); i++) {
+            if(!(makeList.contains(this.get(i).getMake()))) {
+                makeList.add(this.get(i).getMake());
+            }
+        }
+
+        return makeList;
     }
 }

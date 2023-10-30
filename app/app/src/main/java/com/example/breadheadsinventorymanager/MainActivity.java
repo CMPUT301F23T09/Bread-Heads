@@ -24,15 +24,13 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     // make list is used to store all the makes,
-    // TODO create a makeList class to check for repeat "makes" 
-    private ArrayList<String> makeList;
+    private SearchView searchBox;
 
 
     // INITIALIZE LIST OBJECTS DELETE BEFORE MERGING
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
-    private SearchView searchBox;
 
 
     @Override
@@ -42,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
+        searchBox = findViewById(R.id.search_view);
 
         // ADAPTER SETUP DELETE BEFORE MERGING!
         // test using recyclerview instead of listview
@@ -51,15 +50,15 @@ public class MainActivity extends AppCompatActivity {
         itemListView.setAdapter(itemArrayAdapter);
 
         // searchView id and adapter
-        searchBox = findViewById(R.id.search_view);
+
         //makeSearchAdapter = new SearchableAdapter(this, R.layout.main_menu_list_content, itemList);
 
         // test cases for sample data
-        Item item1 = new Item("22/01/2000", "this is test case 1", "make1", "model", "123456789", 12);
-        Item item2 = new Item("22/01/2000", "this is test case 2", "make1", "model", "123456789", 12);
-        Item item3 = new Item("22/01/2000", "this is test case 3", "make2", "model", "123456789", 12);
-        Item item4 = new Item("22/01/2000", "this is test case 4", "make3", "model", "123456789", 12);
-        Item item5 = new Item("22/01/2000", "this is test case 4", "make4", "model", "123456789", 12);
+        Item item1 = new Item("22/01/2000", "Banana", "fruit", "model", "123456789", 12);
+        Item item2 = new Item("22/01/2000", "Apple", "goodFruit", "model", "123456789", 12);
+        Item item3 = new Item("22/01/2000", "Peach", "meh", "model", "123456789", 12);
+        Item item4 = new Item("22/01/2000", "Pineapple", "Crunchy", "model", "123456789", 12);
+        Item item5 = new Item("22/01/2000", "Strawberry", "Pepperidge Farms", "model", "123456789", 12);
 
         itemList.add(item1);
         itemList.add(item2);
@@ -129,15 +128,15 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         } else if (itemClick == R.id.description) {
-            //TODO make stuff happen when this is clicked
-
+            // show description search field
+            showDescriptionSearch();
             return true;
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
             showMakeSubMenu();
             return true;
         } else if (itemClick == R.id.remove_filter) {
-            // set searchView text to nothing and reset adapter and make search box disappear
+            // set searchView text to nothing and reset adapter so no filters are present
             searchBox.setVisibility(GONE);
             searchBox.setQuery(getIntent().getDataString(), false);
             itemListView.setAdapter(itemArrayAdapter);
@@ -149,30 +148,70 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Handles filtering itemList for make, creates a SearchView to search for a make
+     * Shows and populates submenu for filtering by make
      */
     private void showMakeSubMenu() {
+        // show submenu of all available makes
+        ArrayList<String> makeList = new ArrayList<String>();
+        makeList = itemList.getMakeList();
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.filter_popup));
+
+        // populate the submenu with makeList strings
+        for(int i = 0; i < makeList.size(); i++) {
+            popup.getMenu().add(makeList.get(i));
+        }
+        popup.setOnMenuItemClickListener(this::onMakeClick);
+        popup.getMenuInflater().inflate(R.menu.filter_make_submenu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * handles click events for make submenu
+     * @param menuItem the item clicked
+     * @return true to avoid unintended calls to other functions
+     */
+    private boolean onMakeClick(MenuItem menuItem) {
+        int menuItemClick = menuItem.getItemId();
+        ItemList results = new ItemList();
+
+        // compare the make selected to the makes of itemList
+        for (int i = 0; i < itemList.size(); i++) {
+            if (itemList.get(i).getMake().equals(menuItem.toString())) {
+                    results.add(itemList.get(i));
+            }
+        }
+        // update adapter to show filtered results
+        CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
+        itemListView.setAdapter(tempAdapter);
+        ((CustomItemListAdapter) itemListView.getAdapter()).update(results);
+        return true;
+    }
+
+    /**
+     * Handles filtering itemList for make, creates a SearchView to search for a make
+     */
+    private void showDescriptionSearch() {
 
         // create our text listener to search for search entry
         searchBox.setVisibility(View.VISIBLE);
         searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 return false;
             }
 
             @Override
             // creates a list to then set a new adapter to
+            // modified code from this video https://www.youtube.com/watch?v=7Sw98YZW-ik
             public boolean onQueryTextChange(String newText) {
                 ItemList results = new ItemList();
 
                 for (int i = 0; i < itemList.size(); i++) {
-                    if (itemList.get(i).getMake().contains(newText)) {
+                    if (itemList.get(i).getDescription().contains(newText)) {
                         results.add(itemList.get(i));
                     }
                 }
+                // update adapter to show the filtered results
                 CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
                 itemListView.setAdapter(tempAdapter);
                 ((CustomItemListAdapter) itemListView.getAdapter()).update(results);
