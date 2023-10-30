@@ -10,15 +10,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class CustomItemListAdapter extends ArrayAdapter<Item> {
     private ItemList items;
     private Context context;
+    private ItemList newItemList;
 
     public CustomItemListAdapter(Context context, ItemList items) {
         super(context, 0, items);
         this.items = items;
         this.context = context;
     }
+
+    public void update(ArrayList<Item> results) {
+        // updates adapter with data, called in filter showMakeSubMenu()
+        newItemList = new ItemList();
+        newItemList.addAll(results);
+        notifyDataSetChanged();
+        }
 
     @NonNull
     @Override

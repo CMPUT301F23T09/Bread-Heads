@@ -6,16 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <SearchView
+        android:id="@+id/search_view"
+        android:layout_width="383dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android:support.v7.widget.SearchView"
+        android:visibility="gone"/>
+
     <ListView
         android:id="@+id/items_main_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        android:gravity="top"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/search_view" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
