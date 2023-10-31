@@ -22,7 +22,6 @@ public class ItemListTest {
     public void setUp() {
 
         itemList = new ItemList();
-        itemListC = new ItemList();
 
         item1 = new Item("2023-10-31", "Description1", "Make1", "Model1", "Serial1", 10);
         item1.setId("1");
@@ -32,6 +31,8 @@ public class ItemListTest {
         Collection<Item> itemCollection = new ArrayList<>();
         itemCollection.add(item1);
         itemCollection.add(item2);
+        itemListC = new ItemList(itemCollection);
+
     }
 
 
@@ -97,15 +98,13 @@ public class ItemListTest {
 
     @Test
     public void testInitializeCollection() {
-        // Add the test item to the ItemList
-        itemList.add(item1);
-        itemList.add(item2);
-
+        assertEquals(2, itemListC.size());
+        assertEquals(30, itemListC.getSum(), 0.001);
         // Remove the item by index
-        itemList.remove(0);
-        assertEquals(20, itemList.getSum(), 0.001);
-        itemList.remove(0);
-        assertEquals(0, itemList.getSum(), 0.001);
+        itemListC.remove("2");
+        assertEquals(10, itemListC.getSum(), 0.001);
+        itemListC.remove("1");
+        assertEquals(0, itemListC.getSum(), 0.001);
 
     }
 
