@@ -21,7 +21,7 @@ import java.util.ArrayList;
  *
  * @version 0
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
 
     // make list is used to store all the makes,
     private SearchView searchBox;
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         // END OF ADAPTER SETUP DELETE BEFORE MERGING!
     }
 
+    // TOPBAR MENU HANDLING AND FUNCTIONALITY
+
     /**
      * Handles inflating the top bar and getting relevant button ID's
      *
@@ -84,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Handles buttons clicked in the top bar
-     *
      * @param item The menu item that was selected.
      * @return true
      */
@@ -98,10 +99,31 @@ public class MainActivity extends AppCompatActivity {
             // create menu for filtering items
             showFilterMenu();
             return true;
+        } else if (id == R.id.add_item) {
+            // show dialog for adding an item
+            showAddItem();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
+
+    // ADD ITEM DIALOG HANDLING
+
+    /**
+     * handles creating the dialog and switching to associated fragment
+     */
+    private void showAddItem() {
+        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
+    }
+
+    @Override
+    public void onOKPressed(Item item) {
+        itemList.add(item);
+        itemArrayAdapter.notifyDataSetChanged();
+    }
+
+    // TOPBAR MENU HANDLING
 
     /**
      * Handles the menu creation after the "filter button" is tapped
