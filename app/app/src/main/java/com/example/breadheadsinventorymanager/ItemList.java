@@ -85,13 +85,13 @@ public class ItemList extends ArrayList<Item> {
      */
     public Item remove(String id) {
         for (Item item : this) {
-            if (item.getId().equals(id)) {
+            if (id.equals(item.getId())) {
                 // Found the item with the matching ID, remove it and update the running sum
-                super.remove(item);
+                this.remove(item);
                 return item;
             }
         }
-        return null; // Item with the specified ID not found
+        return null;
     }
 
 

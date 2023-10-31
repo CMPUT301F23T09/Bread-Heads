@@ -207,6 +207,6 @@ public class Item implements FirestorePuttable {
     }
 
     public void setId(String id) {
-        this.id = this.id;
+        this.id = id;
     }
 }
