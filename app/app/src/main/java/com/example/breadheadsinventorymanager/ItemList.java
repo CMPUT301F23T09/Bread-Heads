@@ -78,6 +78,22 @@ public class ItemList extends ArrayList<Item> {
         return item;
     }
 
+    /**
+     * Remove an item from the list based on its ID and update the running sum
+     * @param id The ID of the item to remove
+     * @return The removed item, or null if not found
+     */
+    public Item remove(String id) {
+        for (Item item : this) {
+            if (item.getId().equals(id)) {
+                // Found the item with the matching ID, remove it and update the running sum
+                super.remove(item);
+                return item;
+            }
+        }
+        return null; // Item with the specified ID not found
+    }
+
 
     /**
      * Gets sum of all Items in this list
