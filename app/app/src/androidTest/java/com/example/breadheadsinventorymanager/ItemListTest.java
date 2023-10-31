@@ -5,6 +5,9 @@ import static junit.framework.TestCase.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class ItemListTest {
 
     private Item item1;
@@ -12,14 +15,23 @@ public class ItemListTest {
 
     private ItemList itemList;
 
+    private ItemList itemListC;
+
 
     @Before
     public void setUp() {
+
         itemList = new ItemList();
+        itemListC = new ItemList();
+
         item1 = new Item("2023-10-31", "Description1", "Make1", "Model1", "Serial1", 10);
         item1.setId("1");
         item2 = new Item("2023-9-31", "Description2", "Make2", "Model2", "Serial2", 20);
         item2.setId("2");
+
+        Collection<Item> itemCollection = new ArrayList<>();
+        itemCollection.add(item1);
+        itemCollection.add(item2);
     }
 
 
@@ -82,6 +94,21 @@ public class ItemListTest {
         assertEquals(0, itemList.getSum(), 0.001);
 
     }
+
+    @Test
+    public void testInitializeCollection() {
+        // Add the test item to the ItemList
+        itemList.add(item1);
+        itemList.add(item2);
+
+        // Remove the item by index
+        itemList.remove(0);
+        assertEquals(20, itemList.getSum(), 0.001);
+        itemList.remove(0);
+        assertEquals(0, itemList.getSum(), 0.001);
+
+    }
+
 
 
     }
