@@ -9,21 +9,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-
+import java.time.LocalDate;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import android.widget.EditText;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-
 import java.math.BigInteger;
-import java.util.HashMap;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 public class AddItemFragment extends DialogFragment {
 
     // editText ids
@@ -88,13 +81,16 @@ public class AddItemFragment extends DialogFragment {
                     String comments = itemCommentsBox.getText().toString();
                     BigInteger bigInt = new BigInteger(value);
                     long newValue;
+
+                    // create date stuff to check entered date
+                    //LocalDate currentDate = LocalDate.now();
                     // check for empty fields
-                    if(!(name.equals("")) || !(make.equals("")) || !(model.equals("")) || !(date.equals("")) || !(value.equals(""))) {
+                    if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
                         return;
                     } else if (bigInt.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) {
                         // checks for input greater than max number possible
                         // code modified from this stackoverflow post
-                        https://stackoverflow.com/questions/36147202/how-to-detect-if-a-number-is-greater-than-long-max-value
+                        //https://stackoverflow.com/questions/36147202/how-to-detect-if-a-number-is-greater-than-long-max-value
                         return;
                     } else {
                         newValue = parseLong(value);

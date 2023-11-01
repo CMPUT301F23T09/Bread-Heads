@@ -54,19 +54,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         //makeSearchAdapter = new SearchableAdapter(this, R.layout.main_menu_list_content, itemList);
 
         // test cases for sample data
-        Item item1 = new Item("22/01/2000", "Banana", "fruit", "model", "123456789", 12);
-        Item item2 = new Item("22/01/2000", "Apple", "goodFruit", "model", "123456789", 12);
-        Item item3 = new Item("22/01/2000", "Peach", "meh", "model", "123456789", 12);
-        Item item4 = new Item("22/01/2000", "Pineapple", "Crunchy", "model", "123456789", 12);
-        Item item5 = new Item("22/01/2000", "Strawberry", "Pepperidge Farms", "model", "123456789", 12);
 
-        itemList.add(item1);
-        itemList.add(item2);
-        itemList.add(item3);
-        itemList.add(item4);
-        itemList.add(item5);
-
-        itemArrayAdapter.notifyDataSetChanged();
         // END OF ADAPTER SETUP DELETE BEFORE MERGING!
     }
 
