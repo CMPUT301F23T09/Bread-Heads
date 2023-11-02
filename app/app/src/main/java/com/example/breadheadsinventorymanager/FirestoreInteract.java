@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -108,12 +109,25 @@ public class FirestoreInteract {
     }
 
     /**
-     * Task to delete a FirestorePuttable object from the items collection
-     * @param obj The item to delete; getId() is used to index in the Firestore database
-     * @return The task; use .addOnSuccessListener() to do something after deletion
+     * Deletes an item from Firestore and removes it from the provided ItemList.
+     *
+     * @param obj The FirestorePuttable object representing the item to delete.
+     * @param itemList The ItemList from which to remove the item.
+     * @return A Firestore deletion task. Use .addOnSuccessListener() to handle success.
      */
-    public Task<Void> deleteItem(FirestorePuttable obj) {
-        return deleteItem(obj.getId());
+    public Task<Void> deleteItem(FirestorePuttable obj, ItemList itemList) {
+        String itemId = obj.getId();
+        Task<Void> firestoreDeleteTask = deleteItem(itemId);
+
+        // Add an OnSuccessListener to the Firestore deletion task
+        firestoreDeleteTask.addOnSuccessListener(aVoid -> {
+            // Check if the Firestore deletion was successful
+            if (firestoreDeleteTask.isSuccessful()) {
+                // The Firestore deletion was successful, so remove the item from the itemList
+                itemList.remove(itemId);
+            }
+        });
+        return firestoreDeleteTask;
     }
 
     public FirebaseFirestore getDatabase() {
