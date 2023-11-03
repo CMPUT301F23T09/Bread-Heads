@@ -19,17 +19,58 @@
         app:actionViewClass="android:support.v7.widget.SearchView"
         android:visibility="gone"/>
 
+
+    <EditText
+        android:id="@+id/filter_date_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/filter_date_start"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:inputType="date"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/filter_date_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:hint="@string/filter_date_end"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:inputType="date"
+        app:layout_constraintBottom_toBottomOf="@+id/filter_date_start"
+        app:layout_constraintEnd_toStartOf="@+id/filter_date_start"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <ListView
         android:id="@+id/items_main_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_view" />
+        app:layout_constraintTop_toBottomOf="@+id/invalid_date_message" />
 
+    <TextView
+        android:id="@+id/invalid_date_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/invalid_date_range_main_activity"
+        android:textColor="@color/tomato_red"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filter_date_start" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

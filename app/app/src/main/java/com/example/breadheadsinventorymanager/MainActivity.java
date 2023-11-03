@@ -23,10 +23,10 @@ import java.util.ArrayList;
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
 
-    // make list is used to store all the makes,
+    // id for search box to filter by description
     private SearchView searchBox;
 
-    // INITIALIZE LIST OBJECTS DELETE BEFORE MERGING
+    // obligatory id's for lists/adapter
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
@@ -40,20 +40,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         searchBox = findViewById(R.id.search_view);
 
-        // ADAPTER SETUP DELETE BEFORE MERGING!
-        // test using recyclerview instead of listview
+        //ListView and adapter setup
         itemList = new ItemList();
         itemListView = findViewById(R.id.items_main_list);
         itemArrayAdapter = new CustomItemListAdapter(this, itemList);
         itemListView.setAdapter(itemArrayAdapter);
 
-        // searchView id and adapter
-
-        //makeSearchAdapter = new SearchableAdapter(this, R.layout.main_menu_list_content, itemList);
-
-        // test cases for sample data
-
-        // END OF ADAPTER SETUP DELETE BEFORE MERGING!
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY

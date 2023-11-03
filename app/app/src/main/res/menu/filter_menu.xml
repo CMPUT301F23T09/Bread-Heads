@@ -12,6 +12,6 @@
     </item>
     <item
         android:id="@+id/remove_filter"
-        android:title="Remove Filter">
+        android:title="@string/remove_filter">
     </item>
 </menu>
