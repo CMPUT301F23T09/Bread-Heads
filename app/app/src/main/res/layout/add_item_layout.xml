@@ -31,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:maxLength="10"
         android:hint="DD/MM/YYYY"
         android:inputType="datetime"
         android:id="@+id/item_acquisition_date_text"/>
@@ -86,6 +87,15 @@
             android:focusable="true"
             app:srcCompat="@android:drawable/ic_menu_camera" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/error_text_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Invalid data format!"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/tomato_red"/>
     <!--TODO make area for tags to show -->
 
 

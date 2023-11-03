@@ -1,8 +1,5 @@
 package com.example.breadheadsinventorymanager;
 
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
