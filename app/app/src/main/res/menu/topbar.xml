@@ -16,13 +16,13 @@
     <item
         android:id="@+id/filter_popup"
         android:icon="@android:drawable/ic_menu_view"
-        android:title="Add Item"
+        android:title="filter"
         android:orderInCategory="2"
         app:showAsAction="always" />
     <item
         android:id="@+id/delete_item"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Add Item"
+        android:title="delete item"
         android:orderInCategory="1"
         app:showAsAction="always" />
 

@@ -5,18 +5,22 @@ import static java.lang.Long.parseLong;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import java.time.LocalDate;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.math.BigInteger;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class AddItemFragment extends DialogFragment {
 
     // editText ids
@@ -26,6 +30,7 @@ public class AddItemFragment extends DialogFragment {
     EditText itemDateBox;
     EditText itemCommentsBox;
     EditText itemValueBox;
+    TextView errorBox;
 
     private OnFragmentInteractionListener listener;
 
@@ -49,7 +54,7 @@ public class AddItemFragment extends DialogFragment {
      * @param savedInstanceState The last saved instance state of the Fragment,
      * or null if this is a freshly created Fragment.
      *
-     * @return nothing if input does not pass checks
+     * @return the dialog
      */
     @NonNull
     @Override
@@ -65,42 +70,93 @@ public class AddItemFragment extends DialogFragment {
         itemDateBox = view.findViewById(R.id.item_acquisition_date_text);
         itemValueBox = view.findViewById(R.id.item_value_text);
         itemCommentsBox = view.findViewById(R.id.item_comments_text);
+        errorBox = view.findViewById(R.id.error_text_message);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        return builder
+        // addItemDialog builder code modified from this stackOverflow post
+        //https://stackoverflow.com/questions/6275677/alert-dialog-in-android-should-not-dismiss
+        final AlertDialog addItemDialog = new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle("Add Item")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("OK", (dialog, which) -> {
-                    String name = itemNameBox.getText().toString();
-                    String make = itemModelBox.getText().toString();
-                    String model = itemModelBox.getText().toString();
-                    String date = itemDateBox.getText().toString();
-                    String value = itemValueBox.getText().toString();
-                    String comments = itemCommentsBox.getText().toString();
-                    BigInteger bigInt = new BigInteger(value);
-                    long newValue;
+                .setPositiveButton("OK",
+                    new Dialog.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface d, int which) {
+                            //Do nothing here. Override onClick() so we can do things when OK is tapped
+                        }
+                    }).create();
 
-                    // create date stuff to check entered date
-                    //LocalDate currentDate = LocalDate.now();
-                    // check for empty fields
-                    if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
-                        return;
-                    } else if (bigInt.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0) {
-                        // checks for input greater than max number possible
-                        // code modified from this stackoverflow post
-                        //https://stackoverflow.com/questions/36147202/how-to-detect-if-a-number-is-greater-than-long-max-value
-                        return;
-                    } else {
-                        newValue = parseLong(value);
-                    }
-                    // TODO validate date is not from the future and in correct format
+        // set a listener for the OK button
+        addItemDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    Button b1 = addItemDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    b1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (checkDataEntry()) {
+                                addItemDialog.dismiss();
+                                errorBox.setVisibility(View.GONE);
+                            } else {
+                                errorBox.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+                }
+            });
 
-                    listener.onOKPressed(new Item(name, make, model, date, comments, newValue));
-                }).create();
+        return addItemDialog;
     }
 
+    /**
+     * Checks data entered in dialog
+     * @return true if the data is valid, false otherwise
+     */
+    public boolean checkDataEntry() {
+        String name = itemNameBox.getText().toString();
+        String make = itemModelBox.getText().toString();
+        String model = itemModelBox.getText().toString();
+        String date = itemDateBox.getText().toString();
+        String value = itemValueBox.getText().toString();
+        String comments = itemCommentsBox.getText().toString();
+
+        // check for empty fields
+        if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
+            errorBox.setText("Empty Fields");
+            return false;
+        }
+
+        // check if value is parsable
+        long newValue;
+        try {
+            newValue = parseLong(value);
+        } catch (NumberFormatException e) {
+            errorBox.setText("Invalid Value");
+            return false;
+        }
+
+        // if this passes, then we know that our date string is in the right format to perform logic on later
+        // does not except dates after current date or of invalid format (given in textView hint)
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate newdate = LocalDate.parse(date, formatter);
+            LocalDate currentDate = LocalDate.now();
+            if(newdate.isAfter(currentDate)) {
+                errorBox.setText("Invalid Date");
+                return false;
+            }
+        } catch (DateTimeParseException e) {
+            errorBox.setText("Invalid Date");
+            return false;
+        }
+        // create the item object
+        listener.onOKPressed(new Item(name, make, model, date, comments, newValue));
+        return true;
+    }
+
+    /**
+     * interface for button pressed in dialog
+     */
     public interface OnFragmentInteractionListener {
         void onOKPressed(Item item);
     }

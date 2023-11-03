@@ -29,13 +29,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // make list is used to store all the makes,
     private SearchView searchBox;
 
-
     // INITIALIZE LIST OBJECTS DELETE BEFORE MERGING
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
