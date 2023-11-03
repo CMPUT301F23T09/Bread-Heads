@@ -54,8 +54,7 @@ public class SelectMultipleItemsTest {
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("01/01/2000"));
-        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("500"));
-        ViewActions.closeSoftKeyboard();
+        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("500")).perform(ViewActions.closeSoftKeyboard());;
         onView(withText("OK")).perform(click());
 
         // go into select mode
