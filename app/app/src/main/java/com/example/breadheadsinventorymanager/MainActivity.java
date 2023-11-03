@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -105,9 +106,16 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     // ADD ITEM DIALOG HANDLING
+
+    /**
+     * Handles when the delete button is pressed. Allows user to select one or more items and
+     * delete them at once.
+     */
     private void selectMode() {
         Button confirm_button = (Button)findViewById(R.id.select_mode_confirm);
         Button cancel_button = (Button)findViewById(R.id.select_mode_cancel);
+        ArrayList<Integer> selectedItems = new ArrayList<Integer>();
+//        int[] selectedItems = {};
 
         // bring ups popup with text to let the user know to select items now
         PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
@@ -121,11 +129,22 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         cancel_button.setClickable(true);
 
         // make it so you can click on items to select them
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // add it to array of item position indexes
+                selectedItems.add(position);
 
+            }
+        });
         // when the confirm button is pressed
         confirm_button.setOnClickListener(v -> {
             // delete all selected items
-
+            // selectedItems is an array of indexes of selected items from itemListView
+            for (int i = 0; i < selectedItems.size(); i++) {
+                itemList.remove(selectedItems.get(i));
+            }
+            itemArrayAdapter.notifyDataSetChanged();
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
