@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/select_mode_confirm"
+        android:title="Confirm"
+        android:orderInCategory="1"
+        />
+    <item
+        android:id="@+id/select_mode_cancel"
+        android:title="Cancel"
+        android:orderInCategory="2"
+        />
+
+</menu>

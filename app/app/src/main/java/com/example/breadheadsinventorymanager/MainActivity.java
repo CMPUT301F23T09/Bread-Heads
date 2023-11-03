@@ -5,11 +5,13 @@ import static android.view.View.GONE;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
@@ -91,13 +93,57 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // show dialog for adding an item
             showAddItem();
             return true;
+        } else if (id == R.id.delete_item) {
+            // enter select mode to be able to delete one or more items
+//            Intent selectIntent = new Intent(MainActivity.this, SelectModeActivity.class);
+//            startActivity(selectIntent);
+            selectMode();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
     // ADD ITEM DIALOG HANDLING
+    private void selectMode() {
+        Button confirm_button = (Button)findViewById(R.id.select_mode_confirm);
+        Button cancel_button = (Button)findViewById(R.id.select_mode_cancel);
 
+        // bring ups popup with text to let the user know to select items now
+        PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
+        select_text_popup.getMenuInflater().inflate(R.menu.select_item_text, select_text_popup.getMenu());
+        select_text_popup.show();
+
+        // make the confirm and cancel button visible and clickable
+        confirm_button.setVisibility(View.VISIBLE);
+        confirm_button.setClickable(true);
+        cancel_button.setVisibility(View.VISIBLE);
+        cancel_button.setClickable(true);
+
+        // make it so you can click on items to select them
+
+        // when the confirm button is pressed
+        confirm_button.setOnClickListener(v -> {
+            // delete all selected items
+
+            // hide the buttons and make them not clickable so they aren not accidentally pressed
+            confirm_button.setVisibility(View.INVISIBLE);
+            confirm_button.setClickable(false);
+            cancel_button.setVisibility(View.INVISIBLE);
+            cancel_button.setClickable(false);
+        });
+
+        // when the cancel button is pressed
+        cancel_button.setOnClickListener(v -> {
+            // unselect any selected items
+//            itemListView.SelectItem
+            // hide the buttons and make them not clickable so they aren not accidentally pressed
+            confirm_button.setVisibility(View.INVISIBLE);
+            confirm_button.setClickable(false);
+            cancel_button.setVisibility(View.INVISIBLE);
+            cancel_button.setClickable(false);
+        });
+    }
     /**
      * handles creating the dialog and switching to associated fragment
      */

@@ -36,7 +36,7 @@ public class SelectMultipleItemsTest {
         // Add a couple items to the list
 
         // Click on select and enter select mode
-        onView(withId(R.id.select_button)).perform(click());
+        onView(withId(R.id.delete_item)).perform(click());
         // Click on first item
         onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item_list)).atPosition(0).perform(click());
         // Click on second item
@@ -51,7 +51,7 @@ public class SelectMultipleItemsTest {
         // Add a couple items to the list
 
         // Click on select and enter select mode
-        onView(withId(R.id.select_button)).perform(click());
+        onView(withId(R.id.delete_item)).perform(click());
         // Click on first item
         onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item_list)).atPosition(0).perform(click());
         // Click on second item
