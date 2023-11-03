@@ -2,16 +2,11 @@ package com.example.breadheadsinventorymanager;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-
-import android.view.View;
-
-import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -31,7 +26,16 @@ public class AddItemTest {
 
     @Test
     public void TestAddItem() {
-        //TODO change assertions on whether something is added or not
+
+        onView(withId(R.id.add_item)).perform(click());
+        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Valid date entry"));
+        onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
+        onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("08/08/2000"));
+        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("123")).perform(ViewActions.closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withText("Valid date entry")).check(matches(isDisplayed()));
+
         onView(withId(R.id.add_item)).perform(click());
 
         // test if dialog pops up by checking if one of the Edittext views is visible
@@ -42,72 +46,66 @@ public class AddItemTest {
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Fields empty test")).perform(ViewActions.closeSoftKeyboard());
 
         onView(withId(android.R.id.button1)).perform(click());
+        onView(withText("Empty Fields")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button2)).perform(click());
 
-        onView(withText("Fields empty test")).check(doesNotExist());
+    }
+
+    @Test
+    public void TestWeirdValue() {
 
         //check for enormous integers value
-        onView(withId(R.id.item_name_text)).perform(click());
+        onView(withId(R.id.add_item)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Big Int test"));
-        onView(withId(R.id.item_make_text)).perform(click());
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_model_text)).perform(click());
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_acquisition_date_text)).perform(click());
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("08/21/2020"));
-        onView(withId(R.id.item_value_text)).perform(click());
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("99999999999999999999")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 
-        // an item this big should not be added to the itemList
-        onView(withText("Big Int test")).check(doesNotExist());
+        onView(withText("Invalid Value")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button2)).perform(click());
+
+    }
+
+    @Test
+    public void TestDate() {
 
         // check if improper date is added (wrong format)
         onView(withId(R.id.add_item)).perform(click());
-        onView(withId(R.id.item_name_text)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Improper date test1"));
-        onView(withId(R.id.item_make_text)).perform(click());
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_model_text)).perform(click());
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_acquisition_date_text)).perform(click());
-        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("08212000"));
-        onView(withId(R.id.item_value_text)).perform(click());
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("08242000"));
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("123")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withText("Improper date test1")).check(doesNotExist());
+        onView(withText("Invalid Date")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button2)).perform(click());
 
         // check if improper date is added (Date after today)
         onView(withId(R.id.add_item)).perform(click());
-        onView(withId(R.id.item_name_text)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Improper date test2"));
-        onView(withId(R.id.item_make_text)).perform(click());
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_model_text)).perform(click());
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_acquisition_date_text)).perform(click());
-        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("11/04/2023"));
-        onView(withId(R.id.item_value_text)).perform(click());
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("04/11/2023"));
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("123")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withText("Improper date test2")).check(doesNotExist());
+        onView(withText("Invalid Date")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button2)).perform(click());
 
-        // check if improper date is added (ancient date entered)
+        // check if improper date is added (random characters)
         onView(withId(R.id.add_item)).perform(click());
-        onView(withId(R.id.item_name_text)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Improper date test3"));
-        onView(withId(R.id.item_make_text)).perform(click());
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_model_text)).perform(click());
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_acquisition_date_text)).perform(click());
-        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("11/04/1600"));
-        onView(withId(R.id.item_value_text)).perform(click());
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("1!d'.%,/-"));
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("123")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withText("Improper date test3")).check(doesNotExist());
+        onView(withText("Invalid Date")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button2)).perform(click());
 
     }
 }

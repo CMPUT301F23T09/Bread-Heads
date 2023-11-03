@@ -7,7 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -98,6 +96,7 @@ public class AddItemFragment extends DialogFragment {
                         public void onClick(View v) {
                             if (checkDataEntry()) {
                                 addItemDialog.dismiss();
+                                errorBox.setVisibility(View.GONE);
                             } else {
                                 errorBox.setVisibility(View.VISIBLE);
                             }
@@ -127,7 +126,7 @@ public class AddItemFragment extends DialogFragment {
             return false;
         }
 
-        // check that value is a valid format
+        // check if value is parsable
         long newValue;
         try {
             newValue = parseLong(value);
@@ -136,10 +135,16 @@ public class AddItemFragment extends DialogFragment {
             return false;
         }
 
-        // if this passes, then we know that our date string is in the right format
+        // if this passes, then we know that our date string is in the right format to perform logic on later
+        // does not except dates after current date or of invalid format (given in textView hint)
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate.parse(date, formatter);
+            LocalDate newdate = LocalDate.parse(date, formatter);
+            LocalDate currentDate = LocalDate.now();
+            if(newdate.isAfter(currentDate)) {
+                errorBox.setText("Invalid Date");
+                return false;
+            }
         } catch (DateTimeParseException e) {
             errorBox.setText("Invalid Date");
             return false;
