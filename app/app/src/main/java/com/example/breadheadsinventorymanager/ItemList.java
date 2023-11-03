@@ -1,15 +1,5 @@
 package com.example.breadheadsinventorymanager;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -78,11 +68,42 @@ public class ItemList extends ArrayList<Item> {
         return item;
     }
 
+    /**
+     * Remove an item from the list based on its ID and update the running sum
+     * @param id The ID of the item to remove
+     * @return The removed item, or null if not found
+     */
+    public Item remove(String id) {
+        for (Item item : this) {
+            if (id.equals(item.getId())) {
+                // Found the item with the matching ID, remove it and update the running sum
+                this.remove(item);
+                return item;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Gets sum of all Items in this list
      */
     public double getSum() {
         return sum;
+    }
+
+    /**
+     * Gets all unique makes from ItemList and puts them in an array
+     * @return the list of unique "makes" in ItemList
+     */
+    public ArrayList<String> getMakeList() {
+        ArrayList<String> makeList = new ArrayList<String>();
+        for(int i = 0; i < this.size(); i++) {
+            if(!(makeList.contains(this.get(i).getMake()))) {
+                makeList.add(this.get(i).getMake());
+            }
+        }
+
+        return makeList;
     }
 }

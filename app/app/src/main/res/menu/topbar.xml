@@ -14,8 +14,8 @@
         android:orderInCategory="3"
         app:showAsAction="always" />
     <item
-        android:id="@+id/filter_menu"
-        android:icon="@android:drawable/ic_menu_compass"
+        android:id="@+id/filter_popup"
+        android:icon="@android:drawable/ic_menu_view"
         android:title="Add Item"
         android:orderInCategory="2"
         app:showAsAction="always" />

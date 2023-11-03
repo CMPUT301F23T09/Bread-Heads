@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/date"
+        android:title="@string/Date"/>
+    <item android:id="@+id/description"
+        android:title="@string/description"/>
+    <item android:id="@+id/make_menu"
+        android:title="@string/make">
+        <!-- make submenu -->
+        <menu></menu>
+    </item>
+    <item
+        android:id="@+id/remove_filter"
+        android:title="Remove Filter">
+    </item>
+</menu>

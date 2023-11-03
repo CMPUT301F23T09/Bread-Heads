@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Bread Heads Inventory Manager</string>
+    <string name="Date">Date Range</string>
+    <string name="description">Description</string>
+    <string name="make">Make</string>
 </resources>
