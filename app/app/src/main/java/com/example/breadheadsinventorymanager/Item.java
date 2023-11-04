@@ -1,6 +1,7 @@
 package com.example.breadheadsinventorymanager;
 
 import android.content.res.Resources;
+import android.widget.CheckBox;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -21,6 +22,7 @@ public class Item implements FirestorePuttable {
     private String model;
     private String serialNum;
     private long value; // in cents
+    private CheckBox checkBox;
     private String comment = ""; // comment is optional
     // private ArrayList<Photo> photos; // second half
     // private TagList tags; // second half
@@ -209,4 +211,10 @@ public class Item implements FirestorePuttable {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
+
+    public CheckBox getCheckBox() {return this.checkBox;}
 }
+
+

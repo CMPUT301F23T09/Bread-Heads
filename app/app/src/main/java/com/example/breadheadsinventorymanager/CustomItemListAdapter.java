@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,8 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         itemAcquisitionDateTV.setText(item.getDate());
         itemValueTV.setText("" + item.getValue());
 
+        CheckBox checkBox = view.findViewById(R.id.checkBox);
+        item.setCheckBox(checkBox);
         return view;
 
     }

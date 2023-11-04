@@ -3,16 +3,21 @@ package com.example.breadheadsinventorymanager;
 import static android.view.View.GONE;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         Button confirm_button = (Button)findViewById(R.id.select_mode_confirm);
         Button cancel_button = (Button)findViewById(R.id.select_mode_cancel);
         ArrayList<Integer> selectedItems = new ArrayList<Integer>();
-//        int[] selectedItems = {};
+        ArrayList<Item> itemsToBeDeleted = new ArrayList<Item>();
 
         // bring ups popup with text to let the user know to select items now
         PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
@@ -126,28 +131,57 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         cancel_button.setVisibility(View.VISIBLE);
         cancel_button.setClickable(true);
 
-        // make it so you can click on items to select them
-        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // add it to array of item position indexes
-                selectedItems.add(position);
+        // make the checkbox visible for each item
+        for (int i = 0; i < itemList.size(); i++) {
+            // get the item at position i
+            Item current_item = itemList.get(i);
+            CheckBox checkbox = current_item.getCheckBox();
+            checkbox.setVisibility(View.VISIBLE);
+        }
 
-            }
-        });
+        // make it so you can click on items to select them
+//        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // add it to array of item position indexes
+//                selectedItems.add(position);
+//
+//            }
+//        });
+
         // when the confirm button is pressed
         confirm_button.setOnClickListener(v -> {
             // delete all selected items
             // selectedItems is an array of indexes of selected items from itemListView
-            for (int i = 0; i < selectedItems.size(); i++) {
-                itemList.remove(selectedItems.get(i));
-            }
-            itemArrayAdapter.notifyDataSetChanged();
+//            for (int i = 0; i < selectedItems.size(); i++) {
+//                itemList.remove(selectedItems.get(i));
+//            }
+
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
+            for (int i = itemList.size()-1; i > -1; i--) {
+                // get the item at position i
+                Item current_item = itemList.get(i);
+                CheckBox checkbox = current_item.getCheckBox();
+                if (checkbox.isChecked()){
+                    // Delete item
+                    itemList.remove(current_item);
+//                    itemsToBeDeleted.add(current_item);
+
+                }
+                // uncheck and hide the checkbox
+                checkbox.setChecked(false);
+                checkbox.setVisibility(View.INVISIBLE);
+            }
+//            while (itemsToBeDeleted.size() != 0) {
+//                Item item_to_delete = itemsToBeDeleted.get(0);
+//
+//            }
+
+            itemArrayAdapter.notifyDataSetChanged();
         });
 
         // when the cancel button is pressed
@@ -159,6 +193,15 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
+            for (int i = 0; i < itemList.size(); i++) {
+                // get the item at position i
+                Item current_item = itemList.get(i);
+                CheckBox checkbox = current_item.getCheckBox();
+
+                // uncheck and hide the checkbox
+                checkbox.setChecked(false);
+                checkbox.setVisibility(View.INVISIBLE);
+            }
         });
     }
     /**
