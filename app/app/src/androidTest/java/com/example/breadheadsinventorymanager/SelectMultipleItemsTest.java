@@ -59,6 +59,11 @@ public class SelectMultipleItemsTest {
 
         // go into select mode
         onView(withId(R.id.delete_item)).perform(click());
+
+        // click once for popup to go away
+        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+
+
 //        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item)).atPosition(0).perform(click());
     }
 //    @Test

@@ -44,8 +44,10 @@
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
+        android:layout_height="40sp"
+        android:layout_marginStart="10dp"
+        android:scaleX="2"
+        android:scaleY="2"
         android:text=""
         android:visibility="invisible" />
 
