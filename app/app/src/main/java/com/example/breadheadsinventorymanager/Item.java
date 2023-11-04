@@ -6,7 +6,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Represents an item in the inventory and all the data it contains.
@@ -31,16 +37,16 @@ public class Item implements FirestorePuttable {
     public Item() {}
 
     /**
-     * Constructor given most fields, incl. serial number.
+     * Constructor given all fields, incl. serial number.
      */
-    public Item(String date, String description, String make,
-                String model, String serialNum, long value) {
+    public Item(String date, String description, String make, String model, String serialNum, String comments, long value) {
         this.date = date;
         this.description = description;
         this.make = make;
         this.model = model;
         this.serialNum = serialNum;
         this.value = value;
+        this.comment = comments;
     }
 
     /**
@@ -79,12 +85,13 @@ public class Item implements FirestorePuttable {
      * Constructor given most fields, not incl. serial number.
      * [01.01.01] only requires a serial number "when applicable"
      */
-    public Item(String date, String description, String make, String model, long value) {
+    public Item(String date, String description, String make, String model, String comments, long value) {
         this.date = date;
         this.description = description;
         this.make = make;
         this.model = model;
         this.value = value;
+        this.comment = comments;
     }
 
     /**
@@ -115,6 +122,15 @@ public class Item implements FirestorePuttable {
         return toDollarString(value);
     }
 
+    /**
+     * Gets the date of the Item in as a LocalDate object
+     * @return the Local date object of the item
+     */
+    public LocalDate getDateObj() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return LocalDate.parse(this.date, formatter);
+
+    }
 
 
     /*
