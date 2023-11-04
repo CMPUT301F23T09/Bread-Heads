@@ -298,19 +298,19 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                     LocalDate newDateStart = LocalDate.parse(startString, formatter);
                     LocalDate newDateEnd = LocalDate.parse(endString, formatter);
 
+                    if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate)) {
+                        dateErrorMsg.setText(R.string.date_in_future);
+                        dateErrorMsg.setVisibility(VISIBLE);
+                        return;
+                    }
                     if(itemList.size() > 0) {
-                        if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate)) {
-                            dateErrorMsg.setText(R.string.date_in_future);
-                            dateErrorMsg.setVisibility(VISIBLE);
-                            return;
-                        } else {
-                            for (int i = 0; i < itemList.size(); i++) {
-                                if (itemList.get(i).getDateObj().isAfter(newDateStart) && itemList.get(i).getDateObj().isBefore(newDateEnd)) {
-                                    dateFilter.add(itemList.get(i));
-                                }
+                        for (int i = 0; i < itemList.size(); i++) {
+                            if (itemList.get(i).getDateObj().isAfter(newDateStart) && itemList.get(i).getDateObj().isBefore(newDateEnd)) {
+                                dateFilter.add(itemList.get(i));
                             }
                         }
                     }
+
                     // update adapter to new filter
                     dateErrorMsg.setVisibility(GONE);
                     CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), dateFilter);

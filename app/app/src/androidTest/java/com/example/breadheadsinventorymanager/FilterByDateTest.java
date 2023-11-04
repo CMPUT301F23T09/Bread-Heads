@@ -38,6 +38,7 @@ public class FilterByDateTest {
         onView(withContentDescription(R.string.Date)).perform(click());
         onView(withId(R.id.filter_date_start)).perform(ViewActions.typeText("01/01/1999"));
         onView(withId(R.id.filter_date_end)).perform(ViewActions.typeText("03/11/2023"));
+        onView(withId(R.id.date_filter_button)).perform(click());
 
         onView(withText("Valid date entry2")).check(doesNotExist());
 
@@ -72,6 +73,29 @@ public class FilterByDateTest {
         onView(withId(R.id.date_filter_button)).perform(click());
 
         onView(withText("Valid date entry2")).check(doesNotExist());
+    }
+
+    @Test
+    public void garbageDateTest() {
+        // check if it works with no items in list
+        onView(withId(R.id.filter_popup)).perform(click());
+        onView(withContentDescription(R.string.Date)).perform(click());
+        onView(withId(R.id.filter_date_start)).perform(ViewActions.typeText("32472"));
+        onView(withId(R.id.filter_date_end)).perform(ViewActions.typeText("03/11/2023"));
+        onView(withId(R.id.date_filter_button)).perform(click());
+
+        onView(withText("Invalid Date Range")).check(matches(isDisplayed()));
+
+        onView(withId(R.id.filter_popup)).perform(click());
+        onView(withContentDescription(R.string.remove_filter)).perform(click());
+
+        onView(withId(R.id.filter_popup)).perform(click());
+        onView(withContentDescription(R.string.Date)).perform(click());
+        onView(withId(R.id.filter_date_start)).perform(ViewActions.typeText("01/01/2024"));
+        onView(withId(R.id.filter_date_end)).perform(ViewActions.typeText("01/11/2023"));
+        onView(withId(R.id.date_filter_button)).perform(click());
+
+        onView(withText("Date is in the future!")).check(matches(isDisplayed()));
     }
 }
 
