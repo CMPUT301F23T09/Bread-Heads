@@ -111,8 +111,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // ADD ITEM DIALOG HANDLING
 
     /**
-     * Handles when the delete button is pressed. Allows user to select one or more items and
-     * delete them at once.
+     * Handles when the delete button is pressed, which causes the app to enter "select mode". Meaning checkboxes appear for each
+     * item in the list that allows the user to select multiple items at once to do various functions with those items. Currently
+     * the only function is to delete multiple items. In the future, you will be able to add tags to all of the selected items
+     * @param
+     * @return void
      */
     private void selectMode() {
         Button confirm_button = (Button)findViewById(R.id.select_mode_confirm);
@@ -137,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             Item current_item = itemList.get(i);
             CheckBox checkbox = current_item.getCheckBox();
             checkbox.setVisibility(View.VISIBLE);
+//            checkbox.setClickable(true);
         }
 
         // when the confirm button is pressed
@@ -160,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 // uncheck and hide the checkbox
                 checkbox.setChecked(false);
                 checkbox.setVisibility(View.INVISIBLE);
+//                checkbox.setClickable(false);
             }
 
             itemArrayAdapter.notifyDataSetChanged();
@@ -167,8 +172,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         // when the cancel button is pressed
         cancel_button.setOnClickListener(v -> {
-            // unselect any selected items
-//            itemListView.SelectItem
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
@@ -182,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 // uncheck and hide the checkbox
                 checkbox.setChecked(false);
                 checkbox.setVisibility(View.INVISIBLE);
+//                checkbox.setClickable(false);
             }
         });
     }
