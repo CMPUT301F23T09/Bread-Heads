@@ -6,13 +6,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Represents an item in the inventory and all the data it contains.
  * @version 1.2
  */
-public class Item implements FirestorePuttable {
+public class Item implements FirestorePuttable, Serializable {
     // attributes
     private String id = null; // ID of the item in the firestore database
     private String date;

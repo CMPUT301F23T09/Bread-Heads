@@ -3,4 +3,19 @@
     <string name="Date">Date Range</string>
     <string name="description">Description</string>
     <string name="make">Make</string>
+    <string name="commentsTitle">Comments</string>
+    <string name="commentText">TextView</string>
+    <string name="dateText">temp date</string>
+    <string name="dateTitle">Date:</string>
+    <string name="itemName">TextView</string>
+    <string name="imageContentDescription">image uploaded by user of item</string>
+    <string name="makeText">temp make</string>
+    <string name="makeTitle">Make:</string>
+    <string name="modelText">temp model</string>
+    <string name="prevButtonDescription">moves to the previous item Picture</string>
+    <string name="nextButtonDescription">moves to the next item picture</string>
+    <string name="tagsTitle">Tags</string>
+    <string name="valueTitle">Value: $</string>
+    <string name="valueText">0.00</string>
+    <string name="modelTitle">Model:</string>
 </resources>
