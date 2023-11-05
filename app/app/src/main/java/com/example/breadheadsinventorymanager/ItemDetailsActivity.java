@@ -42,6 +42,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.item_details_topbar, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -58,5 +59,4 @@ public class ItemDetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
