@@ -6,6 +6,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 //import static androidx.test.espresso.intent.Intents.intended;
 //import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -15,6 +16,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
 import android.app.Activity;
+import android.widget.CheckBox;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.action.ViewActions;
@@ -61,10 +63,15 @@ public class SelectMultipleItemsTest {
         onView(withId(R.id.delete_item)).perform(click());
 
         // click once for popup to go away
-        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+        onView(withText("Select all items you wish to delete")).perform(click());
+//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
 
+        // TODO figure out how to click on checkbox
+//        onView(instanceOf(CheckBox.class)).perform(click());
 
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item)).atPosition(0).perform(click());
+//        onData(is(instanceOf(CheckBox.class))).perform(click());
+
+//        onData(is(instanceOf(CheckBox.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
     }
 //    @Test
 //    public void testDeletingMultipleItems(){

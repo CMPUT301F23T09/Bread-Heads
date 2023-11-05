@@ -55,8 +55,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         itemAcquisitionDateTV.setText(item.getDate());
         itemValueTV.setText("" + item.getValue());
 
+        // Create a unique Checkbox for each item that is accessible elsewhere
         CheckBox checkBox = view.findViewById(R.id.checkBox);
         item.setCheckBox(checkBox);
+
         return view;
 
     }

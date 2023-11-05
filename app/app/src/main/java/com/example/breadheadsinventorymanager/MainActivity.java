@@ -139,29 +139,15 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             checkbox.setVisibility(View.VISIBLE);
         }
 
-        // make it so you can click on items to select them
-//        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // add it to array of item position indexes
-//                selectedItems.add(position);
-//
-//            }
-//        });
-
         // when the confirm button is pressed
         confirm_button.setOnClickListener(v -> {
-            // delete all selected items
-            // selectedItems is an array of indexes of selected items from itemListView
-//            for (int i = 0; i < selectedItems.size(); i++) {
-//                itemList.remove(selectedItems.get(i));
-//            }
 
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
+
             for (int i = itemList.size()-1; i > -1; i--) {
                 // get the item at position i
                 Item current_item = itemList.get(i);
@@ -169,17 +155,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 if (checkbox.isChecked()){
                     // Delete item
                     itemList.remove(current_item);
-//                    itemsToBeDeleted.add(current_item);
 
                 }
                 // uncheck and hide the checkbox
                 checkbox.setChecked(false);
                 checkbox.setVisibility(View.INVISIBLE);
             }
-//            while (itemsToBeDeleted.size() != 0) {
-//                Item item_to_delete = itemsToBeDeleted.get(0);
-//
-//            }
 
             itemArrayAdapter.notifyDataSetChanged();
         });
