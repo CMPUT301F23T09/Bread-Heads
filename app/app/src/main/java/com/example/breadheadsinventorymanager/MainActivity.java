@@ -1,20 +1,32 @@
 package com.example.breadheadsinventorymanager;
 
 import static android.view.View.GONE;
-
+import static android.view.View.VISIBLE;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
+import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Main activity
@@ -23,10 +35,14 @@ import java.util.ArrayList;
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
 
-    // make list is used to store all the makes,
+    // id for search box to filter by description
     private SearchView searchBox;
+    private EditText startDate;
+    private EditText endDate;
+    private TextView dateErrorMsg;
+    private Button filterDateButton;
 
-    // INITIALIZE LIST OBJECTS DELETE BEFORE MERGING
+    // obligatory id's for lists/adapter
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
@@ -39,21 +55,33 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
         searchBox = findViewById(R.id.search_view);
+        startDate = findViewById(R.id.filter_date_start);
+        endDate = findViewById(R.id.filter_date_end);
+        dateErrorMsg = findViewById(R.id.invalid_date_message);
+        filterDateButton = findViewById(R.id.date_filter_button);
 
-        // ADAPTER SETUP DELETE BEFORE MERGING!
-        // test using recyclerview instead of listview
+        //ListView and adapter setup
         itemList = new ItemList();
         itemListView = findViewById(R.id.items_main_list);
         itemArrayAdapter = new CustomItemListAdapter(this, itemList);
         itemListView.setAdapter(itemArrayAdapter);
 
-        // searchView id and adapter
+    }
 
-        //makeSearchAdapter = new SearchableAdapter(this, R.layout.main_menu_list_content, itemList);
+    // ADD ITEM DIALOG HANDLING
 
-        // test cases for sample data
+    /**
+     * handles creating the dialog and switching to associated fragment
+     */
+    private void showAddItem() {
+        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
+    }
 
-        // END OF ADAPTER SETUP DELETE BEFORE MERGING!
+    @Override
+    public void onOKPressed(Item item) {
+        itemList.add(item);
+        itemListView.setAdapter(itemArrayAdapter);
+        itemArrayAdapter.notifyDataSetChanged();
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
@@ -94,22 +122,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
     }
 
-    // ADD ITEM DIALOG HANDLING
-
-    /**
-     * handles creating the dialog and switching to associated fragment
-     */
-    private void showAddItem() {
-        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
-    }
-
-    @Override
-    public void onOKPressed(Item item) {
-        itemList.add(item);
-        itemArrayAdapter.notifyDataSetChanged();
-    }
-
-    // TOPBAR MENU HANDLING
+    // FILTER MENU HANDLING
 
     /**
      * Handles the menu creation after the "filter button" is tapped
@@ -132,23 +145,22 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int itemClick = item.getItemId();
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
-            //TODO make stuff happen when this is clicked
-
+            resetAdapter();
+            showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
+            resetAdapter();
             showDescriptionSearch();
             return true;
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
+            resetAdapter();
             showMakeSubMenu();
             return true;
         } else if (itemClick == R.id.remove_filter) {
-            // set searchView text to nothing and reset adapter so no filters are present
-            searchBox.setVisibility(GONE);
-            searchBox.setQuery(getIntent().getDataString(), false);
-            itemListView.setAdapter(itemArrayAdapter);
-            itemArrayAdapter.notifyDataSetChanged();
+            // set searchView texts to nothing and reset adapter so no filters are present
+            resetAdapter();
             return true;
         } else {
             return false;
@@ -173,13 +185,49 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         popup.show();
     }
 
+    // FILTERING UTILITY FUNCTIONS
+
+    /**
+     * resets the adapter to the original ItemList
+     * means that the list cannot have more than one filter active at a time
+     */
+    private void resetAdapter() {
+        toggleFilterVisibility();
+        itemListView.setAdapter(itemArrayAdapter);
+        itemArrayAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * toggles visibility of the date range and description search fields
+     * sets entered text to nothing
+     */
+    private void toggleFilterVisibility() {
+        // toggle visibility of fields that should be invisible
+        if (startDate.getVisibility() == VISIBLE) {
+            filterDateButton.setVisibility(GONE);
+            dateErrorMsg.setVisibility(GONE);
+            startDate.setVisibility(GONE);
+            endDate.setVisibility(GONE);
+            startDate.setText("");
+            endDate.setText("");
+
+            // toggle invisible and reset query
+        }
+        if (searchBox.getVisibility() == VISIBLE) {
+            searchBox.setVisibility(GONE);
+            searchBox.setQuery(getIntent().getDataString(), false);
+        }
+    }
+
+    // FILTERING LOGIC FUNCTIONS
+
     /**
      * handles click events for make submenu
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
      */
     private boolean onMakeClick(MenuItem menuItem) {
-        int menuItemClick = menuItem.getItemId();
+        toggleFilterVisibility();
         ItemList results = new ItemList();
 
         // compare the make selected to the makes of itemList
@@ -191,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // update adapter to show filtered results
         CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
         itemListView.setAdapter(tempAdapter);
-        ((CustomItemListAdapter) itemListView.getAdapter()).update(results);
         return true;
     }
 
@@ -199,9 +246,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Handles filtering itemList for make, creates a SearchView to search for a make
      */
     private void showDescriptionSearch() {
+        toggleFilterVisibility();
+        searchBox.setVisibility(VISIBLE);
 
         // create our text listener to search for search entry
-        searchBox.setVisibility(View.VISIBLE);
         searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -222,10 +270,56 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 // update adapter to show the filtered results
                 CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
                 itemListView.setAdapter(tempAdapter);
-                ((CustomItemListAdapter) itemListView.getAdapter()).update(results);
-
                 return false;
             }
         });
     }
+
+    /**
+     * handles filtering by date, checks for valid date then creates a new list for the adapter to latch on to
+     */
+    private void showDateFilter() {
+        toggleFilterVisibility();
+        startDate.setVisibility(VISIBLE);
+        endDate.setVisibility(VISIBLE);
+        filterDateButton.setVisibility(VISIBLE);
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // when pressed, it will filter the dates by range entered, display error message otherwise
+        filterDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    ItemList dateFilter = new ItemList();
+                    String startString = startDate.getText().toString();
+                    String endString = endDate.getText().toString();
+                    LocalDate newDateStart = LocalDate.parse(startString, formatter);
+                    LocalDate newDateEnd = LocalDate.parse(endString, formatter);
+
+                    if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate)) {
+                        dateErrorMsg.setText(R.string.date_in_future);
+                        dateErrorMsg.setVisibility(VISIBLE);
+                        return;
+                    }
+                    if(itemList.size() > 0) {
+                        for (int i = 0; i < itemList.size(); i++) {
+                            if (itemList.get(i).getDateObj().isAfter(newDateStart) && itemList.get(i).getDateObj().isBefore(newDateEnd)) {
+                                dateFilter.add(itemList.get(i));
+                            }
+                        }
+                    }
+
+                    // update adapter to new filter
+                    dateErrorMsg.setVisibility(GONE);
+                    CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), dateFilter);
+                    itemListView.setAdapter(tempAdapter);
+                } catch (DateTimeParseException e) {
+                    dateErrorMsg.setVisibility(VISIBLE);
+                }
+            }
+        });
+        }
+
 }

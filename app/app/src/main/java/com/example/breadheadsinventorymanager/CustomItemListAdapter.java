@@ -23,13 +23,6 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         this.context = context;
     }
 
-    public void update(ArrayList<Item> results) {
-        // updates adapter with data, called in filter showMakeSubMenu()
-        newItemList = new ItemList();
-        newItemList.addAll(results);
-        notifyDataSetChanged();
-        }
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

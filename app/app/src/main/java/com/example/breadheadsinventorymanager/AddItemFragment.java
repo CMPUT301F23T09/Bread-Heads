@@ -13,11 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.time.LocalDate;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -114,7 +114,7 @@ public class AddItemFragment extends DialogFragment {
      */
     public boolean checkDataEntry() {
         String name = itemNameBox.getText().toString();
-        String make = itemModelBox.getText().toString();
+        String make = itemMakeBox.getText().toString();
         String model = itemModelBox.getText().toString();
         String date = itemDateBox.getText().toString();
         String value = itemValueBox.getText().toString();
@@ -139,9 +139,9 @@ public class AddItemFragment extends DialogFragment {
         // does not except dates after current date or of invalid format (given in textView hint)
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate newdate = LocalDate.parse(date, formatter);
+            LocalDate newDate = LocalDate.parse(date, formatter);
             LocalDate currentDate = LocalDate.now();
-            if(newdate.isAfter(currentDate)) {
+            if(newDate.isAfter(currentDate)) {
                 errorBox.setText("Invalid Date");
                 return false;
             }
@@ -150,7 +150,7 @@ public class AddItemFragment extends DialogFragment {
             return false;
         }
         // create the item object
-        listener.onOKPressed(new Item(name, make, model, date, comments, newValue));
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue));
         return true;
     }
 

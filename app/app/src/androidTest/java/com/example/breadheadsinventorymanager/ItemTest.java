@@ -100,7 +100,7 @@ public class ItemTest {
     // Test the constructor without the serial number
     @Test
     public void testConstructorWithoutSerialNumber() {
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", 1000);
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000);
         assertNull(item.getSerialNum());
     }
 
