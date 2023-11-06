@@ -7,7 +7,7 @@
     <string name="commentText">TextView</string>
     <string name="dateText">temp date</string>
     <string name="dateTitle">Date:</string>
-    <string name="itemName">TextView</string>
+    <string name="itemName">Sample Item</string>
     <string name="imageContentDescription">image uploaded by user of item</string>
     <string name="makeText">temp make</string>
     <string name="makeTitle">Make:</string>
@@ -18,4 +18,21 @@
     <string name="valueTitle">Value: $</string>
     <string name="valueText">0.00</string>
     <string name="modelTitle">Model:</string>
+    <string name="filter_date_end">End: DD/MM/YYYY</string>
+    <string name="filter_date_start">Start: DD/MM/YYYY</string>
+    <string name="invalid_date_range_main_activity">Invalid Date Range</string>
+    <string name="remove_tag">Remove Tag</string>
+    <string name="add_tag">Add Tag</string>
+    <string name="comments">Comments</string>
+    <string name="value">Value</string>
+    <string name="dd_mm_yyyy">DD/MM/YYYY</string>
+    <string name="model">Model</string>
+    <string name="item_name">Item Name</string>
+    <string name="remove_filter">Remove Filter</string>
+    <string name="search">Search</string>
+    <string name="add_item">Add Item</string>
+    <string name="filter">filter</string>
+    <string name="delete_item">delete item</string>
+    <string name="filter_date_button_text">Filter</string>
+    <string name="date_in_future">Date is in the future!</string>
 </resources>
