@@ -7,23 +7,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 public class ItemDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Item selectedItem = (Item) getIntent().getSerializableExtra("item");
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         TextView dateText = findViewById(R.id.dateText);
-        dateText.setText(selectedItem.getDate());
+        dateText.setText(selectedItem != null ? selectedItem.getDate() : null);
 
         TextView modeText = findViewById(R.id.modelText);
-        modeText.setText(selectedItem.getModel());
+        modeText.setText(Objects.requireNonNull(selectedItem).getModel());
 
         TextView itemDescription = findViewById(R.id.itemDescription);
         itemDescription.setText(selectedItem.getDescription());
