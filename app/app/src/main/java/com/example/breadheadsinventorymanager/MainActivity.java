@@ -5,12 +5,14 @@ import static android.view.View.VISIBLE;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +67,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         itemListView = findViewById(R.id.items_main_list);
         itemArrayAdapter = new CustomItemListAdapter(this, itemList);
         itemListView.setAdapter(itemArrayAdapter);
+      
+        // END OF ADAPTER SETUP DELETE BEFORE MERGING!
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Item selectedItem = itemArrayAdapter.getItem(position);
+                Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
+                intent.putExtra("item", selectedItem);
+                startActivity(intent);
+            }
+        });
 
     }
 
