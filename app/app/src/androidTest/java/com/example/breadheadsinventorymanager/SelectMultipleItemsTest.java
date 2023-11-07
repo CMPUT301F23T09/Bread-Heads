@@ -7,6 +7,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 //import static androidx.test.espresso.intent.Intents.intended;
 //import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -74,22 +75,14 @@ public class SelectMultipleItemsTest {
 
         // click once for popup to go away
         onView(withText("Select all items you wish to delete")).perform(click());
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
 
+//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+//        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).onChildView(isAssignableFrom(CheckBox.class)).perform(click());
         // TODO figure out how to click on checkbox
-//        onView(instanceOf(CheckBox.class)).perform(click());
-//        ViewInteraction appCompatCheckBox = onView(
-//                allOf(withId(R.id.checkBox),
-//                        childAtPosition(
-//                                allOf(withId(R.id.linearLayout),
-//                                        withParent(withId(R.id.items_main_list))),
-//                                5),
-//                        isDisplayed()));
-//        appCompatCheckBox.perform(click());
 
 //        onData(is(instanceOf(CheckBox.class))).perform(click());
 
-        onData(is(instanceOf(CheckBox.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+//        onData(is(instanceOf(CheckBox.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
     }
 //    @Test
 //    public void testDeletingMultipleItems(){
