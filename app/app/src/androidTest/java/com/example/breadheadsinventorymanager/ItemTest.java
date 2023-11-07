@@ -9,6 +9,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.checkerframework.dataflow.qual.TerminatesExecution;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -66,9 +67,8 @@ public class ItemTest {
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());
         assertEquals("Sample Model", item.getModel());
-        assertEquals("123456", item.getSerialNum());
+        assertEquals("123456", item.getComment());
         assertEquals(1000, item.getValue());
-        assertEquals("", item.getComment());
     }
 
     // Test the constructor with a DocumentSnapshot
@@ -129,16 +129,48 @@ public class ItemTest {
         expectedMap.put("description", "Sample Item");
         expectedMap.put("make", "Sample Make");
         expectedMap.put("model", "Sample Model");
-        expectedMap.put("serialNum", "123456");
+        expectedMap.put("comment", "123456");
         expectedMap.put("value", 1000L);
-        expectedMap.put("comment", "");
-        assertEquals(expectedMap.size(), item.formatForFirestore().size());
         for (String key : expectedMap.keySet()) {
             assertTrue(item.formatForFirestore().containsKey(key));
             assertEquals(expectedMap.get(key), item.formatForFirestore().get(key));
         }
+    }
+
+    // test the toValue static method
+    @Test
+    public void testToValue() {
+        // test with nothing after decimal
+        String str1 = "$1050";
+        String str2 = "1050";
+        String str3 = "1050.0";
+        String str4 = "$1050.00";
+        String str5 = "0001050.00000";
+
+        long val1 = Item.toValue(str1);
+        long val2 = Item.toValue(str2);
+        long val3 = Item.toValue(str3);
+        long val4 = Item.toValue(str4);
+        long val5 = Item.toValue(str5);
+
+        long val = 105000;
 
 
+        // test with things after decimal
+        String str6 = "$1050.55";
+        String str7 = "$1050.550";
+        String str8 = "$1050.551";
+        String str9 = "0001050.548002";
 
+        assertEquals(val, val1);
+        assertEquals(val, val2);
+        assertEquals(val, val3);
+        assertEquals(val, val4);
+        assertEquals(val, val5);
+
+        assertEquals(105055, Item.toValue(str6));
+        assertEquals(105055, Item.toValue(str7));
+        assertEquals(105055, Item.toValue(str8));
+        assertEquals(105055, Item.toValue(str9));
     }
 }

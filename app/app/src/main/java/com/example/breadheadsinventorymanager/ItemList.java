@@ -6,7 +6,7 @@ import java.util.Collection;
 /**
  * Stores a list of items
  *
- * @version 1.1
+ * @version 1.2
  */
 public class ItemList extends ArrayList<Item> {
     private long sum = 0; // Initialize the running sum to 0
@@ -24,6 +24,7 @@ public class ItemList extends ArrayList<Item> {
      */
     public ItemList(Collection<? extends Item> c) {
         super(c);
+        this.sum = 0;
         for (Item item : this) {
             this.sum += item.getValue();
         }
@@ -45,8 +46,7 @@ public class ItemList extends ArrayList<Item> {
      * @param item element to be removed from this list, if present
      * @return true if an item was removed, else false
      */
-    @Override
-    public boolean remove(Object item) {
+    public boolean remove(Item item) {
         if (super.remove(item)) {
             // Item was removed, update the running sum
             sum -= ((Item) item).getValue();
