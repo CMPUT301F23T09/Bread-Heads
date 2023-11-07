@@ -1,10 +1,12 @@
 package com.example.breadheadsinventorymanager;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -18,50 +20,133 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Main activity
  *
- * @version 0
+ * @version 1
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
-
-    // make list is used to store all the makes,
+    // id for search box to filter by description
     private SearchView searchBox;
+    private EditText startDate;
+    private EditText endDate;
+    private TextView dateErrorMsg;
+    private Button filterDateButton;
+    private TextView totalValue;
 
-    // INITIALIZE LIST OBJECTS DELETE BEFORE MERGING
+    // obligatory id's for lists/adapter
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
+    private FirestoreInteract database;
+
+    // stores information about how the list is currently sorted
+    private String sortMode = "description"; // which field to sort by
+    private boolean sortAscending = true; // whether to sort in ascending or descending order
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
         searchBox = findViewById(R.id.search_view);
+        startDate = findViewById(R.id.filter_date_start);
+        endDate = findViewById(R.id.filter_date_end);
+        dateErrorMsg = findViewById(R.id.invalid_date_message);
+        filterDateButton = findViewById(R.id.date_filter_button);
+        totalValue = findViewById(R.id.total_value);
 
-        // ADAPTER SETUP DELETE BEFORE MERGING!
-        // test using recyclerview instead of listview
+        //ListView and adapter setup
+        database = new FirestoreInteract();
         itemList = new ItemList();
-        itemListView = findViewById(R.id.items_main_list);
-        itemArrayAdapter = new CustomItemListAdapter(this, itemList);
-        itemListView.setAdapter(itemArrayAdapter);
+        updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Item selectedItem = itemArrayAdapter.getItem(position);
+                        Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
+                        intent.putExtra("item", selectedItem);
+                        startActivity(intent);
+                    }
+                });
+            }
+        });
+    }
 
-        // searchView id and adapter
+    // ITEM LIST HANDLING
 
-        //makeSearchAdapter = new SearchableAdapter(this, R.layout.main_menu_list_content, itemList);
+    /**
+     * Updates the total value displayed at the bottom of the screen
+     */
+    private void updateTotalValue() {
+        totalValue.setText(getString(R.string.totalValueTitle, itemList.getSumAsDollarString()));
+        totalValue.setVisibility(View.VISIBLE);
+    }
 
-        // test cases for sample data
+    /**
+     * Updates the contents of the ItemList with the contents of the Firestore database
+     * @return A Task tracking the update
+     */
+    private Task<QuerySnapshot> updateList() {
+        itemList = new ItemList();
+        return database.populateWithItems(itemList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                itemList.sort(sortMode, sortAscending);
+                itemListView = findViewById(R.id.items_main_list);
+                itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
+                itemListView.setAdapter(itemArrayAdapter);
+                updateTotalValue();
+            }
+        });
+    }
 
-        // END OF ADAPTER SETUP DELETE BEFORE MERGING!
+    // ADD ITEM DIALOG HANDLING
+
+    @Override
+    public void onOKPressed(Item item) {
+        database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                resetAdapter(); // clear filter
+                updateList();
+            }
+        });
+    }
+
+    /**
+     * handles creating the dialog and switching to associated fragment
+     */
+    private void showAddItem() {
+        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
@@ -223,23 +308,22 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int itemClick = item.getItemId();
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
-            //TODO make stuff happen when this is clicked
-
+            resetAdapter();
+            showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
+            resetAdapter();
             showDescriptionSearch();
             return true;
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
+            resetAdapter();
             showMakeSubMenu();
             return true;
         } else if (itemClick == R.id.remove_filter) {
-            // set searchView text to nothing and reset adapter so no filters are present
-            searchBox.setVisibility(GONE);
-            searchBox.setQuery(getIntent().getDataString(), false);
-            itemListView.setAdapter(itemArrayAdapter);
-            itemArrayAdapter.notifyDataSetChanged();
+            // set searchView texts to nothing and reset adapter so no filters are present
+            resetAdapter();
             return true;
         } else {
             return false;
@@ -264,13 +348,49 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         popup.show();
     }
 
+    // FILTERING UTILITY FUNCTIONS
+
+    /**
+     * resets the adapter to the original ItemList
+     * means that the list cannot have more than one filter active at a time
+     */
+    private void resetAdapter() {
+        toggleFilterVisibility();
+        itemListView.setAdapter(itemArrayAdapter);
+        itemArrayAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * toggles visibility of the date range and description search fields
+     * sets entered text to nothing
+     */
+    private void toggleFilterVisibility() {
+        // toggle visibility of fields that should be invisible
+        if (startDate.getVisibility() == VISIBLE) {
+            filterDateButton.setVisibility(GONE);
+            dateErrorMsg.setVisibility(GONE);
+            startDate.setVisibility(GONE);
+            endDate.setVisibility(GONE);
+            startDate.setText("");
+            endDate.setText("");
+
+            // toggle invisible and reset query
+        }
+        if (searchBox.getVisibility() == VISIBLE) {
+            searchBox.setVisibility(GONE);
+            searchBox.setQuery(getIntent().getDataString(), false);
+        }
+    }
+
+    // FILTERING LOGIC FUNCTIONS
+
     /**
      * handles click events for make submenu
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
      */
     private boolean onMakeClick(MenuItem menuItem) {
-        int menuItemClick = menuItem.getItemId();
+        toggleFilterVisibility();
         ItemList results = new ItemList();
 
         // compare the make selected to the makes of itemList
@@ -282,7 +402,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // update adapter to show filtered results
         CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
         itemListView.setAdapter(tempAdapter);
-        ((CustomItemListAdapter) itemListView.getAdapter()).update(results);
         return true;
     }
 
@@ -290,9 +409,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Handles filtering itemList for make, creates a SearchView to search for a make
      */
     private void showDescriptionSearch() {
+        toggleFilterVisibility();
+        searchBox.setVisibility(VISIBLE);
 
         // create our text listener to search for search entry
-        searchBox.setVisibility(View.VISIBLE);
         searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -313,10 +433,56 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 // update adapter to show the filtered results
                 CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
                 itemListView.setAdapter(tempAdapter);
-                ((CustomItemListAdapter) itemListView.getAdapter()).update(results);
-
                 return false;
             }
         });
     }
+
+    /**
+     * handles filtering by date, checks for valid date then creates a new list for the adapter to latch on to
+     */
+    private void showDateFilter() {
+        toggleFilterVisibility();
+        startDate.setVisibility(VISIBLE);
+        endDate.setVisibility(VISIBLE);
+        filterDateButton.setVisibility(VISIBLE);
+
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // when pressed, it will filter the dates by range entered, display error message otherwise
+        filterDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    ItemList dateFilter = new ItemList();
+                    String startString = startDate.getText().toString();
+                    String endString = endDate.getText().toString();
+                    LocalDate newDateStart = LocalDate.parse(startString, formatter);
+                    LocalDate newDateEnd = LocalDate.parse(endString, formatter);
+
+                    if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate)) {
+                        dateErrorMsg.setText(R.string.date_in_future);
+                        dateErrorMsg.setVisibility(VISIBLE);
+                        return;
+                    }
+                    if(itemList.size() > 0) {
+                        for (int i = 0; i < itemList.size(); i++) {
+                            if (itemList.get(i).getDateObj().isAfter(newDateStart) && itemList.get(i).getDateObj().isBefore(newDateEnd)) {
+                                dateFilter.add(itemList.get(i));
+                            }
+                        }
+                    }
+
+                    // update adapter to new filter
+                    dateErrorMsg.setVisibility(GONE);
+                    CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), dateFilter);
+                    itemListView.setAdapter(tempAdapter);
+                } catch (DateTimeParseException e) {
+                    dateErrorMsg.setVisibility(VISIBLE);
+                }
+            }
+        });
+        }
+
 }

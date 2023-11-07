@@ -24,13 +24,6 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         this.context = context;
     }
 
-    public void update(ArrayList<Item> results) {
-        // updates adapter with data, called in filter showMakeSubMenu()
-        newItemList = new ItemList();
-        newItemList.addAll(results);
-        notifyDataSetChanged();
-        }
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -53,7 +46,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         itemMakeTV.setText(item.getMake());
         itemModelTV.setText(item.getModel());
         itemAcquisitionDateTV.setText(item.getDate());
-        itemValueTV.setText("" + item.getValue());
+        itemValueTV.setText("$" + item.getValueDollarString());
 
         // Create a unique Checkbox for each item that is accessible elsewhere
         CheckBox checkBox = view.findViewById(R.id.checkBox);

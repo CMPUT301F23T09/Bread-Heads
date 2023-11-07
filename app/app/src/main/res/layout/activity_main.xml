@@ -6,28 +6,76 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+    <TextView
+        android:id="@+id/main_activity_bottom_bar"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="@color/dark_green"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/items_main_list" />
+
     <SearchView
         android:id="@+id/search_view"
         android:layout_width="383dp"
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:actionViewClass="android:support.v7.widget.SearchView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/invalid_date_message"
+        app:showAsAction="always|collapseActionView" />
+
+    <EditText
+        android:id="@+id/filter_date_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:hint="@string/filter_date_start"
+        android:inputType="date"
+        android:maxLength="10"
+        android:textSize="16sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:showAsAction="always|collapseActionView"
-        app:actionViewClass="android:support.v7.widget.SearchView"
-        android:visibility="gone"/>
+        android:importantForAutofill="no" />
+
+    <EditText
+        android:id="@+id/filter_date_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/filter_date_end"
+        android:inputType="date"
+        android:maxLength="10"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/invalid_date_message"
+        app:layout_constraintEnd_toStartOf="@+id/date_filter_button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/filter_date_start"
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no" />
 
     <ListView
         android:id="@+id/items_main_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_activity_bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
@@ -59,5 +107,52 @@
         tools:layout_editor_absoluteX="307dp"
         tools:layout_editor_absoluteY="667dp" />
 
+    <TextView
+        android:id="@+id/invalid_date_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/invalid_date_range_main_activity"
+        android:textColor="@color/tomato_red"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filter_date_start" />
+
+    <Button
+        android:id="@+id/date_filter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@color/background_grey"
+        android:text="@string/filter_date_button_text"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/invalid_date_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/total_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/totalValueTitle"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar" />
+
+    <ImageButton
+        android:id="@+id/sort_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/sort_readable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
