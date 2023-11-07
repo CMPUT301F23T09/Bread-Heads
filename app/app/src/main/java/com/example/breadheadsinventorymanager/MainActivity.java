@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             return true;
         } else if (id == R.id.delete_item) {
             // enter select mode to be able to delete one or more items
-//            Intent selectIntent = new Intent(MainActivity.this, SelectModeActivity.class);
-//            startActivity(selectIntent);
             selectMode();
             return true;
         } else {
