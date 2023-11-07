@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,14 +26,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -100,27 +95,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Updates the total value displayed at the bottom of the screen
      */
     private void updateTotalValue() {
-        totalValue.setText("Total Value: $" + itemList.getSumAsDollarString());
-    }
-
-    @Override
-    public void onOKPressed(Item item) {
-        database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                resetAdapter(); // clear filter
-                updateList();
-            }
-        });
-    }
-
-    // ADD ITEM DIALOG HANDLING
-
-    /**
-     * handles creating the dialog and switching to associated fragment
-     */
-    private void showAddItem() {
-        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
+        totalValue.setText(getString(R.string.totalValueTitle, itemList.getSumAsDollarString()));
+        totalValue.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -139,6 +115,26 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 updateTotalValue();
             }
         });
+    }
+
+    // ADD ITEM DIALOG HANDLING
+
+    @Override
+    public void onOKPressed(Item item) {
+        database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                resetAdapter(); // clear filter
+                updateList();
+            }
+        });
+    }
+
+    /**
+     * handles creating the dialog and switching to associated fragment
+     */
+    private void showAddItem() {
+        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY

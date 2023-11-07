@@ -109,6 +109,7 @@
         android:text="@string/totalValueTitle"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar" />
