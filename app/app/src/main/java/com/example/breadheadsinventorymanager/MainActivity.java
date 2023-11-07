@@ -275,15 +275,15 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * handles creating the dialog and switching to associated fragment
      */
-    private void showAddItem() {
-        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
-    }
-
-    @Override
-    public void onOKPressed(Item item) {
-        itemList.add(item);
-        itemArrayAdapter.notifyDataSetChanged();
-    }
+//    private void showAddItem() {
+//        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
+//    }
+//
+//    @Override
+//    public void onOKPressed(Item item) {
+//        itemList.add(item);
+//        itemArrayAdapter.notifyDataSetChanged();
+//    }
 
     // TOPBAR MENU HANDLING
 
