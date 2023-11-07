@@ -86,10 +86,18 @@ public class ItemList extends ArrayList<Item> {
 
 
     /**
-     * Gets sum of all Items in this list
+     * Gets sum of values of all Items in this list
      */
     public double getSum() {
         return sum;
+    }
+
+    /**
+     * Gets sum of values of all Items in this list
+     * @return A string formatted as 10.50 - add dollar sign if necessary
+     */
+    public String getSumAsDollarString() {
+        return Item.toDollarString(sum);
     }
 
     /**

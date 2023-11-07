@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private EditText endDate;
     private TextView dateErrorMsg;
     private Button filterDateButton;
+    private TextView totalValue;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         endDate = findViewById(R.id.filter_date_end);
         dateErrorMsg = findViewById(R.id.invalid_date_message);
         filterDateButton = findViewById(R.id.date_filter_button);
+        totalValue = findViewById(R.id.total_value);
 
         //ListView and adapter setup
         database = new FirestoreInteract();
@@ -109,8 +111,16 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 itemListView = findViewById(R.id.items_main_list);
                 itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
                 itemListView.setAdapter(itemArrayAdapter);
+                updateTotalValue();
             }
         });
+    }
+
+    /**
+     * Updates the total value displayed at the bottom of the screen
+     */
+    private void updateTotalValue() {
+        totalValue.setText("Total Value: $" + itemList.getSumAsDollarString());
     }
 
     @Override
