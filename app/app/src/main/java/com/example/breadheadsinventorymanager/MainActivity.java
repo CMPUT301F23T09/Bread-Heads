@@ -94,6 +94,26 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
     }
 
+    // ITEM LIST HANDLING
+
+    /**
+     * Updates the total value displayed at the bottom of the screen
+     */
+    private void updateTotalValue() {
+        totalValue.setText("Total Value: $" + itemList.getSumAsDollarString());
+    }
+
+    @Override
+    public void onOKPressed(Item item) {
+        database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                resetAdapter(); // clear filter
+                updateList();
+            }
+        });
+    }
+
     // ADD ITEM DIALOG HANDLING
 
     /**
@@ -117,24 +137,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
                 itemListView.setAdapter(itemArrayAdapter);
                 updateTotalValue();
-            }
-        });
-    }
-
-    /**
-     * Updates the total value displayed at the bottom of the screen
-     */
-    private void updateTotalValue() {
-        totalValue.setText("Total Value: $" + itemList.getSumAsDollarString());
-    }
-
-    @Override
-    public void onOKPressed(Item item) {
-        database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                resetAdapter(); // clear filter
-                updateList();
             }
         });
     }
