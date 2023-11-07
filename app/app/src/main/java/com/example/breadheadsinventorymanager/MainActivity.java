@@ -3,6 +3,7 @@ package com.example.breadheadsinventorymanager;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -21,6 +22,11 @@ import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -29,14 +35,14 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Main activity
  *
- * @version 0
+ * @version 1
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
-
     // id for search box to filter by description
     private SearchView searchBox;
     private EditText startDate;
@@ -48,12 +54,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
+    private FirestoreInteract database;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
         searchBox = findViewById(R.id.search_view);
@@ -63,22 +70,22 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterDateButton = findViewById(R.id.date_filter_button);
 
         //ListView and adapter setup
+        database = new FirestoreInteract();
         itemList = new ItemList();
-        itemListView = findViewById(R.id.items_main_list);
-        itemArrayAdapter = new CustomItemListAdapter(this, itemList);
-        itemListView.setAdapter(itemArrayAdapter);
-      
-        // END OF ADAPTER SETUP DELETE BEFORE MERGING!
-        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Item selectedItem = itemArrayAdapter.getItem(position);
-                Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
-                intent.putExtra("item", selectedItem);
-                startActivity(intent);
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Item selectedItem = itemArrayAdapter.getItem(position);
+                        Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
+                        intent.putExtra("item", selectedItem);
+                        startActivity(intent);
+                    }
+                });
             }
         });
-
     }
 
     // ADD ITEM DIALOG HANDLING
@@ -90,11 +97,31 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
     }
 
+    /**
+     * Updates the contents of the ItemList with the contents of the Firestore database
+     * @return A Task tracking the update
+     */
+    private Task<QuerySnapshot> updateList() {
+        itemList = new ItemList();
+        return database.populateWithItems(itemList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                itemListView = findViewById(R.id.items_main_list);
+                itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
+                itemListView.setAdapter(itemArrayAdapter);
+            }
+        });
+    }
+
     @Override
     public void onOKPressed(Item item) {
-        itemList.add(item);
-        itemListView.setAdapter(itemArrayAdapter);
-        itemArrayAdapter.notifyDataSetChanged();
+        database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                resetAdapter(); // clear filter
+                updateList();
+            }
+        });
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
