@@ -1,7 +1,11 @@
 package com.example.breadheadsinventorymanager;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Stores a list of items
@@ -113,5 +117,36 @@ public class ItemList extends ArrayList<Item> {
         }
 
         return makeList;
+    }
+
+    /**
+     * Sorts the ItemList by the given parameter in either ascending or descending order.
+     * @field The field to sort by. Supports "description", "comment", "date", "make", or "value".
+     * @boolean True if the sorted list should be ascending, else false.
+     */
+    public void sort(String field, boolean ascending) {
+        Collections.sort(this, (lhs, rhs) -> {
+            int result = 0;
+
+            switch(field) {
+                case "description":
+                    result = lhs.getDescription().compareTo(rhs.getDescription());
+                    break;
+                case "comment":
+                    result = lhs.getComment().compareTo(rhs.getComment());
+                    break;
+                case "date":
+                    result = lhs.getDateObj().compareTo(rhs.getDateObj());
+                    break;
+                case "make":
+                    result = lhs.getMake().compareTo(rhs.getMake());
+                    break;
+                case "value":
+                    result = Long.compare(lhs.getValue(), rhs.getValue());
+            }
+
+            // if ascending, just return the result; if descending, flip all comparisons
+            return ascending ? result : -result;
+        });
     }
 }

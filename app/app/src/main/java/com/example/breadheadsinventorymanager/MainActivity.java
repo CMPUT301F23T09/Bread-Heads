@@ -56,6 +56,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
     private FirestoreInteract database;
+
+    // stores information about how the list is currently sorted
+    private String sortMode = "description"; // which field to sort by
+    private boolean sortAscending = true; // whether to sort in ascending or descending order
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         return database.populateWithItems(itemList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                itemList.sort(sortMode, sortAscending);
                 itemListView = findViewById(R.id.items_main_list);
                 itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
                 itemListView.setAdapter(itemArrayAdapter);
