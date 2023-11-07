@@ -35,4 +35,6 @@
     <string name="delete_item">delete item</string>
     <string name="filter_date_button_text">Filter</string>
     <string name="date_in_future">Date is in the future!</string>
+    <string name="totalValueTitle">Total Value: $%1$s</string>
+    <string name="sort_readable">Sort</string>
 </resources>

@@ -7,6 +7,18 @@
     tools:context=".MainActivity">
 
 
+    <TextView
+        android:id="@+id/main_activity_bottom_bar"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:background="@color/dark_green"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/items_main_list" />
+
     <SearchView
         android:id="@+id/search_view"
         android:layout_width="383dp"
@@ -34,7 +46,8 @@
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/filter_date_end"
@@ -50,15 +63,17 @@
         app:layout_constraintEnd_toStartOf="@+id/date_filter_button"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/filter_date_start"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no" />
 
     <ListView
         android:id="@+id/items_main_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_activity_bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,5 +102,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/total_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/totalValueTitle"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar" />
+
+    <ImageButton
+        android:id="@+id/sort_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/sort_readable"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

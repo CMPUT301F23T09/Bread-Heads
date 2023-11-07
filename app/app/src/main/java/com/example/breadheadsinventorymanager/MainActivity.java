@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,14 +26,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -49,12 +44,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private EditText endDate;
     private TextView dateErrorMsg;
     private Button filterDateButton;
+    private TextView totalValue;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
     private FirestoreInteract database;
+
+    // stores information about how the list is currently sorted
+    private String sortMode = "description"; // which field to sort by
+    private boolean sortAscending = true; // whether to sort in ascending or descending order
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         endDate = findViewById(R.id.filter_date_end);
         dateErrorMsg = findViewById(R.id.invalid_date_message);
         filterDateButton = findViewById(R.id.date_filter_button);
+        totalValue = findViewById(R.id.total_value);
 
         //ListView and adapter setup
         database = new FirestoreInteract();
@@ -88,13 +89,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
     }
 
-    // ADD ITEM DIALOG HANDLING
+    // ITEM LIST HANDLING
 
     /**
-     * handles creating the dialog and switching to associated fragment
+     * Updates the total value displayed at the bottom of the screen
      */
-    private void showAddItem() {
-        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
+    private void updateTotalValue() {
+        totalValue.setText(getString(R.string.totalValueTitle, itemList.getSumAsDollarString()));
+        totalValue.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -106,12 +108,16 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         return database.populateWithItems(itemList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                itemList.sort(sortMode, sortAscending);
                 itemListView = findViewById(R.id.items_main_list);
                 itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
                 itemListView.setAdapter(itemArrayAdapter);
+                updateTotalValue();
             }
         });
     }
+
+    // ADD ITEM DIALOG HANDLING
 
     @Override
     public void onOKPressed(Item item) {
@@ -122,6 +128,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 updateList();
             }
         });
+    }
+
+    /**
+     * handles creating the dialog and switching to associated fragment
+     */
+    private void showAddItem() {
+        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
