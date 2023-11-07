@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private void showAddItem() {
         new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
     }
+
     @Override
     public void onOKPressed(Item item) {
         itemList.add(item);
