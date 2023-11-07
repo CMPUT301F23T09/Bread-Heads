@@ -129,7 +129,7 @@ public class AddItemFragment extends DialogFragment {
         // check if value is parsable
         long newValue;
         try {
-            newValue = parseLong(value);
+            newValue = Item.toValue(value);
         } catch (NumberFormatException e) {
             errorBox.setText("Invalid Value");
             return false;

@@ -1,5 +1,10 @@
 package com.example.breadheadsinventorymanager;
 
+import static android.text.TextUtils.substring;
+
+import static java.lang.Float.parseFloat;
+import static java.lang.Math.round;
+
 import android.content.res.Resources;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -121,6 +126,20 @@ public class Item implements FirestorePuttable, Serializable {
      */
     public String getValueDollarString() {
         return toDollarString(value);
+    }
+
+    /**
+     * Static utility to convert a dollar string to a value
+     * @param string A String formatted as a decimal value with or without a leading $j
+     * @return The returned value, i.e. a long amount of cents
+     */
+    public static long toValue(String string) {
+        if (string.charAt(0) == '$') {
+            string = string.substring(1);
+        }
+
+        double parsedFloat = parseFloat(string);
+        return (long)round(parsedFloat * 100.0);
     }
 
     /**

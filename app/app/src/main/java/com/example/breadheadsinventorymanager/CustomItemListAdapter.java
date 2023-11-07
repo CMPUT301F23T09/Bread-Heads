@@ -45,7 +45,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         itemMakeTV.setText(item.getMake());
         itemModelTV.setText(item.getModel());
         itemAcquisitionDateTV.setText(item.getDate());
-        itemValueTV.setText("" + item.getValue());
+        itemValueTV.setText("$" + item.getValueDollarString());
 
         return view;
 
