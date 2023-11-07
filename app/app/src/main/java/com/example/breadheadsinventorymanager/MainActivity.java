@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         itemListView = findViewById(R.id.items_main_list);
         itemArrayAdapter = new CustomItemListAdapter(this, itemList);
         itemListView.setAdapter(itemArrayAdapter);
-
+      
         // END OF ADAPTER SETUP DELETE BEFORE MERGING!
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private void showAddItem() {
         new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
     }
+
     @Override
     public void onOKPressed(Item item) {
         itemList.add(item);
