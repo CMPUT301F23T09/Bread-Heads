@@ -221,10 +221,11 @@
         android:layout_height="100dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
+        android:layout_marginBottom="90dp"
         android:background="@color/background_grey_light"
         android:text="@string/commentText"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/CommentsTitle" />
