@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
     private FirestoreInteract database;
+    private TagList tagList;
 
     // stores information about how the list is currently sorted
     private String sortMode = "description"; // which field to sort by
@@ -72,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         //ListView and adapter setup
         database = new FirestoreInteract();
-        itemList = new ItemList();
         updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Updates the contents of the ItemList with the contents of the Firestore database
+     * Updates the contents of itemList with the contents of the Firestore database
      * @return A Task tracking the update
      */
     private Task<QuerySnapshot> updateList() {
@@ -115,6 +116,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 updateTotalValue();
             }
         });
+    }
+
+    // TAG LIST HANDLING
+
+    /**
+     * Updates the contents of tagList with the contents of the Firestore database
+     * @return A Task tracking the update
+     */
+    private Task<QuerySnapshot> updateTags() {
+        tagList = new TagList();
+        return database.populateWithTags(tagList);
     }
 
     // ADD ITEM DIALOG HANDLING

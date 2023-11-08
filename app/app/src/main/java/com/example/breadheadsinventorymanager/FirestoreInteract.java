@@ -12,6 +12,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
 
 /**
@@ -25,6 +27,7 @@ public class FirestoreInteract {
     private static CollectionReference itemDB;
     private static CollectionReference userDB;
     private static CollectionReference testDB;
+    private static CollectionReference tagDB;
 
     /**
      * Initialize firestore database.
@@ -35,10 +38,11 @@ public class FirestoreInteract {
         itemDB = database.collection("items");
         userDB = database.collection("users");
         testDB = database.collection("test");
+        tagDB = database.collection("tags");
     }
 
     /**
-     * Attempts to put the given object into the Item collection on Firestore.
+     * Attempts to put the given object into the items collection on Firestore.
      *
      * @param obj The object to put into the collection.
      * @return The update task
@@ -47,14 +51,35 @@ public class FirestoreInteract {
         obj.put(itemDB);
         if (obj.getId() != null) {
             return itemDB.document(obj.getId()).set(obj.formatForFirestore());
-        }
-        else {
+        } else {
             DocumentReference doc = itemDB.document(); // firestore will generate ID for us
             Task<Void> task = doc.set(obj.formatForFirestore());
             return task.addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     obj.setId(doc.getId()); // make sure this item's ID matches firestore's
+                }
+            });
+        }
+    }
+
+    /**
+     * Attempts to put the given Tag into the tags collection on Firestore.
+     *
+     * @param tag The Tag to put into the collection.
+     * @return The update task
+     */
+    public Task<Void> putTag(Tag tag) {
+        tag.put(tagDB);
+        if (tag.getId() != null) {
+            return tagDB.document(tag.getId()).set(tag.formatForFirestore());
+        } else {
+            DocumentReference doc = tagDB.document(); // firestore will generate ID for us
+            Task<Void> task = doc.set(tag.formatForFirestore());
+            return task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    tag.setId(doc.getId());
                 }
             });
         }
@@ -75,6 +100,22 @@ public class FirestoreInteract {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Log.d("FirestoreInteract.java", document.getId() + " => " + document.getData());
                         list.add(new Item(document));
+                    }
+                } else {
+                    Log.d("FirestoreInteract.java", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public Task<QuerySnapshot> populateWithTags(TagList list) {
+        return tagDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d("FirestoreInteract.java", document.getId() + " => " + document.getData());
+                        list.addTag(new Tag(document));
                     }
                 } else {
                     Log.d("FirestoreInteract.java", "Error getting documents: ", task.getException());
@@ -116,46 +157,100 @@ public class FirestoreInteract {
     }
 
     /**
-     * Deletes an item from Firestore item collection
+     * Task to delete an item from Firestore item collection
      * @param obj The FirestorePuttable object representing the item to delete.
      * @return A Firestore deletion task. Use .addOnSuccessListener() to handle success.
      */
     public Task<Void> deleteItem(FirestorePuttable obj) {
-        String itemId = obj.getId();
-        Task<Void> firestoreDeleteTask = deleteItem(itemId);
-        return firestoreDeleteTask;
+        return deleteItem(obj.getId());
     }
 
+    /**
+     * Task to delete a tag from the tags collection with the specified ID
+     * @param id The ID of the tag to delete
+     * @return The task; use .addOnSuccessListener() to do something after deletion
+     */
+    public Task<Void> deleteTag(String id) {
+        return tagDB.document(id).delete();
+    }
+    /**
+     *
+     * Task to delete an item from Firestore item collection
+     * @param tag The FirestorePuttable object representing the item to delete.
+     * @return A Firestore deletion task. Use .addOnSuccessListener() to handle success.
+     */
+    public Task<Void> deleteTag(FirestorePuttable tag) {
+        return deleteTag(tag.getId());
+    }
+
+    /**
+     * Gets the Firebase database
+     */
     public FirebaseFirestore getDatabase() {
         return database;
     }
 
+    /**
+     * Sets the Firebase database
+     */
     public void setDatabase(FirebaseFirestore database) {
         this.database = database;
     }
 
+    /**
+     * Gets the (static) item collection
+     */
     public static CollectionReference getItemDB() {
         return itemDB;
     }
 
+    /**
+     * Sets the (static) item collection
+     */
     public static void setItemDB(CollectionReference itemDB) {
         FirestoreInteract.itemDB = itemDB;
     }
 
+    /**
+     * Gets the (static) user collection
+     */
     public static CollectionReference getUserDB() {
         return userDB;
     }
 
+    /**
+     * Sets the (static) item collection
+     */
     public static void setUserDB(CollectionReference userDB) {
         FirestoreInteract.userDB = userDB;
     }
 
+    /**
+     * Gets the (static) test item collection
+     */
     public static CollectionReference getTestDB() {
         return testDB;
     }
 
+    /**
+     * Sets the (static) test item collection
+     */
     public static void setTestDB(CollectionReference testDB) {
         FirestoreInteract.testDB = testDB;
+    }
+
+    /**
+     * Gets the (static) tag collection
+     */
+    public static CollectionReference getTagDB() {
+        return tagDB;
+    }
+
+    /**
+     * Sets the (static) tag collection
+     */
+    public static void setTagDB(CollectionReference tagDB) {
+        FirestoreInteract.tagDB = tagDB;
     }
 }
 
