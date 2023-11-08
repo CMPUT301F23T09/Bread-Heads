@@ -236,8 +236,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 Item current_item = itemList.get(i);
                 CheckBox checkbox = current_item.getCheckBox();
                 if (checkbox.isChecked()){
-                    // Delete item
-//                    itemList.remove(current_item);
+                    // Delete item in firebase database
                     database.deleteItem(current_item).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
@@ -246,18 +245,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                         }
                     });
 
-//                    database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            resetAdapter(); // clear filter
-//                            updateList();
-//                        }
-//                    });
                 }
                 // uncheck and hide the checkbox
                 checkbox.setChecked(false);
                 checkbox.setVisibility(View.INVISIBLE);
-//                checkbox.setClickable(false);
+
             }
 
             itemArrayAdapter.notifyDataSetChanged();
@@ -278,22 +270,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 // uncheck and hide the checkbox
                 checkbox.setChecked(false);
                 checkbox.setVisibility(View.INVISIBLE);
-//                checkbox.setClickable(false);
             }
         });
     }
     /**
      * handles creating the dialog and switching to associated fragment
      */
-//    private void showAddItem() {
-//        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
-//    }
-//
-//    @Override
-//    public void onOKPressed(Item item) {
-//        itemList.add(item);
-//        itemArrayAdapter.notifyDataSetChanged();
-//    }
 
     // TOPBAR MENU HANDLING
 
