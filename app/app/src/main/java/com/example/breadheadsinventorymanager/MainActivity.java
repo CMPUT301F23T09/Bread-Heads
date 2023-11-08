@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private TextView dateErrorMsg;
     private Button filterDateButton;
     private TextView totalValue;
+    private ImageButton sortButton;
+    private Button sortOrderButton;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         dateErrorMsg = findViewById(R.id.invalid_date_message);
         filterDateButton = findViewById(R.id.date_filter_button);
         totalValue = findViewById(R.id.total_value);
+        sortButton = findViewById(R.id.sort_button);
+        sortOrderButton = findViewById(R.id.sort_order_button);
 
         //ListView and adapter setup
         database = new FirestoreInteract();
@@ -85,6 +90,24 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                         startActivity(intent);
                     }
                 });
+            }
+        });
+
+        sortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortMenu();
+            }
+        });
+        sortOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean order = toggleSortOrder();
+                if (order) {
+                    sortOrderButton.setText("Ascending");
+                } else {
+                    sortOrderButton.setText("Descending");
+                }
             }
         });
     }
@@ -134,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * handles creating the dialog and switching to associated fragment
      */
     private void showAddItem() {
-        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
+        new AddItemFragment().show(getSupportFragmentManager(), "ADD_ITEM");
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
@@ -175,6 +198,56 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
     }
 
+
+    // SORT MENU HANDLING
+
+    /**
+     * Handles sort menu creation
+     */
+    private void showSortMenu() {
+        PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.sort_button));
+        popup.setOnMenuItemClickListener(this::onSortMenuClick);
+        popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * Handles clicking of sort menu items
+     * @param item the menu item that was clicked
+     * @return true if an item is clicked, false otherwise
+     */
+    private boolean onSortMenuClick(MenuItem item) {
+        int itemClick = item.getItemId();
+        if (itemClick == R.id.sort_date) {
+            sortMode = "date";
+        } else if (itemClick == R.id.sort_desc) {
+            sortMode = "description";
+        } else if (itemClick == R.id.sort_comment) {
+            sortMode = "comment";
+        } else if (itemClick == R.id.sort_make) {
+            sortMode = "make";
+        } else if (itemClick == R.id.sort_value) {
+            sortMode = "value";
+        } else {
+            return false;
+        }
+
+        itemList.sort(sortMode, sortAscending);
+        itemArrayAdapter.notifyDataSetChanged();
+        return true;
+    }
+
+    /**
+     * Changes the order items are sorted in
+     * @return True if the new sort order is ascending, otherwise false
+     */
+    private boolean toggleSortOrder() {
+        sortAscending = !sortAscending;
+        itemList.sort(sortMode, sortAscending);
+        itemArrayAdapter.notifyDataSetChanged();
+        return sortAscending;
+    }
+
     // FILTER MENU HANDLING
 
     /**
@@ -189,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles clicking of menu items
+     * Handles clicking of filter menu items
      *
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
