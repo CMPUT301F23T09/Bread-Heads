@@ -8,6 +8,27 @@ import java.util.List;
  * Custom ArrayList for managing tags.
  */
 public class TagList extends ArrayList<Tag> {
+    /**
+     * No-arg constructor
+     */
+    protected TagList() {
+        super();
+    }
+
+    /**
+     * Constructs a TagList from the given List of Strings
+     * @param list List<String> of all tags
+     */
+    protected TagList(List<String> list) {
+        super();
+        if (list == null) {
+            // pass
+        } else if (!list.isEmpty()) {
+            for (String str : list) {
+                addTag(new Tag(str));
+            }
+        }
+    }
 
     /**
      * Adds a tag to the list only if it doesn't already exist in the list.

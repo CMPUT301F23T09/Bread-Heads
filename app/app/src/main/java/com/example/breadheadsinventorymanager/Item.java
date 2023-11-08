@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -34,8 +35,8 @@ public class Item implements FirestorePuttable, Serializable {
     private String serialNum;
     private long value; // in cents
     private String comment = ""; // comment is optional
+    private TagList tags;
     // private ArrayList<Photo> photos; // second half
-    // private TagList tags; // second half
 
     /**
      * Empty constructor.
@@ -68,7 +69,8 @@ public class Item implements FirestorePuttable, Serializable {
         serialNum = document.getString("serialNum");
         value = (long) document.get("value");
         comment = document.getString("comment");
-        // TODO PART 2: photos and tags
+        tags = new TagList((List<String>) document.get("tags"));
+        // TODO PART 2: photos
     }
 
     /**
@@ -82,9 +84,9 @@ public class Item implements FirestorePuttable, Serializable {
         make = document.getString("make");
         model = document.getString("model");
         serialNum = document.getString("serialNum");
-        value = (long) document.get("value");
+        value = document.getLong("value");
         comment = document.getString("comment");
-        // TODO PART 2: photos and tags
+        tags = new TagList((List<String>) document.get("tags"));
     }
 
     /**
@@ -167,7 +169,8 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("serialNum", serialNum);
         map.put("value", value);
         map.put("comment", comment);
-        // TODO SECOND HALF: photos and tags
+        map.put("tagS", tags);
+        // TODO SECOND HALF: photos
 
         return map;
     }
@@ -244,5 +247,13 @@ public class Item implements FirestorePuttable, Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public TagList getTags() {
+        return tags;
+    }
+
+    public void setTags(TagList tags) {
+        this.tags = tags;
     }
 }
