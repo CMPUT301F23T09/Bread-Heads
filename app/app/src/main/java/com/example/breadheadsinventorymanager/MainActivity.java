@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private Button filterDateButton;
     private TextView totalValue;
     private ImageButton sortButton;
+    private Button sortOrderButton;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterDateButton = findViewById(R.id.date_filter_button);
         totalValue = findViewById(R.id.total_value);
         sortButton = findViewById(R.id.sort_button);
+        sortOrderButton = findViewById(R.id.sort_order_button);
 
         //ListView and adapter setup
         database = new FirestoreInteract();
@@ -95,6 +97,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             @Override
             public void onClick(View v) {
                 showSortMenu();
+            }
+        });
+        sortOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean order = toggleSortOrder();
+                if (order) {
+                    sortOrderButton.setText("Ascending");
+                } else {
+                    sortOrderButton.setText("Descending");
+                }
             }
         });
     }
@@ -219,10 +232,20 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             return false;
         }
 
-        resetAdapter();
         itemList.sort(sortMode, sortAscending);
         itemArrayAdapter.notifyDataSetChanged();
         return true;
+    }
+
+    /**
+     * Changes the order items are sorted in
+     * @return True if the new sort order is ascending, otherwise false
+     */
+    private boolean toggleSortOrder() {
+        sortAscending = !sortAscending;
+        itemList.sort(sortMode, sortAscending);
+        itemArrayAdapter.notifyDataSetChanged();
+        return sortAscending;
     }
 
     // FILTER MENU HANDLING
