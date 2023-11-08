@@ -6,27 +6,19 @@ import static android.view.View.VISIBLE;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -203,8 +195,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private void selectMode() {
         Button confirm_button = (Button)findViewById(R.id.select_mode_confirm);
         Button cancel_button = (Button)findViewById(R.id.select_mode_cancel);
-        ArrayList<Integer> selectedItems = new ArrayList<Integer>();
-        ArrayList<Item> itemsToBeDeleted = new ArrayList<Item>();
+//        ArrayList<Integer> selectedItems = new ArrayList<Integer>();
+//        ArrayList<Item> itemsToBeDeleted = new ArrayList<Item>();
 
         // bring ups popup with text to let the user know to select items now
         PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
@@ -223,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             Item current_item = itemList.get(i);
             CheckBox checkbox = current_item.getCheckBox();
             checkbox.setVisibility(View.VISIBLE);
-//            checkbox.setClickable(true);
         }
 
         // when the confirm button is pressed
@@ -241,8 +232,22 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 CheckBox checkbox = current_item.getCheckBox();
                 if (checkbox.isChecked()){
                     // Delete item
-                    itemList.remove(current_item);
+//                    itemList.remove(current_item);
+                    database.deleteItem(current_item).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            resetAdapter(); // clear filter
+                            updateList();
+                        }
+                    });
 
+//                    database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void unused) {
+//                            resetAdapter(); // clear filter
+//                            updateList();
+//                        }
+//                    });
                 }
                 // uncheck and hide the checkbox
                 checkbox.setChecked(false);
@@ -309,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
             resetAdapter();
-            showDateFilter();
+//            showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
