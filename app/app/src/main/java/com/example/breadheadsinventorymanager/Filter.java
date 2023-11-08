@@ -1,5 +1,6 @@
 package com.example.breadheadsinventorymanager;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -7,31 +8,20 @@ import java.util.ArrayList;
  */
 public class Filter {
 
-    private ItemList ItemListCopy;
+    private ItemList filteredList;
 
     /**
-     * saves a copy of the current ItemList to call on whenever
-     * @param copyList
+     * initializes the filtered list
      */
-    Filter(ItemList copyList) {
-        ItemListCopy = new ItemList();
-        this.ItemListCopy.addAll(copyList);
+    Filter() {
+        filteredList = new ItemList();
     }
 
     /**
      * resets the copy of ItemList
      */
     public void clearFilter() {
-        this.ItemListCopy.clear();
-    }
-
-    /**
-     * Resets the filtered list to the current ItemList
-     * @param newList the current ItemList to reset the filter
-     */
-    public void resetFilter(ItemList newList) {
-        clearFilter();
-        this.ItemListCopy.addAll(newList);
+        this.filteredList.clear();
     }
 
     /**
@@ -41,8 +31,13 @@ public class Filter {
      */
     public ItemList filterByMake(ItemList list, String make) {
 
-
-        return this.ItemListCopy;
+        // filters the list to the make entered if t doesn't already exist in the filtered list
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getMake().equals(make) && !(filteredList.contains(list.get(i)))) {
+                filteredList.add(list.get(i));
+            }
+        }
+        return this.filteredList;
     }
 
     /**
@@ -51,8 +46,15 @@ public class Filter {
      * @return the filtered list description
      */
     public ItemList filterByDescription(ItemList list, String description) {
-
-        return this.ItemListCopy;
+        // filters the list to only add makes if it doesn't already exist in the filtered list
+        for (int i = 0; i < list.size(); i++) {
+            if (!(list.get(i).getDescription().contains(description)) && filteredList.contains(list.get(i))) {
+                filteredList.remove(list.get(i));
+            } else if (list.get(i).getDescription().contains(description) && !(filteredList.contains(list.get(i)))) {
+                filteredList.add(list.get(i));
+            }
+        }
+        return this.filteredList;
     }
 
     /**
@@ -62,9 +64,21 @@ public class Filter {
      * @param dateHigh upper bound for date
      * @return the filtered list
      */
-    public ItemList filterByDateRange(ItemList list, String dateLow, String dateHigh) {
+    public ItemList filterByDateRange(ItemList list, LocalDate dateLow, LocalDate dateHigh) {
 
-        return this.ItemListCopy;
+        // filter the list to show only the dates within the range
+
+        if(list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                if (!(list.get(i).getDateObj().isAfter(dateLow) && list.get(i).getDateObj().isBefore(dateHigh)) && filteredList.contains(list.get(i))) {
+                    filteredList.remove(list.get(i));
+                } else if (list.get(i).getDateObj().isAfter(dateLow) && list.get(i).getDateObj().isBefore(dateHigh) && !(filteredList.contains(list.get(i)))) {
+                    filteredList.add(list.get(i));
+                }
+            }
+        }
+
+        return this.filteredList;
     }
 
 }

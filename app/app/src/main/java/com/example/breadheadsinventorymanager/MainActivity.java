@@ -46,11 +46,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private Button filterDateButton;
     private TextView totalValue;
 
-    // obligatory id's for lists/adapter
+    // obligatory id's for lists/adapters
     private ItemList itemList;
-    private ItemList filterList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
+    private Filter filter;
+    private ArrayAdapter<Item> filterAdapter;
+
     private FirestoreInteract database;
 
     // stores information about how the list is currently sorted
@@ -71,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterDateButton = findViewById(R.id.date_filter_button);
         totalValue = findViewById(R.id.total_value);
 
+        // filter init
+        filter = new Filter();
+        filterAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         //ListView and adapter setup
         database = new FirestoreInteract();
         itemList = new ItemList();
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                resetAdapter(); // clear filter
+                //resetAdapter(); // clear filter
                 updateList();
             }
         });
@@ -199,17 +204,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int itemClick = item.getItemId();
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
-            resetAdapter();
+            //resetAdapter();
             showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
-            resetAdapter();
+            //resetAdapter();
             showDescriptionSearch();
             return true;
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
-            resetAdapter();
+            //resetAdapter();
             showMakeSubMenu();
             return true;
         } else if (itemClick == R.id.remove_filter) {
@@ -242,11 +247,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTERING UTILITY FUNCTIONS
 
     /**
-     * resets the adapter to the original ItemList
-     * means that the list cannot have more than one filter active at a time
+     * resets the adapter to the original ItemList and clears the filtered list in filter
      */
     private void resetAdapter() {
         toggleFilterVisibility();
+        filter.clearFilter();
         itemListView.setAdapter(itemArrayAdapter);
         itemArrayAdapter.notifyDataSetChanged();
     }
@@ -273,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
     }
 
-    // FILTERING LOGIC FUNCTIONS
+    // FILTERING FUNCTION CALLS
 
     /**
      * handles click events for make submenu
@@ -284,15 +289,16 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         toggleFilterVisibility();
         ItemList results = new ItemList();
 
-        // compare the make selected to the makes of itemList
+        /*// compare the make selected to the makes of itemList
         for (int i = 0; i < itemList.size(); i++) {
             if (itemList.get(i).getMake().equals(menuItem.toString())) {
                     results.add(itemList.get(i));
             }
-        }
+        }*/
+
         // update adapter to show filtered results
-        CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
-        itemListView.setAdapter(tempAdapter);
+        filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.filterByMake(itemList, menuItem.toString()));
+        itemListView.setAdapter(filterAdapter);
         return true;
     }
 
@@ -314,16 +320,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // creates a list to then set a new adapter to
             // modified code from this video https://www.youtube.com/watch?v=7Sw98YZW-ik
             public boolean onQueryTextChange(String newText) {
-                ItemList results = new ItemList();
-
-                for (int i = 0; i < itemList.size(); i++) {
+                /*for (int i = 0; i < itemList.size(); i++) {
                     if (itemList.get(i).getDescription().contains(newText)) {
                         results.add(itemList.get(i));
                     }
-                }
+                }*/
                 // update adapter to show the filtered results
-                CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
-                itemListView.setAdapter(tempAdapter);
+                filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.filterByDescription(itemList, newText));
+                itemListView.setAdapter(filterAdapter);
                 return false;
             }
         });
@@ -346,7 +350,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             @Override
             public void onClick(View v) {
                 try {
-                    ItemList dateFilter = new ItemList();
                     String startString = startDate.getText().toString();
                     String endString = endDate.getText().toString();
                     LocalDate newDateStart = LocalDate.parse(startString, formatter);
@@ -357,19 +360,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                         dateErrorMsg.setVisibility(VISIBLE);
                         return;
                     }
-                    if(itemList.size() > 0) {
-                        for (int i = 0; i < itemList.size(); i++) {
-                            if (itemList.get(i).getDateObj().isAfter(newDateStart) && itemList.get(i).getDateObj().isBefore(newDateEnd)) {
-                                dateFilter.add(itemList.get(i));
-                            }
-                        }
-                    }
 
                     // update adapter to new filter
+                    // call to Filter class when setting adapter
+                    filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.filterByDateRange(itemList, newDateStart, newDateEnd));
+                    itemListView.setAdapter(filterAdapter);
                     dateErrorMsg.setVisibility(GONE);
-                    CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), dateFilter);
-                    itemListView.setAdapter(tempAdapter);
                 } catch (DateTimeParseException e) {
+                    dateErrorMsg.setText(R.string.invalid_date_range);
                     dateErrorMsg.setVisibility(VISIBLE);
                 }
             }
