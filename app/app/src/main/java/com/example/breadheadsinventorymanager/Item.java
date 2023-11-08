@@ -35,7 +35,7 @@ public class Item implements FirestorePuttable, Serializable {
     private long value; // in cents
     private String comment = ""; // comment is optional
     // private ArrayList<Photo> photos; // second half
-    // private TagList tags; // second half
+    private TagList tags; // second half
 
     /**
      * Empty constructor.
@@ -208,6 +208,7 @@ public class Item implements FirestorePuttable, Serializable {
     public String getComment() {
         return comment;
     }
+    public TagList getTags(){return tags;}
 
     // Setters
     public void setDate(String date) {

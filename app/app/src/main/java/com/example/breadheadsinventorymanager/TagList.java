@@ -16,49 +16,17 @@ public class TagList extends ArrayList<Tag> {
      * @return true if the tag was added, false if it already exists in the list.
      */
     public boolean addTag(Tag tag) {
-        if (!contains(tag)) {
-            return super.add(tag);
-        }
-        return false;
-    }
+        // Check if a tag with the same name already exists
+        boolean tagExists = this.stream().anyMatch(existingTag -> existingTag.getTag().equals(tag.getTag()));
 
-    /**
-     * Filters the tags in the list by a single tag.
-     *
-     * @param filter The tag to filter by.
-     * @return A list of tags that match the provided tag.
-     */
-    public List<Tag> filterByTag(String filter) {
-        List<Tag> filteredList = new ArrayList<>();
-        for (Tag tag : this) {
-            if (tag.getTag().equals(filter)) {
-                filteredList.add(tag);
-            }
-        }
-        return filteredList;
-    }
+        // Check if the exact same Tag object already exists
+        boolean sameTagExists = this.contains(tag);
 
-    /**
-     * Filters the tags in the list by multiple tags.
-     *
-     * @param filters A list of tags to filter by.
-     * @return A list of tags that match any of the provided tags.
-     */
-    public List<Tag> filterByTags(List<String> filters) {
-        List<Tag> filteredList = new ArrayList<>();
-        for (Tag tag : this) {
-            if (filters.contains(tag.getTag())) {
-                filteredList.add(tag);
-            }
+        if (tagExists || sameTagExists) {
+            return false; // Tag with the same name or the exact same Tag object already exists
+        } else {
+            return super.add(tag); // Add the tag
         }
-        return filteredList;
-    }
-
-    /**
-     * Sorts the tags in the list in alphabetical order based on the tag strings.
-     */
-    public void sortByTag() {
-        Collections.sort(this, (tag1, tag2) -> tag1.getTag().compareTo(tag2.getTag()));
     }
 
     @Override
