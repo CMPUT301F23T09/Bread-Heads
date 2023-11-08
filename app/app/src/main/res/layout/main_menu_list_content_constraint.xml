@@ -58,6 +58,7 @@
         app:layout_constraintTop_toTopOf="@id/item_model_text"
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="10sp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:focusable="false"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

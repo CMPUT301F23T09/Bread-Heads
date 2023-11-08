@@ -214,6 +214,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // get the item at position i
             Item current_item = itemList.get(i);
             CheckBox checkbox = current_item.getCheckBox();
+            if (checkbox == null){
+
+                checkbox = itemListView.findViewById(R.id.checkBox);
+//                checkbox.setChecked(false);
+            }
             checkbox.setVisibility(View.VISIBLE);
         }
 
