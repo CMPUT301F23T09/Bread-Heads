@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
+    private ItemList filterList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
     private FirestoreInteract database;
@@ -351,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                     LocalDate newDateStart = LocalDate.parse(startString, formatter);
                     LocalDate newDateEnd = LocalDate.parse(endString, formatter);
 
-                    if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate)) {
+                    if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate) || newDateEnd.isBefore(newDateStart)) {
                         dateErrorMsg.setText(R.string.date_in_future);
                         dateErrorMsg.setVisibility(VISIBLE);
                         return;
