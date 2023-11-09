@@ -243,23 +243,3 @@ public class FirestoreInteract {
     }
 
 }
-
-/* example of how to call data from firestore to populate an ItemList
-public void firestoreExample() {
-    FirestoreInteract firestoreInteract = new FirestoreInteract();
-    ItemList list = new ItemList();
-    Task<QuerySnapshot> task = firestoreInteract.populateWithTest(list);
-    // do some sort of "loading/please wait" screen
-    task.addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-        @Override
-        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-            // end our "loading/please wait" screen
-
-            // logging for testing:
-            if (2 != list.size()) { throw new RuntimeException("oops");}
-            Log.i("main", list.get(0).formatForFirestore().toString());
-            Log.i("main", list.get(1).formatForFirestore().toString());
-        }
-    });
-}
-*/

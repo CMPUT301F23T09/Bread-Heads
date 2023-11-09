@@ -174,7 +174,7 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("serialNum", serialNum);
         map.put("value", value);
         map.put("comment", comment);
-        map.put("tagS", tags);
+        map.put("tags", tags);
         // TODO SECOND HALF: photos
 
         return map;
