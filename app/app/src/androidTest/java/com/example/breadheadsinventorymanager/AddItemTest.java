@@ -59,7 +59,7 @@ public class AddItemTest {
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Big Int test"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("08/21/2020"));
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("21/08/2020"));
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("99999999999999999999")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 
@@ -88,7 +88,7 @@ public class AddItemTest {
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Improper date test2"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
-        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("04/11/2023"));
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("04/11/2030"));
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("123")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 

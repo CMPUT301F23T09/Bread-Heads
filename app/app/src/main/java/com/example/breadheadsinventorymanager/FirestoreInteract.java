@@ -39,7 +39,9 @@ public class FirestoreInteract {
     private static CollectionReference itemDB;
     private static CollectionReference userDB;
     private static CollectionReference testDB;
-    private static StorageReference storageReference; // fixme: make static?
+
+    // points to the Firestore storage for images (large files)
+    private static StorageReference storageReference;
 
 
     /**
@@ -58,7 +60,9 @@ public class FirestoreInteract {
     }
 
     /**
-     *
+     * Uploads images that are provided with a reference path to its prospective location on firebase storage
+     * @param imageMap: maps image paths to the Uri image resource
+     * @param view: the current view to display upload failure/success messages
      */
     public void uploadImages(Map<String, Uri> imageMap, View view) {
         Iterator<Map.Entry<String, Uri>> it = imageMap.entrySet().iterator();
@@ -70,14 +74,13 @@ public class FirestoreInteract {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        Snackbar.make(view, "Image uploaded", Snackbar.LENGTH_LONG).show();
-                            Toast.makeText(view.getContext(), "Image Uploaded", Toast.LENGTH_LONG).show();
+                            Toast.makeText(view.getContext(), R.string.image_uploaded_notification, Toast.LENGTH_LONG).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(view.getContext(), "Upload Failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(view.getContext(), R.string.image_upload_failed_message, Toast.LENGTH_LONG).show();
                         }
                     });
         }

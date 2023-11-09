@@ -122,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     // ADD ITEM DIALOG HANDLING
 
+    /**
+     * Uploads the item and related images to firebase and refreshes the app UI
+     * @param item
+     * @param imageMap
+     */
     @Override
     public void onOKPressed(Item item, Map<String, Uri> imageMap) {
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {

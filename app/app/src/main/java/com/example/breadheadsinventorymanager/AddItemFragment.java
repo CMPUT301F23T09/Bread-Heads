@@ -39,10 +39,10 @@ public class AddItemFragment extends DialogFragment {
     EditText itemNameBox;
     EditText itemModelBox;
     EditText itemMakeBox;
+    EditText itemSerialNumBox;
     EditText itemDateBox;
     EditText itemCommentsBox;
     EditText itemValueBox;
-    ImageView testImage;
     TextView errorBox;
     com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
 
@@ -64,15 +64,14 @@ public class AddItemFragment extends DialogFragment {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
 
-        // For accessing the Gallery for images - must be called upon instantiation (onAttach)
+        // For accessing the Gallery for images - must be called upon instantiation (in onAttach)
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri uri) {
                         // Handle the new image
-                        String imagePath = "images/" + UUID.randomUUID().toString(); //fixme: double check that this generates a unique ID
-                        imageMap.put(imagePath, uri); //fixme: use try catch in case key already exists
-//                        testImage.setImageURI(uri); // If we wanna preview the image
+                        String imagePath = "images/" + UUID.randomUUID().toString();
+                        imageMap.put(imagePath, uri); //fixme: use try catch in case key already exists, implement after edit is complete.
                     }
                 }
         );
@@ -96,10 +95,10 @@ public class AddItemFragment extends DialogFragment {
         itemNameBox = view.findViewById(R.id.item_name_text);
         itemMakeBox = view.findViewById(R.id.item_make_text);
         itemModelBox = view.findViewById(R.id.item_model_text);
+        itemSerialNumBox = view.findViewById(R.id.serial_number_text);
         itemDateBox = view.findViewById(R.id.item_acquisition_date_text);
         itemValueBox = view.findViewById(R.id.item_value_text);
         itemCommentsBox = view.findViewById(R.id.item_comments_text);
-        testImage = view.findViewById(R.id.test_inserted_image);
         errorBox = view.findViewById(R.id.error_text_message);
         addImageBtn = view.findViewById(R.id.add_image_button);
 
@@ -154,6 +153,7 @@ public class AddItemFragment extends DialogFragment {
     public boolean checkDataEntry() {
         String name = itemNameBox.getText().toString();
         String make = itemMakeBox.getText().toString();
+        String serialNumber = itemSerialNumBox.getText().toString(); //fixme: No checking for this number yet
         String model = itemModelBox.getText().toString();
         String date = itemDateBox.getText().toString();
         String value = itemValueBox.getText().toString();
@@ -190,7 +190,7 @@ public class AddItemFragment extends DialogFragment {
         }
         // create the item object
         ArrayList<String> imagePathsForUpload = new ArrayList<String>(imageMap.keySet());
-        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, imagePathsForUpload), imageMap);
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload), imageMap);
         return true;
     }
 

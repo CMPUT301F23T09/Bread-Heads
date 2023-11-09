@@ -35,9 +35,11 @@ public class Item implements FirestorePuttable, Serializable {
     private String make;
     private String model;
     private String serialNum;
-    private long value; // in cents
     private String comment = ""; // comment is optional
-    private ArrayList<String> imagePaths = new ArrayList<String>(); // second half
+    private long value; // in cents
+
+    // second half
+    private ArrayList<String> imagePaths = new ArrayList<String>();
     // private TagList tags; // second half
 
     /**
@@ -46,16 +48,41 @@ public class Item implements FirestorePuttable, Serializable {
     public Item() {}
 
     /**
-     * Constructor given all fields, incl. serial number.
+     * Constructor with all mandatory fields
+     * fixme: adopt a different constructor structure (e.g factory pattern) and exclude comments from this list
+     * fixme: OR, only use the constructor with all parameters and just provide an empty string/array for optional fields
      */
-    public Item(String date, String description, String make, String model, String serialNum, String comments, ArrayList<String> imagePaths, long value) {
+    public Item(String date, String description, String make, String model, String comments, long value) {
         this.date = date;
         this.description = description;
         this.make = make;
         this.model = model;
-        this.serialNum = serialNum;
-        this.value = value;
         this.comment = comments;
+        this.value = value;
+    }
+
+    /**
+     * Constructor with serial number but not imagePaths
+     */
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum) {
+        this(date, description, make, model, comments, value);
+        this.serialNum = serialNum;
+    }
+
+    /**
+     * Constructor with imagePaths but not serial number
+     */
+    public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths) {
+        this(date, description, make, model, comments, value);
+        this.imagePaths = imagePaths;
+    }
+
+    /**
+     * Constructor with everything (no tags)
+     */
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths) {
+        this(date, description, make, model, comments, value);
+        this.serialNum = serialNum;
         this.imagePaths = imagePaths;
     }
 
@@ -91,20 +118,6 @@ public class Item implements FirestorePuttable, Serializable {
         comment = document.getString("comment");
         // TODO PART 2: photos and tags
         imagePaths = (ArrayList<String>) document.get("imagePaths");
-    }
-
-    /**
-     * Constructor given most fields, not incl. serial number, images.
-     * [01.01.01] only requires a serial number "when applicable"
-     */
-    public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths) {
-        this.date = date;
-        this.description = description;
-        this.make = make;
-        this.model = model;
-        this.value = value;
-        this.comment = comments;
-        this.imagePaths = imagePaths;
     }
 
     /**
@@ -158,7 +171,6 @@ public class Item implements FirestorePuttable, Serializable {
         return LocalDate.parse(this.date, formatter);
 
     }
-
 
     /*
     ============================================

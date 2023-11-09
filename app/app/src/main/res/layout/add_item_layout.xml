@@ -32,11 +32,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="@string/serial_number"
+        android:inputType="text"
+        android:id="@+id/serial_number_text"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
         android:maxLength="10"
         android:hint="@string/dd_mm_yyyy"
         android:inputType="datetime"
         android:id="@+id/item_acquisition_date_text"/>
-
     <EditText
         android:id="@+id/item_value_text"
         android:layout_width="match_parent"
@@ -53,12 +59,6 @@
         android:ems="10"
         android:hint="@string/comments"
         android:inputType="textPersonName" />
-
-    <ImageView
-        android:id="@+id/test_inserted_image"
-        android:layout_width="302dp"
-        android:layout_height="179dp"
-        tools:srcCompat="@tools:sample/avatars" />
 
     <!--Layout for buttons (add/delete tag and camera button) -->
 

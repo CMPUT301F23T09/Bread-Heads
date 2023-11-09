@@ -23,9 +23,16 @@ import java.util.Objects;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
-    private int currentImageIndex = 0; // is this passed by value into the shuffleImage function?
+    private int currentImageIndex = 0;
     private FirestoreInteract database;
 
+    /**
+     * Loads item details, display related images (if any) and sets button functionality
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +117,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
     /**
      * Updates the item image view with shuffled image
-     * @param imagePath
+     * @param imagePath: reference path to the image located on firebase storage
+     * @param itemImage: the imageView to display the new image
      */
     private void updateImage(String imagePath, ImageView itemImage) {
         StorageReference imageRef = database.getStorageReference().child(imagePath);
@@ -119,15 +127,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
         imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                // Data for "images/island.jpg" is returns, use this as needed
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 itemImage.setImageBitmap(bitmap);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Toast.makeText(findViewById(android.R.id.content).getRootView().getContext(), "No Such file or Path found!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(findViewById(android.R.id.content).getRootView().getContext(), R.string.firebase_firestore_image_not_loaded_message, Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -14,7 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class ItemTest {
     @Mock
@@ -62,13 +64,44 @@ public class ItemTest {
     // Test the constructor with all parameters
     @Test
     public void testConstructorWithAllParams() {
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "123456", 1000);
+        ArrayList<String> imagePaths = new ArrayList<String>();
+        imagePaths.add("image/" + UUID.randomUUID().toString());
+        imagePaths.add("image/" + UUID.randomUUID().toString());
+
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "item comment", 1000, "3943-d5", imagePaths);
         assertEquals("2023-01-01", item.getDate());
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());
         assertEquals("Sample Model", item.getModel());
-        assertEquals("123456", item.getComment());
+        assertEquals("3943-d5", item.getSerialNum());
+        assertEquals("item comment", item.getComment());
+        assertEquals(imagePaths, item.getImagePaths());
         assertEquals(1000, item.getValue());
+    }
+
+    // Test the constructor without the serial number
+    @Test
+    public void testConstructorWithoutSerialNumber() {
+        ArrayList<String> imagePaths = new ArrayList<String>();
+        imagePaths.add("image/" + UUID.randomUUID().toString());
+        imagePaths.add("image/" + UUID.randomUUID().toString());
+
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000, imagePaths);
+        assertNull(item.getSerialNum());
+    }
+
+    // Test the constructor without the imagePaths (default = empty array)
+    @Test
+    public void testConstructorWithoutImagePaths() {
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000, "3943-d5");
+        assertTrue(item.getImagePaths().isEmpty());
+    }
+
+    // Test the constructor without the either serial number and imagePaths
+    @Test
+    public void testConstructorWithoutSerialNumberAndImagePaths() {
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000);
+        assertNull(item.getSerialNum());
     }
 
     // Test the constructor with a DocumentSnapshot
@@ -95,13 +128,6 @@ public class ItemTest {
         assertEquals("123456", item.getSerialNum());
         assertEquals(1000, item.getValue());
         assertEquals("Sample Comment", item.getComment());
-    }
-
-    // Test the constructor without the serial number
-    @Test
-    public void testConstructorWithoutSerialNumber() {
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000);
-        assertNull(item.getSerialNum());
     }
 
     // Test the toDollarString method
