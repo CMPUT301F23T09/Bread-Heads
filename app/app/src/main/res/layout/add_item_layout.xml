@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -53,6 +54,12 @@
         android:hint="@string/comments"
         android:inputType="textPersonName" />
 
+    <ImageView
+        android:id="@+id/test_inserted_image"
+        android:layout_width="302dp"
+        android:layout_height="179dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <!--Layout for buttons (add/delete tag and camera button) -->
 
     <LinearLayout
@@ -96,6 +103,7 @@
         android:gravity="center"
         android:visibility="gone"
         android:textColor="@color/tomato_red"/>
+
     <!--TODO make area for tags to show -->
 
 

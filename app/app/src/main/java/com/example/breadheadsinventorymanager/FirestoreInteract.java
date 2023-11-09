@@ -1,18 +1,30 @@
 package com.example.breadheadsinventorymanager;
 
+import android.net.Uri;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Class to interact with Firestore
@@ -20,11 +32,15 @@ import java.util.ArrayList;
  */
 public class FirestoreInteract {
     private FirebaseFirestore database; // can't be static; would create memory leak (uses context)
+    // For storing images
+    private FirebaseStorage storage;
 
     // static variables that point to collections in the Firebase database
     private static CollectionReference itemDB;
     private static CollectionReference userDB;
     private static CollectionReference testDB;
+    private static StorageReference storageReference; // fixme: make static?
+
 
     /**
      * Initialize firestore database.
@@ -35,6 +51,36 @@ public class FirestoreInteract {
         itemDB = database.collection("items");
         userDB = database.collection("users");
         testDB = database.collection("test");
+
+        // Images
+        storage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
+        storageReference = storage.getReference();
+    }
+
+    /**
+     *
+     */
+    public void uploadImages(Map<String, Uri> imageMap, View view) {
+        Iterator<Map.Entry<String, Uri>> it = imageMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Uri> image = (Map.Entry<String, Uri>) it.next();
+            StorageReference imageRef = storageReference.child(image.getKey());
+
+            imageRef.putFile(image.getValue())
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                        Snackbar.make(view, "Image uploaded", Snackbar.LENGTH_LONG).show();
+                            Toast.makeText(view.getContext(), "Image Uploaded", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(view.getContext(), "Upload Failed", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
     /**
@@ -157,6 +203,8 @@ public class FirestoreInteract {
     public static void setTestDB(CollectionReference testDB) {
         FirestoreInteract.testDB = testDB;
     }
+
+    public static StorageReference getStorageReference() { return storageReference; }
 }
 
 /* example of how to call data from firestore to populate an ItemList
