@@ -79,14 +79,20 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 public void onItemUpdated(Item item) {
                     Log.d("ItemDetailsActivity", "onItemUpdated called");
                     Log.d("ItemDetailsActivity", "onItemUpdated called with item: " + item.getDescription());
-                    database.putItem(item).addOnSuccessListener(aVoid -> {
-                        Log.d("ItemDetailsActivity", "Firestore update successful");
-                        // Refresh UI with the updated item
+                    // Only update the Firestore if the item has changed
+                    if (!selectedItem.equals(item)) {
+                        database.putItem(item).addOnSuccessListener(aVoid -> {
+                            Log.d("ItemDetailsActivity", "Firestore update successful");
+                            // Refresh UI with the updated item
+                            updateUI(item);
+                        }).addOnFailureListener(e -> {
+                            // Handle failure if needed
+                            Log.e("ItemDetailsActivity", "Error updating item in Firestore", e);
+                        });
+                    } else {
+                        // Item hasn't changed, just refresh UI
                         updateUI(item);
-                    }).addOnFailureListener(e -> {
-                        // Handle failure if needed
-                        Log.e("ItemDetailsActivity", "Error updating item in Firestore", e);
-                    });
+                    }
                 }
             };
 
