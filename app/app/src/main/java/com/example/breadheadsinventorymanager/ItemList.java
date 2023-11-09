@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Stores a list of items
@@ -120,33 +121,104 @@ public class ItemList extends ArrayList<Item> {
     }
 
     /**
-     * Sorts the ItemList by the given parameter in either ascending or descending order.
-     * @field The field to sort by. Supports "description", "comment", "date", "make", or "value".
-     * @boolean True if the sorted list should be ascending, else false.
+     * Returns a list of items that have all the specified tags.
+     *
+     * @param tags A list of tags to filter items by.
+     * @return A list of items that have all the specified tags.
      */
-    public void sort(String field, boolean ascending) {
-        Collections.sort(this, (lhs, rhs) -> {
-            int result = 0;
+    public List<Item> filterTags(Collection<String> tags) {
+        List<Item> matchingItems = new ArrayList<>();
 
-            switch(field) {
-                case "description":
-                    result = lhs.getDescription().compareTo(rhs.getDescription());
-                    break;
-                case "comment":
-                    result = lhs.getComment().compareTo(rhs.getComment());
-                    break;
-                case "date":
-                    result = lhs.getDateObj().compareTo(rhs.getDateObj());
-                    break;
-                case "make":
-                    result = lhs.getMake().compareTo(rhs.getMake());
-                    break;
-                case "value":
-                    result = Long.compare(lhs.getValue(), rhs.getValue());
+        for (Item item : this) {
+            // Check if the item's tags contain all the specified tags
+            if (item.getTags().containsAll(tags)) {
+                matchingItems.add(item);
+            }
+        }
+
+        return matchingItems;
+    }
+
+    /**
+     * Sorts the ItemList by tags alphabetically.
+     *
+     * @param ascending True if the sorted list should be in ascending order, else false for descending order.
+     */
+    public void sortItemsByTagsAlphabetically(boolean ascending) {
+        Collections.sort(this, (item1, item2) -> {
+            TagList tags1 = item1.getTags();
+            TagList tags2 = item2.getTags();
+
+            // Extract tag strings and sort them alphabetically
+            List<String> sortedTags1 = new ArrayList<>();
+            for (Tag tag : tags1) {
+                sortedTags1.add(tag.getTag());
             }
 
-            // if ascending, just return the result; if descending, flip all comparisons
-            return ascending ? result : -result;
+            List<String> sortedTags2 = new ArrayList<>();
+            for (Tag tag : tags2) {
+                sortedTags2.add(tag.getTag());
+            }
+
+            Collections.sort(sortedTags1);
+            Collections.sort(sortedTags2);
+
+            // Compare the sorted tag lists
+            int size1 = sortedTags1.size();
+            int size2 = sortedTags2.size();
+            int minSize = Math.min(size1, size2);
+
+            for (int i = 0; i < minSize; i++) {
+                int tagComparison = sortedTags1.get(i).compareTo(sortedTags2.get(i));
+                if (tagComparison != 0) {
+                    return tagComparison;
+                }
+            }
+
+            // If the common tags are the same, compare based on the number of tags
+            return Integer.compare(size1, size2);
         });
+
+        if (!ascending) {
+            Collections.reverse(this);
+        }
     }
+
+    /**
+     * Sorts the ItemList by the given parameter in either ascending or descending order.
+     *
+     * @param field     The field to sort by. Supports "description", "comment", "date", "make", "value", or "tags".
+     * @param ascending True if the sorted list should be ascending, else false.
+     */
+    public void sort(String field, boolean ascending) {
+        if ("tags".equals(field)) {
+            sortItemsByTagsAlphabetically(ascending);
+        } else {
+            Collections.sort(this, (lhs, rhs) -> {
+                int result = 0;
+
+                switch (field) {
+                    case "description":
+                        result = lhs.getDescription().compareTo(rhs.getDescription());
+                        break;
+                    case "comment":
+                        result = lhs.getComment().compareTo(rhs.getComment());
+                        break;
+                    case "date":
+                        result = lhs.getDateObj().compareTo(rhs.getDateObj());
+                        break;
+                    case "make":
+                        result = lhs.getMake().compareTo(rhs.getMake());
+                        break;
+                    case "value":
+                        result = Long.compare(lhs.getValue(), rhs.getValue());
+                        break;
+                }
+
+                // If descending, flip all comparisons
+                return ascending ? result : -result;
+            });
+        }
+    }
+
 }
