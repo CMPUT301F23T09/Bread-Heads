@@ -6,12 +6,14 @@ import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
 import android.content.res.Resources;
+import android.widget.CheckBox;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -34,6 +36,7 @@ public class Item implements FirestorePuttable, Serializable {
     private String model;
     private String serialNum;
     private long value; // in cents
+    private transient CheckBox checkBox; // must be transient so the class can be serialized
     private String comment = ""; // comment is optional
     private TagList tags;
     // private ArrayList<Photo> photos; // second half
@@ -134,7 +137,7 @@ public class Item implements FirestorePuttable, Serializable {
 
     /**
      * Static utility to convert a dollar string to a value
-     * @param string A String formatted as a decimal value with or without a leading $j
+     * @param string A String formatted as a decimal value with or without a leading $
      * @return The returned value, i.e. a long amount of cents
      */
     public static long toValue(String string) {
@@ -251,6 +254,7 @@ public class Item implements FirestorePuttable, Serializable {
         this.id = id;
     }
 
+
     public TagList getTags() {
         return tags;
     }
@@ -258,4 +262,10 @@ public class Item implements FirestorePuttable, Serializable {
     public void setTags(TagList tags) {
         this.tags = tags;
     }
+
+    public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
+
+    public CheckBox getCheckBox() {return this.checkBox;}
+
 }
+
