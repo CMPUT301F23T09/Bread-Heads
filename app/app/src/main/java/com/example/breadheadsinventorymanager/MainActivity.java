@@ -222,6 +222,23 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             checkbox.setVisibility(View.VISIBLE);
         }
 
+        // allow the user to click on the item to enable the checkbox to be checked
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Item current_item = itemList.get(position);
+                CheckBox checkBox = view.findViewById(R.id.checkBox);
+                current_item.setCheckBox(checkBox);
+                CheckBox checkbox = current_item.getCheckBox();
+                checkbox.setVisibility(View.VISIBLE);
+                if(checkbox.isChecked()){
+                    checkbox.setChecked(false);
+                } else {
+                    checkbox.setChecked(true);
+                }
+
+            }
+        });
         // when the confirm button is pressed
         confirm_button.setOnClickListener(v -> {
 
@@ -235,24 +252,29 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 // get the item at position i
                 Item current_item = itemList.get(i);
                 CheckBox checkbox = current_item.getCheckBox();
-                if (checkbox.isChecked()){
-                    // Delete item in firebase database
-                    database.deleteItem(current_item).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            resetAdapter(); // clear filter
-                            updateList();
-                        }
-                    });
+                if (checkbox != null){
+                    if (checkbox.isChecked()){
+                        // Delete item in firebase database
+                        itemList.remove(current_item);
+                        database.deleteItem(current_item).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+//                                resetAdapter(); // clear filter
+//                                updateList();
+                            }
+                        });
 
+                    }
+                    // uncheck and hide the checkbox
+                    checkbox.setChecked(false);
+                    checkbox.setVisibility(View.INVISIBLE);
                 }
-                // uncheck and hide the checkbox
-                checkbox.setChecked(false);
-                checkbox.setVisibility(View.INVISIBLE);
 
             }
 
-            itemArrayAdapter.notifyDataSetChanged();
+//            itemArrayAdapter.notifyDataSetChanged();
+            resetAdapter(); // clear filter
+            updateList();
         });
 
         // when the cancel button is pressed
@@ -268,8 +290,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 CheckBox checkbox = current_item.getCheckBox();
 
                 // uncheck and hide the checkbox
-                checkbox.setChecked(false);
-                checkbox.setVisibility(View.INVISIBLE);
+                if (checkbox != null){
+                    checkbox.setChecked(false);
+                    checkbox.setVisibility(View.INVISIBLE);
+                }
+
             }
         });
     }

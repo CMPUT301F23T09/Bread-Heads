@@ -2,21 +2,27 @@ package com.example.breadheadsinventorymanager;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 //import static androidx.test.espresso.intent.Intents.intended;
 //import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.startsWith;
 
 import android.app.Activity;
 import android.view.View;
@@ -44,30 +50,15 @@ public class SelectMultipleItemsTest {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<MainActivity>(MainActivity.class);
 
-//    @Test
-//    public void testSelectItems(){
-//        // Add a couple items to the list
-//
-//        // Click on select and enter select mode
-//        onView(withId(R.id.delete_item)).perform(click());
-//        // Click on first item
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item)).atPosition(0).perform(click());
-//        // Click on second item
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item)).atPosition(0).perform(click());
-//        // Test to see whether both of the items are selected
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item)).atPosition(0).check(isSelected());
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item)).atPosition(1).check(isSelected());
-//    }
-
     @Test
     public void testDeletingSingleItem(){
         // Add a item to the list
         onView(withId(R.id.add_item)).perform(click());
-        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Item1"));
+        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel4"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("01/01/2000"));
-        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("500")).perform(ViewActions.closeSoftKeyboard());
+        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("5500")).perform(ViewActions.closeSoftKeyboard());
         onView(withText("OK")).perform(click());
 
         // go into select mode
@@ -76,68 +67,88 @@ public class SelectMultipleItemsTest {
         // click once for popup to go away
         onView(withText("Select all items you wish to delete")).perform(click());
 
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
-//        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).onChildView(isAssignableFrom(CheckBox.class)).perform(click());
-        // TODO figure out how to click on checkbox
+        // keep scrolling until you find the item
+        boolean success = false;
+        int position = 0;
+        while(!success){
+            try {
+                onView(withText("testDel4")).perform(click());
+                success = true;
+            }
+            catch (Exception e){
+                onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(position).perform(swipeUp());
+                position += 1;
+            }
+        }
 
-//        onData(is(instanceOf(CheckBox.class))).perform(click());
+        // delete the item
+        onView(withId(R.id.select_mode_confirm)).perform(click());
 
-//        onData(is(instanceOf(CheckBox.class))).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+        //check that it got deleted
+        onView(withText("testDel4")).check(doesNotExist());
     }
-//    @Test
-//    public void testDeletingMultipleItems(){
-//        // Add a couple items to the list
-//        // Add a item to the list
-//        onView(withId(R.id.add_item)).perform(click());
-//        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Item1"));
-//        onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
-//        onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
-//        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("01/01/2000"));
-//        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("500")).perform(ViewActions.closeSoftKeyboard());
-//        onView(withText("OK")).perform(click());
-//
-//        // Add another item to the list
-//        onView(withId(R.id.add_item)).perform(click());
-//        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Item2"));
-//        onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make2"));
-//        onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model2"));
-//        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("02/01/2000"));
-//        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("2222")).perform(ViewActions.closeSoftKeyboard());
-//        onView(withText("OK")).perform(click());
-//
-//        // go into select mode
-//        onView(withId(R.id.delete_item)).perform(click());
-//
-//        // click once for popup to go away
-//        onView(withText("Select all items you wish to delete")).perform(click());
-//
-//
-//        // Click on first item
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item_list)).atPosition(0).perform(click());
-//        // Click on second item
-//        onData(is(instanceOf(String.class))).inAdapterView(withId(R.id.item_list)).atPosition(0).perform(click());
-//
-//        // Press confirm to delete all the selected items
-//
-//        // Check that they have been deleted
-//
-//    }
-//private static Matcher<View> childAtPosition(
-//        final Matcher<View> parentMatcher, final int position) {
-//
-//    return new TypeSafeMatcher<View>() {
-//        @Override
-//        public void describeTo(Description description) {
-//            description.appendText("Child at position " + position + " in parent ");
-//            parentMatcher.describeTo(description);
-//        }
-//
-//        @Override
-//        public boolean matchesSafely(View view) {
-//            ViewParent parent = view.getParent();
-//            return parent instanceof ViewGroup && parentMatcher.matches(parent)
-//                    && view.equals(((ViewGroup) parent).getChildAt(position));
-//        }
-//    };
-//}
+    @Test
+    public void testDeletingMultipleItems(){
+        // Add a couple items to the list
+        // Add a item to the list
+        onView(withId(R.id.add_item)).perform(click());
+        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel1234"));
+        onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
+        onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("01/01/2000"));
+        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("500")).perform(ViewActions.closeSoftKeyboard());
+        onView(withText("OK")).perform(click());
+
+        // Add another item to the list
+        onView(withId(R.id.add_item)).perform(click());
+        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel2456"));
+        onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make2"));
+        onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model2"));
+        onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("02/01/2000"));
+        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("2222")).perform(ViewActions.closeSoftKeyboard());
+        onView(withText("OK")).perform(click());
+
+        // go into select mode
+        onView(withId(R.id.delete_item)).perform(click());
+
+        // click once for popup to go away
+        onView(withText("Select all items you wish to delete")).perform(click());
+
+
+        // Click on first item
+        boolean success = false;
+        int position = 0;
+        while(!success){
+            try {
+                onView(withText("testDel1234")).perform(click());
+                success = true;
+            }
+            catch (Exception e){
+                onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(position).perform(swipeUp());
+                position += 1;
+            }
+        }
+
+        // Click on second item
+        success = false;
+        position = 0;
+        while(!success){
+            try {
+                onView(withText("testDel2456")).perform(click());
+                success = true;
+            }
+            catch (Exception e){
+                onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(position).perform(swipeUp());
+                position += 1;
+            }
+        }
+
+        // Press confirm to delete all the selected items
+        onView(withId(R.id.select_mode_confirm)).perform(click());
+
+        // Check that they have been deleted
+        onView(withText("testDel1234")).check(doesNotExist());
+        onView(withText("testDel2456")).check(doesNotExist());
+    }
+
 }
