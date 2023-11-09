@@ -71,7 +71,7 @@ public class Item implements FirestorePuttable, Serializable {
         make = document.getString("make");
         model = document.getString("model");
         serialNum = document.getString("serialNum");
-        value = (long) document.get("value");
+        value = document.getLong("value");
         comment = document.getString("comment");
         tags = new TagList((List<String>) document.get("tags"));
         // TODO PART 2: photos

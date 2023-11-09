@@ -28,21 +28,21 @@ public class ItemTest {
         openMocks(this); // Use openMocks to initialize mocks
 
         // Set up mock data for DocumentSnapshot
-        when(documentSnapshot.getString("date")).thenReturn("2023-01-01");
+        when(documentSnapshot.getString("date")).thenReturn("01/01/2023");
         when(documentSnapshot.getString("description")).thenReturn("Sample Item");
         when(documentSnapshot.getString("make")).thenReturn("Sample Make");
         when(documentSnapshot.getString("model")).thenReturn("Sample Model");
         when(documentSnapshot.getString("serialNum")).thenReturn("123456");
-        when(documentSnapshot.get("value")).thenReturn(1000L);
+        when(documentSnapshot.getLong("value")).thenReturn((long) 1000);
         when(documentSnapshot.getString("comment")).thenReturn("Sample Comment");
 
         // Set up mock data for QueryDocumentSnapshot
-        when(queryDocumentSnapshot.getString("date")).thenReturn("2023-01-01");
+        when(queryDocumentSnapshot.getString("date")).thenReturn("01/01/2023");
         when(queryDocumentSnapshot.getString("description")).thenReturn("Sample Item");
         when(queryDocumentSnapshot.getString("make")).thenReturn("Sample Make");
         when(queryDocumentSnapshot.getString("model")).thenReturn("Sample Model");
         when(queryDocumentSnapshot.getString("serialNum")).thenReturn("123456");
-        when(queryDocumentSnapshot.get("value")).thenReturn(1000L);
+        when(queryDocumentSnapshot.getLong("value")).thenReturn((long) 1000);
         when(queryDocumentSnapshot.getString("comment")).thenReturn("Sample Comment");
     }
 
@@ -62,8 +62,8 @@ public class ItemTest {
     // Test the constructor with all parameters
     @Test
     public void testConstructorWithAllParams() {
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "123456", 1000);
-        assertEquals("2023-01-01", item.getDate());
+        Item item = new Item("01/01/2023", "Sample Item", "Sample Make", "Sample Model", "123456", 1000);
+        assertEquals("01/01/2023", item.getDate());
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());
         assertEquals("Sample Model", item.getModel());
@@ -75,12 +75,12 @@ public class ItemTest {
     @Test
     public void testConstructorWithDocumentSnapshot() {
         Item item = new Item(documentSnapshot);
-        assertEquals("2023-01-01", item.getDate());
+        assertEquals("01/01/2023", item.getDate());
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());
         assertEquals("Sample Model", item.getModel());
         assertEquals("123456", item.getSerialNum());
-        assertEquals(1000, item.getValue());
+        assertEquals((long) 1000, item.getValue());
         assertEquals("Sample Comment", item.getComment());
     }
 
@@ -88,19 +88,19 @@ public class ItemTest {
     @Test
     public void testConstructorWithQueryDocumentSnapshot() {
         Item item = new Item(queryDocumentSnapshot);
-        assertEquals("2023-01-01", item.getDate());
+        assertEquals("01/01/2023", item.getDate());
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());
         assertEquals("Sample Model", item.getModel());
         assertEquals("123456", item.getSerialNum());
-        assertEquals(1000, item.getValue());
+        assertEquals((long) 1000, item.getValue());
         assertEquals("Sample Comment", item.getComment());
     }
 
     // Test the constructor without the serial number
     @Test
     public void testConstructorWithoutSerialNumber() {
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000);
+        Item item = new Item("01/01/2023", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000);
         assertNull(item.getSerialNum());
     }
 
@@ -123,9 +123,9 @@ public class ItemTest {
     // Test the formatForFirestore method
     @Test
     public void testFormatForFirestore() {
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "123456", 1000L);
+        Item item = new Item("01/01/2023", "Sample Item", "Sample Make", "Sample Model", "123456", 1000L);
         HashMap<String, Object> expectedMap = new HashMap<>();
-        expectedMap.put("date", "2023-01-01");
+        expectedMap.put("date", "01/01/2023");
         expectedMap.put("description", "Sample Item");
         expectedMap.put("make", "Sample Make");
         expectedMap.put("model", "Sample Model");
