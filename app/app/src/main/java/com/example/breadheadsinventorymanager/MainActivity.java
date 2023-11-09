@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         itemListView = findViewById(R.id.items_main_list);
         itemArrayAdapter = new CustomItemListAdapter(this, itemList);
         itemListView.setAdapter(itemArrayAdapter);
-
         // END OF ADAPTER SETUP DELETE BEFORE MERGING!
         itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

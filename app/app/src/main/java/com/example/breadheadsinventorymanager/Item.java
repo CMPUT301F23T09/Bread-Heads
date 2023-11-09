@@ -6,7 +6,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-
 import java.io.Serializable;
 
 import java.text.ParseException;
