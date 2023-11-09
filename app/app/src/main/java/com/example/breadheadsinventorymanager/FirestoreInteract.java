@@ -24,17 +24,24 @@ public class FirestoreInteract {
     // static variables that point to collections in the Firebase database
     private static CollectionReference itemDB;
     private static CollectionReference userDB;
-    private static CollectionReference testDB;
 
     /**
-     * Initialize firestore database.
+     * Initialize firestore database using defaults.
      * Adapted from lab 5 instructions.
      */
     public FirestoreInteract() {
         database = FirebaseFirestore.getInstance();
         itemDB = database.collection("items");
         userDB = database.collection("users");
-        testDB = database.collection("test");
+    }
+
+    /**
+     * Initialize firestore database given specific variables.
+     */
+    public FirestoreInteract(FirebaseFirestore database, CollectionReference itemDB, CollectionReference userDB) {
+        this.database = database;
+        this.itemDB = itemDB;
+        this.userDB = userDB;
     }
 
     /**
@@ -69,29 +76,6 @@ public class FirestoreInteract {
      */
     public Task<QuerySnapshot> populateWithItems(ArrayList<Item> list) {
         return itemDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("FirestoreInteract.java", document.getId() + " => " + document.getData());
-                        list.add(new Item(document));
-                    }
-                } else {
-                    Log.d("FirestoreInteract.java", "Error getting documents: ", task.getException());
-                }
-            }
-        });
-    }
-
-    /**
-     * Task to populate a given ArrayList with the contents of the test collection.
-     * Must return as a task because of inherent delays in accessing Firestore.
-     * Execution is asynchronous so we must listen for the data to be available!
-     * @param list ArrayList of Items (probably an ItemList) to place retrieved tests into
-     * @return a Task; use .addOnSuccessListener() to run code after data retrieval
-     */
-    public Task<QuerySnapshot> populateWithTest(ArrayList<Item> list) {
-        return testDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -148,14 +132,6 @@ public class FirestoreInteract {
 
     public static void setUserDB(CollectionReference userDB) {
         FirestoreInteract.userDB = userDB;
-    }
-
-    public static CollectionReference getTestDB() {
-        return testDB;
-    }
-
-    public static void setTestDB(CollectionReference testDB) {
-        FirestoreInteract.testDB = testDB;
     }
 }
 

@@ -9,6 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 public class ItemDetailsActivity extends AppCompatActivity {
     private Item selectedItem;
     private FirestoreInteract database;
@@ -17,19 +19,17 @@ public class ItemDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         selectedItem = (Item) getIntent().getSerializableExtra("item");
 
-        // Initialize FirestoreInteract instance
         database = new FirestoreInteract();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         TextView dateText = findViewById(R.id.dateText);
-        dateText.setText(selectedItem.getDate());
+        dateText.setText(selectedItem != null ? selectedItem.getDate() : null);
 
         TextView modeText = findViewById(R.id.modelText);
-        modeText.setText(selectedItem.getModel());
+        modeText.setText(Objects.requireNonNull(selectedItem).getModel());
 
         TextView itemDescription = findViewById(R.id.itemDescription);
         itemDescription.setText(selectedItem.getDescription());
@@ -68,7 +68,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Show the EditItemFragment
     private void showEditItemFragment() {
         Log.d("ItemDetailsActivity", "showEditItemFragment called");
         Log.d("ItemDetailsActivity", "selectedItem is " + (selectedItem != null ? "not null" : "null"));
@@ -80,7 +79,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 public void onItemUpdated(Item item) {
                     Log.d("ItemDetailsActivity", "onItemUpdated called");
                     Log.d("ItemDetailsActivity", "onItemUpdated called with item: " + item.getDescription());
-                    // Use the putItem method to update the item in Firestore
                     database.putItem(item).addOnSuccessListener(aVoid -> {
                         Log.d("ItemDetailsActivity", "Firestore update successful");
                         // Refresh UI with the updated item

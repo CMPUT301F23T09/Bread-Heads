@@ -37,6 +37,6 @@
     <string name="date_in_future">Date is in the future!</string>
     <string name="save">save</string>
     <string name="cancel">cancel</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="totalValueTitle">Total Value: $%1$s</string>
+    <string name="sort_readable">Sort</string>
 </resources>
