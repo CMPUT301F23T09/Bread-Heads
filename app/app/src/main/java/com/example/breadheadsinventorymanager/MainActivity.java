@@ -114,6 +114,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        updateList();
+    }
+
+    @Override
     public void onOKPressed(Item item) {
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

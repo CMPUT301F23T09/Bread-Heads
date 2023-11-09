@@ -1,20 +1,27 @@
 package com.example.breadheadsinventorymanager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 public class ItemDetailsActivity extends AppCompatActivity {
+    private Item selectedItem;
+    private FirestoreInteract database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
 
-        Item selectedItem = (Item) getIntent().getSerializableExtra("item");
+        selectedItem = (Item) getIntent().getSerializableExtra("item");
+
+        // Initialize FirestoreInteract instance
+        database = new FirestoreInteract();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -48,6 +55,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.edit_item) {
             // Handle the Edit button click
+            showEditItemFragment();
             return true;
         } else if (id == R.id.delete_item) {
             // Handle the Delete button click
@@ -58,5 +66,56 @@ public class ItemDetailsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Show the EditItemFragment
+    private void showEditItemFragment() {
+        Log.d("ItemDetailsActivity", "showEditItemFragment called");
+        Log.d("ItemDetailsActivity", "selectedItem is " + (selectedItem != null ? "not null" : "null"));
+
+        if (selectedItem != null) {
+            EditItemFragment editItemFragment = EditItemFragment.newInstance(selectedItem);
+            editItemFragment.listener = new EditItemFragment.OnFragmentInteractionListener() {
+                @Override
+                public void onItemUpdated(Item item) {
+                    Log.d("ItemDetailsActivity", "onItemUpdated called");
+                    Log.d("ItemDetailsActivity", "onItemUpdated called with item: " + item.getDescription());
+                    // Use the putItem method to update the item in Firestore
+                    database.putItem(item).addOnSuccessListener(aVoid -> {
+                        Log.d("ItemDetailsActivity", "Firestore update successful");
+                        // Refresh UI with the updated item
+                        updateUI(item);
+                    }).addOnFailureListener(e -> {
+                        // Handle failure if needed
+                        Log.e("ItemDetailsActivity", "Error updating item in Firestore", e);
+                    });
+                }
+            };
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            editItemFragment.show(transaction, "EDIT_ITEM");
+        }
+    }
+
+    // Method to update UI with the new item details
+    private void updateUI(Item updatedItem) {
+        Log.d("ItemDetailsActivity", "updateUI called");
+        TextView dateText = findViewById(R.id.dateText);
+        dateText.setText(updatedItem.getDate());
+
+        TextView modeText = findViewById(R.id.modelText);
+        modeText.setText(updatedItem.getModel());
+
+        TextView itemDescription = findViewById(R.id.itemDescription);
+        itemDescription.setText(updatedItem.getDescription());
+
+        TextView makeText = findViewById(R.id.makeText);
+        makeText.setText(updatedItem.getMake());
+
+        TextView commentText = findViewById(R.id.commentText);
+        commentText.setText(updatedItem.getComment());
+
+        TextView valueText = findViewById(R.id.valueText);
+        valueText.setText(updatedItem.getValueDollarString());
     }
 }
