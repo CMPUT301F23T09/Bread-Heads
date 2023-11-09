@@ -35,7 +35,7 @@ public class Item implements FirestorePuttable, Serializable {
     private String model;
     private String serialNum;
     private long value; // in cents
-    private CheckBox checkBox;
+    private transient CheckBox checkBox; // must be transient so the class can be serialized
     private String comment = ""; // comment is optional
     // private ArrayList<Photo> photos; // second half
     // private TagList tags; // second half
