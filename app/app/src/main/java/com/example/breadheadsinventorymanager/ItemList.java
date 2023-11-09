@@ -126,18 +126,37 @@ public class ItemList extends ArrayList<Item> {
      * @param tags A list of tags to filter items by.
      * @return A list of items that have all the specified tags.
      */
-    public List<Item> filterTags(Collection<String> tags) {
+    public List<Item> filterTags(Collection<Tag> tags) {
         List<Item> matchingItems = new ArrayList<>();
 
         for (Item item : this) {
+            TagList itemTags = item.getTags();
+
             // Check if the item's tags contain all the specified tags
-            if (item.getTags().containsAll(tags)) {
+            boolean containsAllTags = true;
+
+            for (Tag tag : tags) {
+                boolean tagFound = false;
+                for (Tag itemTag : itemTags) {
+                    if (tag.getTag().equals(itemTag.getTag())) {
+                        tagFound = true;
+                        break;
+                    }
+                }
+                if (!tagFound) {
+                    containsAllTags = false;
+                    break;
+                }
+            }
+
+            if (containsAllTags) {
                 matchingItems.add(item);
             }
         }
 
         return matchingItems;
     }
+
 
     /**
      * Sorts the ItemList by tags alphabetically.
@@ -171,7 +190,7 @@ public class ItemList extends ArrayList<Item> {
             for (int i = 0; i < minSize; i++) {
                 int tagComparison = sortedTags1.get(i).compareTo(sortedTags2.get(i));
                 if (tagComparison != 0) {
-                    return tagComparison;
+                    return ascending ? tagComparison : -tagComparison;
                 }
             }
 
@@ -179,9 +198,6 @@ public class ItemList extends ArrayList<Item> {
             return Integer.compare(size1, size2);
         });
 
-        if (!ascending) {
-            Collections.reverse(this);
-        }
     }
 
     /**

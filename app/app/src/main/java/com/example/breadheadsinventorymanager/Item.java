@@ -54,6 +54,7 @@ public class Item implements FirestorePuttable, Serializable {
         this.serialNum = serialNum;
         this.value = value;
         this.comment = comments;
+        this.tags = new TagList();
     }
 
     /**
@@ -100,6 +101,7 @@ public class Item implements FirestorePuttable, Serializable {
         this.model = model;
         this.value = value;
         this.comment = comments;
+        this.tags = new TagList();
     }
 
     /**
