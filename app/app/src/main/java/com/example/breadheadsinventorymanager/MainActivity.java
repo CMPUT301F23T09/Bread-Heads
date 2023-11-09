@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                resetAdapter(); // clear filter
+                //resetAdapter(); // clear filter
                 updateList();
             }
         });
@@ -297,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }
 
 //            itemArrayAdapter.notifyDataSetChanged();
-            resetAdapter(); // clear filter
+            //resetAdapter(); // clear filter
             updateList();
         });
 
@@ -400,17 +401,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int itemClick = item.getItemId();
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
-            resetAdapter();
+            //resetAdapter();
 //            showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
-            resetAdapter();
+            //resetAdapter();
             showDescriptionSearch();
             return true;
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
-            resetAdapter();
+            //resetAdapter();
             showMakeSubMenu();
             return true;
         } else if (itemClick == R.id.remove_filter) {
@@ -448,8 +449,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private void resetAdapter() {
         toggleFilterVisibility();
+        itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
-        itemArrayAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -483,17 +484,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
-        ItemList results = new ItemList();
-
-        // compare the make selected to the makes of itemList
-        for (int i = 0; i < itemList.size(); i++) {
-            if (itemList.get(i).getMake().equals(menuItem.toString())) {
-                    results.add(itemList.get(i));
-            }
-        }
         // update adapter to show filtered results
-        CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
-        itemListView.setAdapter(tempAdapter);
+        itemArrayAdapter.getFilter().filter('M' + menuItem.toString());
         return true;
     }
 
@@ -515,16 +507,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // creates a list to then set a new adapter to
             // modified code from this video https://www.youtube.com/watch?v=7Sw98YZW-ik
             public boolean onQueryTextChange(String newText) {
-                ItemList results = new ItemList();
-
-                for (int i = 0; i < itemList.size(); i++) {
-                    if (itemList.get(i).getDescription().contains(newText)) {
-                        results.add(itemList.get(i));
-                    }
-                }
-                // update adapter to show the filtered results
-                CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), results);
-                itemListView.setAdapter(tempAdapter);
+                itemArrayAdapter.getFilter().filter('D' + newText);
                 return false;
             }
         });
