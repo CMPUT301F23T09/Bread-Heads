@@ -6,7 +6,7 @@ Currently a very early work-in-progress; see current status in [our backlog](htt
 
 ## Setup
 
-Compiling this project into a usable app requires hooking it up to a Firebase database. To do this, create a database on Firebase or open an existing database, download its `google-services.json` file, and add it to `/app/app/`.
+Compiling this project into a usable app requires hooking it up to a Firebase database via a `google-services.json` file. The `google-services.json` we use is currently included for ease of building. To use your own Firebase database, download its `google-services.json` file and add it to `/app/app/`, replacing the file already there.
 
 ## Attributions
 
