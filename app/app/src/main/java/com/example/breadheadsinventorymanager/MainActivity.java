@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -91,15 +93,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Item selectedItem = itemArrayAdapter.getItem(position);
-                        Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
-                        intent.putExtra("item", selectedItem);
-                        startActivity(intent);
-                    }
-                });
+                defaultItemClickListener();
             }
         });
 
@@ -123,6 +117,21 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     // ITEM LIST HANDLING
+
+    /**
+     * Sets itemListView's onItemClickListener to the default.
+     */
+    public void defaultItemClickListener() {
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Item selectedItem = itemArrayAdapter.getItem(position);
+                Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
+                intent.putExtra("item", selectedItem);
+                startActivity(intent);
+            }
+        });
+    }
 
     /**
      * Updates the total value displayed at the bottom of the screen
@@ -270,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
         // when the confirm button is pressed
         confirm_button.setOnClickListener(v -> {
+            defaultItemClickListener();
 
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
@@ -406,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
             //resetAdapter();
-//            showDateFilter();
+            showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
@@ -487,8 +497,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
-        filters.forEach((k, v) -> itemArrayAdapter.getFilter()
-                .filter(k.toString() + v.toString()));
+        Gson gson = new Gson();
+        String json = gson.toJson(filters);
+        Log.i("JSON", json);
+        itemArrayAdapter.getFilter().filter(json);
+        filters.forEach((k, v) ->
+                itemArrayAdapter.getFilter().filter(k + v.toString()));
         itemListView.setAdapter(itemArrayAdapter);
     }
 
@@ -545,36 +559,33 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterDateButton.setVisibility(VISIBLE);
 
         LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
         // when pressed, it will filter the dates by range entered, display error message otherwise
         filterDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    ItemList dateFilter = new ItemList();
                     String startString = startDate.getText().toString();
                     String endString = endDate.getText().toString();
-                    LocalDate newDateStart = LocalDate.parse(startString, formatter);
-                    LocalDate newDateEnd = LocalDate.parse(endString, formatter);
 
-                    if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate)) {
-                        dateErrorMsg.setText(R.string.date_in_future);
-                        dateErrorMsg.setVisibility(VISIBLE);
-                        return;
+                    // remove existing filters
+                    filters.remove('1');
+                    filters.remove('2');
+
+                    if (startString.length() > 0) {
+                        LocalDate newDateStart = LocalDate.parse(startString, formatter);
+                        filters.put('1', startString);
                     }
-                    if(itemList.size() > 0) {
-                        for (int i = 0; i < itemList.size(); i++) {
-                            if (itemList.get(i).getDateObj().isAfter(newDateStart) && itemList.get(i).getDateObj().isBefore(newDateEnd)) {
-                                dateFilter.add(itemList.get(i));
-                            }
-                        }
+
+                    if (endString.length() > 0) {
+                        LocalDate newDateEnd = LocalDate.parse(endString, formatter);
+                        filters.put('2', endString);
                     }
 
                     // update adapter to new filter
                     dateErrorMsg.setVisibility(GONE);
-                    CustomItemListAdapter tempAdapter = new CustomItemListAdapter(getApplicationContext(), dateFilter);
-                    itemListView.setAdapter(tempAdapter);
+                    activateFilters();
                 } catch (DateTimeParseException e) {
                     dateErrorMsg.setVisibility(VISIBLE);
                 }

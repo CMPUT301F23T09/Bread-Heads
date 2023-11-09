@@ -13,8 +13,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filterable {
     private ItemList items;
@@ -76,6 +82,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
+            JsonObject filters = JsonParser.parseString((String) constraint).getAsJsonObject();
 
             if (constraint != null && constraint.length() > 1 && items != null) {
                 char filterType = constraint.charAt(0);
@@ -84,6 +91,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
 
                 for (int i = 0; i < items.size(); i++) {
                     Item item = items.get(i);
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern("d/M/yyyy");
                     switch (filterType) {
                         case 'D': // description
                             if (item.getDescription().toLowerCase()
@@ -92,12 +100,12 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
                             }
                             break;
                         case '1': // initial date in range
-                            if (item.getDateObj().isAfter(LocalDate.parse(constraint))) {
+                            if (!item.getDateObj().isBefore(LocalDate.parse(constraint, format))) {
                                 output.add(item);
                             }
                             break;
                         case '2':
-                            if (item.getDateObj().isBefore(LocalDate.parse(constraint))) {
+                            if (!item.getDateObj().isAfter(LocalDate.parse(constraint, format))) {
                                 output.add(item);
                             }
                             break;
