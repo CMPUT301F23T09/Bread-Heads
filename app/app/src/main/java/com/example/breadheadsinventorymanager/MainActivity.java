@@ -5,14 +5,12 @@ import static android.view.View.VISIBLE;
 
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +20,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,9 +36,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -71,13 +64,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private String sortMode = "description"; // which field to sort by
     private boolean sortAscending = true; // whether to sort in ascending or descending order
 
+    // stores the filters to apply to the adapter
+    // first character in each filter determines the filter type
+    // 'D': description. '1'/'2': lower/upper bound on date resp. 'M': make.
+    // multiple makes can be applied at once! multiple filters are ANDed; different makes are ORed.
     private ArrayList<CharSequence> filters = new ArrayList<>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
         searchBox = findViewById(R.id.search_view);
@@ -110,9 +107,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             public void onClick(View v) {
                 boolean order = toggleSortOrder();
                 if (order) {
-                    sortOrderButton.setText("Ascending");
+                    sortOrderButton.setText(R.string.ascending);
                 } else {
-                    sortOrderButton.setText("Descending");
+                    sortOrderButton.setText(R.string.descending);
                 }
             }
         });
@@ -168,7 +165,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                //resetAdapter(); // clear filter
                 updateList();
             }
         });
@@ -229,14 +225,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Handles when the delete button is pressed, which causes the app to enter "select mode". Meaning checkboxes appear for each
      * item in the list that allows the user to select multiple items at once to do various functions with those items. Currently
      * the only function is to delete multiple items. In the future, you will be able to add tags to all of the selected items
-     * @param
-     * @return void
      */
     private void selectMode() {
-        Button confirm_button = (Button)findViewById(R.id.select_mode_confirm);
-        Button cancel_button = (Button)findViewById(R.id.select_mode_cancel);
-//        ArrayList<Integer> selectedItems = new ArrayList<Integer>();
-//        ArrayList<Item> itemsToBeDeleted = new ArrayList<Item>();
+        Button confirm_button = findViewById(R.id.select_mode_confirm);
+        Button cancel_button = findViewById(R.id.select_mode_cancel);
 
         // bring ups popup with text to let the user know to select items now
         PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
@@ -257,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             if (checkbox == null){
 
                 checkbox = itemListView.findViewById(R.id.checkBox);
-//                checkbox.setChecked(false);
             }
             checkbox.setVisibility(View.VISIBLE);
         }
@@ -271,11 +262,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 current_item.setCheckBox(checkBox);
                 CheckBox checkbox = current_item.getCheckBox();
                 checkbox.setVisibility(View.VISIBLE);
-                if(checkbox.isChecked()){
-                    checkbox.setChecked(false);
-                } else {
-                    checkbox.setChecked(true);
-                }
+                checkbox.setChecked(!checkbox.isChecked());
 
             }
         });
@@ -300,8 +287,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                         database.deleteItem(current_item).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-//                                resetAdapter(); // clear filter
-//                                updateList();
+                                // void
                             }
                         });
 
@@ -313,8 +299,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
             }
 
-//            itemArrayAdapter.notifyDataSetChanged();
-            //resetAdapter(); // clear filter
             updateList();
         });
 
@@ -339,11 +323,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }
         });
     }
-    /**
-     * handles creating the dialog and switching to associated fragment
-     */
-
-    // TOPBAR MENU HANDLING
 
     // SORT MENU HANDLING
 
@@ -444,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private void showMakeSubMenu() {
         // show submenu of all available makes
-        ArrayList<String> makeList = new ArrayList<String>();
+        ArrayList<String> makeList;
         makeList = itemList.getMakeList();
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.filter_popup));
 
@@ -495,19 +474,19 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTERING LOGIC FUNCTIONS
 
     /**
-     * Constructs filters from the filter hashmap
+     * Constructs filters from the filter set and applies them to the data.
+     * @see CustomItemListAdapter custom filter
      */
     private void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         Gson gson = new Gson();
         String json = gson.toJson(filters);
-        Log.i("JSON", json);
         itemArrayAdapter.getFilter().filter(json);
         itemListView.setAdapter(itemArrayAdapter);
     }
 
     /**
-     * handles click events for make submenu
+     * Handles click events for make submenu
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
      */
@@ -557,7 +536,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * handles filtering by date, checks for valid date then creates a new list for the adapter to latch on to
+     * handles filtering by date, checks for valid date then creates a new list
+     * for the adapter to latch on to
      */
     private void showDateFilter() {
         toggleFilterVisibility();
@@ -565,7 +545,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         endDate.setVisibility(VISIBLE);
         filterDateButton.setVisibility(VISIBLE);
 
-        LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
         // when pressed, it will filter the dates by range entered, display error message otherwise
@@ -578,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
                     // remove existing filters
                     if (!filters.isEmpty()) {
-                        ArrayList<CharSequence> newFilters = (ArrayList<CharSequence>) filters.clone();
+                        ArrayList<CharSequence> newFilters = new ArrayList<>(filters);
                         for (CharSequence filter : filters) {
                             if (filter.charAt(0) == '1' || filter.charAt(0) == '2') {
                                 newFilters.remove(filter);
@@ -589,12 +568,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
 
                     if (startString.length() > 0) {
-                        LocalDate newDateStart = LocalDate.parse(startString, formatter);
+                        LocalDate.parse(startString, formatter); // called for try-catch
                         filters.add('1' + startString);
                     }
 
                     if (endString.length() > 0) {
-                        LocalDate newDateEnd = LocalDate.parse(endString, formatter);
+                        LocalDate.parse(endString, formatter); // called for try-catch
                         filters.add('2' + endString);
                     }
 

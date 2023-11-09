@@ -17,14 +17,12 @@ import androidx.annotation.Nullable;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filterable {
@@ -83,6 +81,14 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         return customFilter;
     }
 
+    /**
+     * Custom filter to allow filtering by multiple fields at once.
+     * Filter is done by passing a JSON array and parsing it as a string.
+     * The first character of each entry indicates what type of filter it is.
+     * The rest of the entry is the info about the filter.
+     * This approach is kinda clunky but is necessary because the arguments of Filter() methods must
+     * be CharSequences.
+     */
     Filter customFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -102,19 +108,15 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
                 switch (filter.charAt(0)) {
                     case 'D': // description
                         description = filter.substring(1).toLowerCase();
-                        Log.i("CILA", "desc: " + description);
                         break;
                     case '1': // lower date bound
                         initDate = LocalDate.parse(filter.substring(1), format);
-                        Log.i("CILA", "init: " + initDate.toString());
                         break;
                     case '2': // upper date bound
                         finalDate = LocalDate.parse(filter.substring(1), format);
-                        Log.i("CILA", "fin: " + finalDate.toString());
                         break;
                     case 'M': // make
                         makes.add(filter.substring(1));
-                        Log.i("CILA", "makes: " + makes);
                         break;
                 }
             }
@@ -126,7 +128,9 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
                     Item item = items.get(i);
 
                     if (description != null) {
-                        keepFlag = item.getDescription().toLowerCase().contains(description) && keepFlag;
+                        // unnecessary '&& keepFlag' kept for clarity
+                        keepFlag = item.getDescription().toLowerCase().contains(description)
+                                && keepFlag;
                     }
                     if (initDate != null) {
                         keepFlag = !(item.getDateObj().isBefore(initDate)) && keepFlag;
