@@ -3,11 +3,17 @@ package com.example.breadheadsinventorymanager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 
 import java.util.Objects;
 
@@ -59,6 +65,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.delete_item) {
             // Handle the Delete button click
+            showDeleteConfirmationDialog();
             return true;
         } else if (id == android.R.id.home) {
             // Handle the Up button (back button) click
@@ -86,7 +93,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
                             // Refresh UI with the updated item
                             updateUI(item);
                         }).addOnFailureListener(e -> {
-                            // Handle failure if needed
                             Log.e("ItemDetailsActivity", "Error updating item in Firestore", e);
                         });
                     } else {
@@ -122,4 +128,30 @@ public class ItemDetailsActivity extends AppCompatActivity {
         TextView valueText = findViewById(R.id.valueText);
         valueText.setText(updatedItem.getValueDollarString());
     }
+    private void deleteSelectedItem() {
+        if (selectedItem != null) {
+            database.deleteItem(selectedItem).addOnSuccessListener(aVoid -> {
+                Log.d("ItemDetailsActivity", "Firestore delete successful");
+                finish();
+            }).addOnFailureListener(e -> {
+                Log.e("ItemDetailsActivity", "Error deleting item from Firestore", e);
+            });
+        }
+    }
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deleteSelectedItem();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
 }
