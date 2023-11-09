@@ -37,6 +37,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // stores information about how the list is currently sorted
     private String sortMode = "description"; // which field to sort by
     private boolean sortAscending = true; // whether to sort in ascending or descending order
+
+    private HashMap<Character, CharSequence> filters = new HashMap<>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -448,6 +452,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * means that the list cannot have more than one filter active at a time
      */
     private void resetAdapter() {
+        filters = new HashMap<>();
         toggleFilterVisibility();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
@@ -478,6 +483,16 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTERING LOGIC FUNCTIONS
 
     /**
+     * Constructs filters from the filter hashmap
+     */
+    private void activateFilters() {
+        itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
+        itemListView.setAdapter(itemArrayAdapter);
+        filters.forEach((k, v) -> itemArrayAdapter.getFilter()
+                .filter(k.toString() + v.toString()));
+    }
+
+    /**
      * handles click events for make submenu
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
@@ -485,7 +500,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
         // update adapter to show filtered results
-        itemArrayAdapter.getFilter().filter('M' + menuItem.toString());
+        filters.put('M', menuItem.toString());
+        activateFilters();
         return true;
     }
 
@@ -507,7 +523,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // creates a list to then set a new adapter to
             // modified code from this video https://www.youtube.com/watch?v=7Sw98YZW-ik
             public boolean onQueryTextChange(String newText) {
-                itemArrayAdapter.getFilter().filter('D' + newText);
+                if (filters.containsKey('D')) {
+                    filters.remove('D'); // clear previous text filters
+                }
+                if (newText.length() > 0) {
+                    filters.put('D', newText);
+                }
+                activateFilters();
                 return false;
             }
         });
