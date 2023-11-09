@@ -29,8 +29,9 @@ public class FirestoreInteract {
     private static CollectionReference testDB;
     private static CollectionReference tagDB;
 
+
     /**
-     * Initialize firestore database.
+     * Initialize firestore database using defaults.
      * Adapted from lab 5 instructions.
      */
     public FirestoreInteract() {
@@ -39,6 +40,16 @@ public class FirestoreInteract {
         userDB = database.collection("users");
         testDB = database.collection("test");
         tagDB = database.collection("tags");
+
+    }
+
+    /**
+     * Initialize firestore database given specific variables.
+     */
+    public FirestoreInteract(FirebaseFirestore database, CollectionReference itemDB, CollectionReference userDB) {
+        this.database = database;
+        this.itemDB = itemDB;
+        this.userDB = userDB;
     }
 
     /**
@@ -125,29 +136,6 @@ public class FirestoreInteract {
     }
 
     /**
-     * Task to populate a given ArrayList with the contents of the test collection.
-     * Must return as a task because of inherent delays in accessing Firestore.
-     * Execution is asynchronous so we must listen for the data to be available!
-     * @param list ArrayList of Items (probably an ItemList) to place retrieved tests into
-     * @return a Task; use .addOnSuccessListener() to run code after data retrieval
-     */
-    public Task<QuerySnapshot> populateWithTest(ArrayList<Item> list) {
-        return testDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("FirestoreInteract.java", document.getId() + " => " + document.getData());
-                        list.add(new Item(document));
-                    }
-                } else {
-                    Log.d("FirestoreInteract.java", "Error getting documents: ", task.getException());
-                }
-            }
-        });
-    }
-
-    /**
      * Task to delete the item from the items collection with the specified ID
      * @param id The ID of the item to delete
      * @return The task; use .addOnSuccessListener() to do something after deletion
@@ -225,6 +213,7 @@ public class FirestoreInteract {
         FirestoreInteract.userDB = userDB;
     }
 
+
     /**
      * Gets the (static) test item collection
      */
@@ -252,6 +241,7 @@ public class FirestoreInteract {
     public static void setTagDB(CollectionReference tagDB) {
         FirestoreInteract.tagDB = tagDB;
     }
+
 }
 
 /* example of how to call data from firestore to populate an ItemList
