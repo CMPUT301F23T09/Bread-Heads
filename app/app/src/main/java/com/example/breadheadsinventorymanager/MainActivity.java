@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
             resetAdapter();
-//            showDateFilter();
+            showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
