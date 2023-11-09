@@ -487,9 +487,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
-        itemListView.setAdapter(itemArrayAdapter);
         filters.forEach((k, v) -> itemArrayAdapter.getFilter()
                 .filter(k.toString() + v.toString()));
+        itemListView.setAdapter(itemArrayAdapter);
     }
 
     /**
