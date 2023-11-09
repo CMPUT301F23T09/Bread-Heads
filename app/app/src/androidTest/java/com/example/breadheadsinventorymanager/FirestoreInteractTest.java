@@ -3,20 +3,17 @@ package com.example.breadheadsinventorymanager;
 import static com.google.android.gms.tasks.Tasks.await;
 import static org.junit.Assert.assertEquals;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -24,8 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RunWith(AndroidJUnit4.class)
@@ -36,20 +33,20 @@ public class FirestoreInteractTest {
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
     @Mock
-    private FirebaseFirestore firestore;
+    private static FirebaseFirestore firestore;
     @Mock
-    private CollectionReference itemDB;
+    private static CollectionReference itemDB;
     @Mock
-    private CollectionReference userDB;
+    private static CollectionReference userDB;
     @Mock
-    private FirestoreInteract interact;
+    private static FirestoreInteract interact;
     private Item item1;
     private Item item2;
     @Before
     public void setup() {
         firestore = FirebaseFirestore.getInstance();
-        itemDB = firestore.collection("test");
-        userDB = firestore.collection("users");
+        itemDB = firestore.collection("testItems");
+        userDB = firestore.collection("testUsers");
         interact = new FirestoreInteract(firestore, itemDB, userDB);
         item1 = new Item("30/06/2001", "Sample Item 1", "Sample Make 1", "Sample Model 1", "comment 1", 1000);
         item2 = new Item("05/09/2020", "Sample Item 2", "Sample Make 2", "Sample Model 2", "comment 2", 1000);
@@ -97,5 +94,37 @@ public class FirestoreInteractTest {
                             interact.populateWithItems(list2).addOnCompleteListener(task7 ->
                             assertEquals(0, list2.size())));
                         })))); // yuck...
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        deleteCollection(itemDB, 2048);
+    }
+
+    /**
+     * Code adapted from official Google documentation
+     * <a href="https://cloud.google.com/firestore/docs/samples/firestore-data-delete-collection#firestore_data_delete_collection-java">...</a>
+     *
+     * Delete a collection in batches to avoid out-of-memory errors. Batch size may be tuned based
+     * on document size (at most 1MB) and application requirements.
+     */
+    private static void deleteCollection(CollectionReference collection, int batchSize) {
+        try {
+            // retrieve a small batch of documents to avoid out-of-memory errors
+            QuerySnapshot future = collection.limit(batchSize).get().getResult();
+            int deleted = 0;
+            // future.get() blocks on document retrieval
+            List<DocumentSnapshot> documents = future.getDocuments();
+            for (DocumentSnapshot document : documents) {
+                document.getReference().delete();
+                ++deleted;
+            }
+            if (deleted >= batchSize) {
+                // retrieve and delete another batch
+                deleteCollection(collection, batchSize);
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting collection : " + e.getMessage());
+        }
     }
 }
