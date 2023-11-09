@@ -131,7 +131,7 @@ public class Item implements FirestorePuttable, Serializable {
 
     /**
      * Static utility to convert a dollar string to a value
-     * @param string A String formatted as a decimal value with or without a leading $j
+     * @param string A String formatted as a decimal value with or without a leading $
      * @return The returned value, i.e. a long amount of cents
      */
     public static long toValue(String string) {
