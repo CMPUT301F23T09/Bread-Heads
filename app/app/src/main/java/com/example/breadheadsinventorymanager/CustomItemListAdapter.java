@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         View view = convertView;
 
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.main_menu_list_content, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.main_menu_list_content_constraint, parent, false);
         }
 
         // Find TextView widgets for each main menu item
@@ -46,6 +47,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> {
         itemModelTV.setText(item.getModel());
         itemAcquisitionDateTV.setText(item.getDate());
         itemValueTV.setText("$" + item.getValueDollarString());
+
+        // Create a unique Checkbox for each item that is accessible elsewhere
+        CheckBox checkBox = view.findViewById(R.id.checkBox);
+        item.setCheckBox(checkBox);
 
         return view;
 

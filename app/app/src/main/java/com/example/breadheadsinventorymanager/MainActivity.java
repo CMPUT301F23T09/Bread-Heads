@@ -3,7 +3,9 @@ package com.example.breadheadsinventorymanager;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,9 +14,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -193,11 +197,135 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // show dialog for adding an item
             showAddItem();
             return true;
+        } else if (id == R.id.delete_item) {
+            // enter select mode to be able to delete one or more items
+            selectMode();
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
+    // ADD ITEM DIALOG HANDLING
+
+    /**
+     * Handles when the delete button is pressed, which causes the app to enter "select mode". Meaning checkboxes appear for each
+     * item in the list that allows the user to select multiple items at once to do various functions with those items. Currently
+     * the only function is to delete multiple items. In the future, you will be able to add tags to all of the selected items
+     * @param
+     * @return void
+     */
+    private void selectMode() {
+        Button confirm_button = (Button)findViewById(R.id.select_mode_confirm);
+        Button cancel_button = (Button)findViewById(R.id.select_mode_cancel);
+//        ArrayList<Integer> selectedItems = new ArrayList<Integer>();
+//        ArrayList<Item> itemsToBeDeleted = new ArrayList<Item>();
+
+        // bring ups popup with text to let the user know to select items now
+        PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
+        select_text_popup.getMenuInflater().inflate(R.menu.select_item_text, select_text_popup.getMenu());
+        select_text_popup.show();
+
+        // make the confirm and cancel button visible and clickable
+        confirm_button.setVisibility(View.VISIBLE);
+        confirm_button.setClickable(true);
+        cancel_button.setVisibility(View.VISIBLE);
+        cancel_button.setClickable(true);
+
+        // make the checkbox visible for each item
+        for (int i = 0; i < itemList.size(); i++) {
+            // get the item at position i
+            Item current_item = itemList.get(i);
+            CheckBox checkbox = current_item.getCheckBox();
+            if (checkbox == null){
+
+                checkbox = itemListView.findViewById(R.id.checkBox);
+//                checkbox.setChecked(false);
+            }
+            checkbox.setVisibility(View.VISIBLE);
+        }
+
+        // allow the user to click on the item to enable the checkbox to be checked
+        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Item current_item = itemList.get(position);
+                CheckBox checkBox = view.findViewById(R.id.checkBox);
+                current_item.setCheckBox(checkBox);
+                CheckBox checkbox = current_item.getCheckBox();
+                checkbox.setVisibility(View.VISIBLE);
+                if(checkbox.isChecked()){
+                    checkbox.setChecked(false);
+                } else {
+                    checkbox.setChecked(true);
+                }
+
+            }
+        });
+        // when the confirm button is pressed
+        confirm_button.setOnClickListener(v -> {
+
+            // hide the buttons and make them not clickable so they aren not accidentally pressed
+            confirm_button.setVisibility(View.INVISIBLE);
+            confirm_button.setClickable(false);
+            cancel_button.setVisibility(View.INVISIBLE);
+            cancel_button.setClickable(false);
+
+            for (int i = itemList.size()-1; i > -1; i--) {
+                // get the item at position i
+                Item current_item = itemList.get(i);
+                CheckBox checkbox = current_item.getCheckBox();
+                if (checkbox != null){
+                    if (checkbox.isChecked()){
+                        // Delete item in firebase database
+                        itemList.remove(current_item);
+                        database.deleteItem(current_item).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+//                                resetAdapter(); // clear filter
+//                                updateList();
+                            }
+                        });
+
+                    }
+                    // uncheck and hide the checkbox
+                    checkbox.setChecked(false);
+                    checkbox.setVisibility(View.INVISIBLE);
+                }
+
+            }
+
+//            itemArrayAdapter.notifyDataSetChanged();
+            resetAdapter(); // clear filter
+            updateList();
+        });
+
+        // when the cancel button is pressed
+        cancel_button.setOnClickListener(v -> {
+            // hide the buttons and make them not clickable so they aren not accidentally pressed
+            confirm_button.setVisibility(View.INVISIBLE);
+            confirm_button.setClickable(false);
+            cancel_button.setVisibility(View.INVISIBLE);
+            cancel_button.setClickable(false);
+            for (int i = 0; i < itemList.size(); i++) {
+                // get the item at position i
+                Item current_item = itemList.get(i);
+                CheckBox checkbox = current_item.getCheckBox();
+
+                // uncheck and hide the checkbox
+                if (checkbox != null){
+                    checkbox.setChecked(false);
+                    checkbox.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        });
+    }
+    /**
+     * handles creating the dialog and switching to associated fragment
+     */
+
+    // TOPBAR MENU HANDLING
 
     // SORT MENU HANDLING
 
@@ -272,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
             resetAdapter();
-            showDateFilter();
+//            showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
