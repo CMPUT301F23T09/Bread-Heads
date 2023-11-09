@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -37,8 +38,8 @@ public class Item implements FirestorePuttable, Serializable {
     private long value; // in cents
     private transient CheckBox checkBox; // must be transient so the class can be serialized
     private String comment = ""; // comment is optional
+    private TagList tags;
     // private ArrayList<Photo> photos; // second half
-    // private TagList tags; // second half
 
     /**
      * Empty constructor.
@@ -56,6 +57,7 @@ public class Item implements FirestorePuttable, Serializable {
         this.serialNum = serialNum;
         this.value = value;
         this.comment = comments;
+        this.tags = new TagList();
     }
 
     /**
@@ -71,7 +73,8 @@ public class Item implements FirestorePuttable, Serializable {
         serialNum = document.getString("serialNum");
         value = (long) document.get("value");
         comment = document.getString("comment");
-        // TODO PART 2: photos and tags
+        tags = new TagList((List<String>) document.get("tags"));
+        // TODO PART 2: photos
     }
 
     /**
@@ -85,9 +88,9 @@ public class Item implements FirestorePuttable, Serializable {
         make = document.getString("make");
         model = document.getString("model");
         serialNum = document.getString("serialNum");
-        value = (long) document.get("value");
+        value = document.getLong("value");
         comment = document.getString("comment");
-        // TODO PART 2: photos and tags
+        tags = new TagList((List<String>) document.get("tags"));
     }
 
     /**
@@ -101,6 +104,7 @@ public class Item implements FirestorePuttable, Serializable {
         this.model = model;
         this.value = value;
         this.comment = comments;
+        this.tags = new TagList();
     }
 
     /**
@@ -170,7 +174,8 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("serialNum", serialNum);
         map.put("value", value);
         map.put("comment", comment);
-        // TODO SECOND HALF: photos and tags
+        map.put("tags", tags);
+        // TODO SECOND HALF: photos
 
         return map;
     }
@@ -249,9 +254,18 @@ public class Item implements FirestorePuttable, Serializable {
         this.id = id;
     }
 
+
+    public TagList getTags() {
+        return tags;
+    }
+
+    public void setTags(TagList tags) {
+        this.tags = tags;
+    }
+
     public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
 
     public CheckBox getCheckBox() {return this.checkBox;}
-}
 
+}
 

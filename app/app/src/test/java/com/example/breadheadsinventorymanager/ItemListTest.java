@@ -12,7 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Collections;
 
 public class ItemListTest {
@@ -20,6 +22,8 @@ public class ItemListTest {
 
     private Item item1;
     private Item item2;
+
+    private Item item3;
 
     private ItemList itemList;
 
@@ -34,6 +38,8 @@ public class ItemListTest {
         item1.setId("1");
         item2 = new Item("31/09/2023", "Description2", "Make2", "Model2", "Serial2", 20);
         item2.setId("2");
+        item3 = new Item("2023-8-31", "Description3", "Make3", "Model3", "Serial3", 30);
+        item3.setId("3");
 
         Collection<Item> itemCollection = new ArrayList<>();
         itemCollection.add(item1);
@@ -161,6 +167,108 @@ public class ItemListTest {
         TestCase.assertEquals(10, itemListC.getSum(), 0.001);
         itemListC.remove("1");
         TestCase.assertEquals(0, itemListC.getSum(), 0.001);
+    }
+
+    @Test
+    public void testSortItemsByTagsAlphabeticallyAscending() {
+        // Create items with tags
+        item1.getTags().add(new Tag("Apple"));
+        item1.getTags().add(new Tag("Banana"));
+
+        item2.getTags().add(new Tag("Banana"));
+        item2.getTags().add(new Tag("Cherry"));
+
+        item3.getTags().add(new Tag("Cherry"));
+        item3.getTags().add(new Tag("Apple"));
+
+        itemList.addAll(Arrays.asList(item1, item2, item3));
+
+        itemList.sortItemsByTagsAlphabetically(true);
+
+        // Verify the order after sorting
+        assertEquals("Description1", itemList.get(0).getDescription());
+        assertEquals("Description3", itemList.get(1).getDescription());
+        assertEquals("Description2", itemList.get(2).getDescription());
+    }
+
+    @Test
+    public void testSortItemsByTagsAlphabeticallyDescending() {
+        // Create items with tags
+        item1.getTags().add(new Tag("Banana"));
+        item1.getTags().add(new Tag("Cherry"));
+
+        item2.getTags().add(new Tag("Cherry"));
+        item2.getTags().add(new Tag("Apple"));
+
+        item3.getTags().add(new Tag("Apple"));
+        item3.getTags().add(new Tag("Banana"));
+
+        itemList.addAll(Arrays.asList(item1, item2, item3));
+
+        itemList.sortItemsByTagsAlphabetically(false);
+
+        // Verify the order after sorting
+        assertEquals("Description1", itemList.get(0).getDescription());
+        assertEquals("Description2", itemList.get(1).getDescription());
+        assertEquals("Description3", itemList.get(2).getDescription());
+    }
+
+    @Test
+    public void testFilterTags() {
+        // Create items with tags
+
+        item1.getTags().add(new Tag("Apple"));
+        item1.getTags().add(new Tag("Banana"));
+        item1.getTags().add(new Tag("Cherry"));
+
+        item2.getTags().add(new Tag("Banana"));
+        item2.getTags().add(new Tag("Cherry"));
+
+        item3.getTags().add(new Tag("Cherry"));
+        item3.getTags().add(new Tag("Apple"));
+
+
+        itemList.addAll(Arrays.asList(item1, item2, item3));
+        Tag filter1= new Tag("Apple");
+        Tag filter2= new Tag("Grape");
+        Tag filter3= new Tag("Banana");
+        Tag filter4= new Tag("Cherry");
+
+        // Define the tags to filter by
+        List<Tag> tagsToFilter = Arrays.asList(filter1,filter3);
+
+        // Call the filterTags method
+        List<Item> filteredItems = itemList.filterTags(tagsToFilter);
+
+        // Verify the filtered items' string IDs
+        assertEquals(1, filteredItems.size());
+        assertEquals("1", filteredItems.get(0).getId());
+
+        // Define the tags to filter by
+        tagsToFilter = Arrays.asList(filter2);
+
+        // Call the filterTags method
+        filteredItems = itemList.filterTags(tagsToFilter);
+        // Verify the filtered items' string IDs
+        assertEquals(0, filteredItems.size());
+
+        tagsToFilter = Arrays.asList(filter2,filter4);
+
+        filteredItems = itemList.filterTags(tagsToFilter);
+        // Verify the filtered items' string IDs
+        assertEquals(0, filteredItems.size());
+
+        tagsToFilter = Arrays.asList(filter4);
+
+        filteredItems = itemList.filterTags(tagsToFilter);
+        // Verify the filtered items' string IDsW
+        assertEquals(3, filteredItems.size());
+        assertEquals("1", filteredItems.get(0).getId());
+        assertEquals("2", filteredItems.get(1).getId());
+        assertEquals("3", filteredItems.get(2).getId());
+
+
+
     }
 
     @Test
