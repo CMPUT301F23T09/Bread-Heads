@@ -13,9 +13,9 @@ import java.util.Map;
 public class Filter {
 
     private ItemList filteredList;
-    private final HashMap<String, ItemList> descriptionComp;
-    private final HashMap<String, ItemList> makeComp;
-    private final HashMap<String, ItemList> dateComp;
+    private HashMap<String, ItemList> descriptionComp;
+    private HashMap<String, ItemList> makeComp;
+    private HashMap<String, ItemList> dateComp;
     // arbitrary number to ensure keys are unique
     private Integer num = 0;
 
@@ -63,13 +63,13 @@ public class Filter {
     }
 
     /**
-     * filters the list by description and adds it to the hashMap
-     *
+     * filters the list by description and adds it to the hashMap, can only filter by one description at a time
      * @param description the description to look for
      * @param list        the list ot filter
      */
     public void filterDescription(String description, ItemList list) {
         ItemList descList = new ItemList();
+        descriptionComp = new HashMap<>();
 
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getDescription().contains(description)) {
@@ -82,7 +82,7 @@ public class Filter {
     }
 
     /**
-     * filters the list by date range and adds it to the hashMap
+     * filters the list by date range and adds it to the hashMap, we can only filter by one date range at a time
      *
      * @param dateLow  lower date bound
      * @param dateHigh upper date bound
@@ -90,7 +90,7 @@ public class Filter {
      */
     public void filterDate(LocalDate dateLow, LocalDate dateHigh, ItemList list) {
         ItemList dateList = new ItemList();
-
+        dateComp = new HashMap<>();
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getDateObj().isAfter(dateLow) && list.get(i).getDateObj().isBefore(dateHigh)) {
                 dateList.add(list.get(i));
@@ -110,7 +110,7 @@ public class Filter {
      */
     public boolean checkAgainstDateFilter(ItemList list, Item item) {
         boolean valid = false;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if(dateComp.isEmpty()) {
             return true;
         } else {
@@ -166,7 +166,7 @@ public class Filter {
      */
     // TODO MAKE NICER PLZ - FUTURE EVAN
     public ItemList processFilter(ItemList list) {
-
+        // BEHOLD THE GOD FILTER METHOD
         // filter in order of description then date then make since multiple dates/makes filters can be added
         // it can be changed if more than one description can be searched for
         filteredList.addAll(list);
@@ -180,7 +180,7 @@ public class Filter {
                 if (list.size() > this.filteredList.size()) {
                     // since we can filter by multiple descriptions, we simply add to the filtered list if it doesn't already exist
                     for (int i = 0; i < filteredList.size(); i++) {
-                        if( !(arrayList.contains(filteredList.get(i))) && checkAgainstDateFilter(filteredList, arrayList.get(i))) {
+                        if( !(arrayList.contains(filteredList.get(i)))) {
                             filteredList.remove(i);
                         }
                         //Log.d("h1", "second go around " + list.size() + " " + this.filteredList.size());

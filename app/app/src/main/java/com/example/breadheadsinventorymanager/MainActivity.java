@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,12 +53,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     //private ItemList filteredList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
+
+    // ids for recycler view for filtering view
+
     private Filter filter;
     private ArrayAdapter<Item> filterAdapter;
-
-    // ids for recycler view for filtering
-    private RecyclerView filterRecyclerView;
+    private RecyclerView recyclerView;
     private ArrayList<RecyclerItem> recyclerList;
+    private RecyclerViewAdapter recyclerAdapter;
 
     private FirestoreInteract database;
 
@@ -79,9 +82,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterDateButton = findViewById(R.id.date_filter_button);
         totalValue = findViewById(R.id.total_value);
 
-        // filter setup
+        // filter recycler view setup
         filter = new Filter();
-        //filteredList = new ItemList();
+        recyclerList = new ArrayList<RecyclerItem>();
+        recyclerView = findViewById(R.id.filter_recycler_view);
+        recyclerAdapter = new RecyclerViewAdapter(this, recyclerList, this);
+        recyclerView.setAdapter(recyclerAdapter);
 
         //ListView and adapter setup
         database = new FirestoreInteract();
@@ -140,6 +146,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 updateList();
             }
         });
+    }
+
+    // recycler view click listener, removes recycler adapter Item
+    // bad practise, Interface should be singular
+    @Override
+    public void onItemClick(int position) {
+
     }
 
     /**
@@ -256,10 +269,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * resets the adapter to the original ItemList and clears the filtered list in filter
      */
     private void resetAdapter() {
-        // toggle visibility and reset text query
+        // toggle visibility and reset text query and filter visibility
         toggleFilterVisibility();
         filter.clearFilter();
         filter.clearCriteria();
+        recyclerList.clear();
         startDate.setText("");
         endDate.setText("");
         itemListView.setAdapter(itemArrayAdapter);
@@ -277,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             dateErrorMsg.setVisibility(GONE);
             startDate.setVisibility(GONE);
             endDate.setVisibility(GONE);
+            recyclerView.setVisibility(GONE);
         }
         if (searchBox.getVisibility() == VISIBLE) {
             searchBox.setVisibility(GONE);
@@ -294,11 +309,19 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
 
-        // update adapter to show filtered results vie filter function call
+        // update adapter to show filtered results via filter class function call
         filter.filterMake(menuItem.toString(), itemList);
         filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.processFilter(itemList));
         itemListView.setAdapter(filterAdapter);
         filterAdapter.notifyDataSetChanged();
+
+        // add an interactable filter to the recycler view
+        recyclerView.setVisibility(VISIBLE);
+        RecyclerItem recyclerItem = new RecyclerItem(menuItem.toString());
+        recyclerList.add(recyclerItem);
+        recyclerAdapter.notifyDataSetChanged();
+        Log.d("h1", String.valueOf(recyclerAdapter.getItemCount()));
+
         return true;
     }
 

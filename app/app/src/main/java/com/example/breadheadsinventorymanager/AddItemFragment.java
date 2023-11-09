@@ -159,5 +159,6 @@ public class AddItemFragment extends DialogFragment {
      */
     public interface OnFragmentInteractionListener {
         void onOKPressed(Item item);
+        void onItemClick(int position);
     }
 }
