@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Class to interact with Firestore
- * @version 1
+ * @version 1.1
  */
 public class FirestoreInteract {
     private FirebaseFirestore database; // can't be static; would create memory leak (uses context)
@@ -25,11 +24,13 @@ public class FirestoreInteract {
     // static variables that point to collections in the Firebase database
     private static CollectionReference itemDB;
     private static CollectionReference userDB;
-    public static CollectionReference testDB;
+    private static CollectionReference testDB;
 
+    /**
+     * Initialize firestore database.
+     * Adapted from lab 5 instructions.
+     */
     public FirestoreInteract() {
-        // initialize firestore database
-        // adapted from lab 5 instructions
         database = FirebaseFirestore.getInstance();
         itemDB = database.collection("items");
         userDB = database.collection("users");
@@ -38,19 +39,25 @@ public class FirestoreInteract {
 
     /**
      * Attempts to put the given object into the Item collection on Firestore.
+     *
      * @param obj The object to put into the collection.
+     * @return The update task
      */
-    public void putItem(FirestorePuttable obj) {
+    public Task<Void> putItem(Item obj) {
+        obj.put(itemDB);
         if (obj.getId() != null) {
-            itemDB.document(obj.getId()).set(obj.formatForFirestore());
+            return itemDB.document(obj.getId()).set(obj.formatForFirestore());
         }
         else {
             DocumentReference doc = itemDB.document(); // firestore will generate ID for us
-            doc.set(obj.formatForFirestore());
-            obj.setId(doc.getId()); // make sure this item's ID matches firestore's
+            Task<Void> task = doc.set(obj.formatForFirestore());
+            return task.addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    obj.setId(doc.getId()); // make sure this item's ID matches firestore's
+                }
+            });
         }
-
-        obj.put(itemDB);
     }
 
     /**
@@ -109,24 +116,13 @@ public class FirestoreInteract {
     }
 
     /**
-     * Deletes an item from Firestore and removes it from the provided ItemList.
-     *
+     * Deletes an item from Firestore item collection
      * @param obj The FirestorePuttable object representing the item to delete.
-     * @param itemList The ItemList from which to remove the item.
      * @return A Firestore deletion task. Use .addOnSuccessListener() to handle success.
      */
-    public Task<Void> deleteItem(FirestorePuttable obj, ItemList itemList) {
+    public Task<Void> deleteItem(FirestorePuttable obj) {
         String itemId = obj.getId();
         Task<Void> firestoreDeleteTask = deleteItem(itemId);
-
-        // Add an OnSuccessListener to the Firestore deletion task
-        firestoreDeleteTask.addOnSuccessListener(aVoid -> {
-            // Check if the Firestore deletion was successful
-            if (firestoreDeleteTask.isSuccessful()) {
-                // The Firestore deletion was successful, so remove the item from the itemList
-                itemList.remove(itemId);
-            }
-        });
         return firestoreDeleteTask;
     }
 
@@ -136,6 +132,30 @@ public class FirestoreInteract {
 
     public void setDatabase(FirebaseFirestore database) {
         this.database = database;
+    }
+
+    public static CollectionReference getItemDB() {
+        return itemDB;
+    }
+
+    public static void setItemDB(CollectionReference itemDB) {
+        FirestoreInteract.itemDB = itemDB;
+    }
+
+    public static CollectionReference getUserDB() {
+        return userDB;
+    }
+
+    public static void setUserDB(CollectionReference userDB) {
+        FirestoreInteract.userDB = userDB;
+    }
+
+    public static CollectionReference getTestDB() {
+        return testDB;
+    }
+
+    public static void setTestDB(CollectionReference testDB) {
+        FirestoreInteract.testDB = testDB;
     }
 }
 

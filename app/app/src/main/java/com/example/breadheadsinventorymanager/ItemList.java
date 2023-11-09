@@ -1,12 +1,16 @@
 package com.example.breadheadsinventorymanager;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Stores a list of items
  *
- * @version 1.1
+ * @version 1.2
  */
 public class ItemList extends ArrayList<Item> {
     private long sum = 0; // Initialize the running sum to 0
@@ -24,6 +28,7 @@ public class ItemList extends ArrayList<Item> {
      */
     public ItemList(Collection<? extends Item> c) {
         super(c);
+        this.sum = 0;
         for (Item item : this) {
             this.sum += item.getValue();
         }
@@ -45,8 +50,7 @@ public class ItemList extends ArrayList<Item> {
      * @param item element to be removed from this list, if present
      * @return true if an item was removed, else false
      */
-    @Override
-    public boolean remove(Object item) {
+    public boolean remove(Item item) {
         if (super.remove(item)) {
             // Item was removed, update the running sum
             sum -= ((Item) item).getValue();
@@ -86,10 +90,18 @@ public class ItemList extends ArrayList<Item> {
 
 
     /**
-     * Gets sum of all Items in this list
+     * Gets sum of values of all Items in this list
      */
     public double getSum() {
         return sum;
+    }
+
+    /**
+     * Gets sum of values of all Items in this list
+     * @return A string formatted as 10.50 - add dollar sign if necessary
+     */
+    public String getSumAsDollarString() {
+        return Item.toDollarString(sum);
     }
 
     /**
@@ -105,5 +117,40 @@ public class ItemList extends ArrayList<Item> {
         }
 
         return makeList;
+    }
+
+    /**
+     * Sorts the ItemList by the given parameter in either ascending or descending order.
+     * @field The field to sort by. Supports "description", "comment", "date", "make", or "value".
+     * @boolean True if the sorted list should be ascending, else false.
+     */
+    public void sort(String field, boolean ascending) {
+        Collections.sort(this, (lhs, rhs) -> {
+            int result = 0;
+
+            switch(field) {
+                // lower case is used for sorting as that's more user-friendly (B is after a)
+                case "description":
+                    result = lhs.getDescription().toLowerCase().compareTo(
+                            rhs.getDescription().toLowerCase());
+                    break;
+                case "comment":
+                    result = lhs.getComment().toLowerCase().compareTo(
+                            rhs.getComment().toLowerCase());
+                    break;
+                case "date":
+                    result = lhs.getDateObj().compareTo(rhs.getDateObj());
+                    break;
+                case "make":
+                    result = lhs.getMake().toLowerCase().compareTo(
+                            rhs.getMake().toLowerCase());
+                    break;
+                case "value":
+                    result = Long.compare(lhs.getValue(), rhs.getValue());
+            }
+
+            // if ascending, just return the result; if descending, flip all comparisons
+            return ascending ? result : -result;
+        });
     }
 }

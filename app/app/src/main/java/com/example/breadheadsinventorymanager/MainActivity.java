@@ -3,12 +3,12 @@ package com.example.breadheadsinventorymanager;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,44 +16,54 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Main activity
  *
- * @version 0
+ * @version 1
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
-
     // id for search box to filter by description
     private SearchView searchBox;
     private EditText startDate;
     private EditText endDate;
     private TextView dateErrorMsg;
     private Button filterDateButton;
+    private TextView totalValue;
+    private ImageButton sortButton;
+    private Button sortOrderButton;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
+    private FirestoreInteract database;
+
+    // stores information about how the list is currently sorted
+    private String sortMode = "description"; // which field to sort by
+    private boolean sortAscending = true; // whether to sort in ascending or descending order
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
         searchBox = findViewById(R.id.search_view);
@@ -61,39 +71,93 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         endDate = findViewById(R.id.filter_date_end);
         dateErrorMsg = findViewById(R.id.invalid_date_message);
         filterDateButton = findViewById(R.id.date_filter_button);
+        totalValue = findViewById(R.id.total_value);
+        sortButton = findViewById(R.id.sort_button);
+        sortOrderButton = findViewById(R.id.sort_order_button);
 
         //ListView and adapter setup
+        database = new FirestoreInteract();
         itemList = new ItemList();
-        itemListView = findViewById(R.id.items_main_list);
-        itemArrayAdapter = new CustomItemListAdapter(this, itemList);
-        itemListView.setAdapter(itemArrayAdapter);
-        // END OF ADAPTER SETUP DELETE BEFORE MERGING!
-        itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Item selectedItem = itemArrayAdapter.getItem(position);
-                Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
-                intent.putExtra("item", selectedItem);
-                startActivity(intent);
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Item selectedItem = itemArrayAdapter.getItem(position);
+                        Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
+                        intent.putExtra("item", selectedItem);
+                        startActivity(intent);
+                    }
+                });
             }
         });
 
+        sortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortMenu();
+            }
+        });
+        sortOrderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean order = toggleSortOrder();
+                if (order) {
+                    sortOrderButton.setText("Ascending");
+                } else {
+                    sortOrderButton.setText("Descending");
+                }
+            }
+        });
+    }
+
+    // ITEM LIST HANDLING
+
+    /**
+     * Updates the total value displayed at the bottom of the screen
+     */
+    private void updateTotalValue() {
+        totalValue.setText(getString(R.string.totalValueTitle, itemList.getSumAsDollarString()));
+        totalValue.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Updates the contents of the ItemList with the contents of the Firestore database
+     * @return A Task tracking the update
+     */
+    private Task<QuerySnapshot> updateList() {
+        itemList = new ItemList();
+        return database.populateWithItems(itemList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                itemList.sort(sortMode, sortAscending);
+                itemListView = findViewById(R.id.items_main_list);
+                itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
+                itemListView.setAdapter(itemArrayAdapter);
+                updateTotalValue();
+            }
+        });
     }
 
     // ADD ITEM DIALOG HANDLING
+
+    @Override
+    public void onOKPressed(Item item) {
+        database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                resetAdapter(); // clear filter
+                updateList();
+            }
+        });
+    }
 
     /**
      * handles creating the dialog and switching to associated fragment
      */
     private void showAddItem() {
-        new AddItemFragment().show(getSupportFragmentManager(), "ADD_CITY");
-    }
-
-    @Override
-    public void onOKPressed(Item item) {
-        itemList.add(item);
-        itemListView.setAdapter(itemArrayAdapter);
-        itemArrayAdapter.notifyDataSetChanged();
+        new AddItemFragment().show(getSupportFragmentManager(), "ADD_ITEM");
     }
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
@@ -134,6 +198,56 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
     }
 
+
+    // SORT MENU HANDLING
+
+    /**
+     * Handles sort menu creation
+     */
+    private void showSortMenu() {
+        PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.sort_button));
+        popup.setOnMenuItemClickListener(this::onSortMenuClick);
+        popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
+        popup.show();
+    }
+
+    /**
+     * Handles clicking of sort menu items
+     * @param item the menu item that was clicked
+     * @return true if an item is clicked, false otherwise
+     */
+    private boolean onSortMenuClick(MenuItem item) {
+        int itemClick = item.getItemId();
+        if (itemClick == R.id.sort_date) {
+            sortMode = "date";
+        } else if (itemClick == R.id.sort_desc) {
+            sortMode = "description";
+        } else if (itemClick == R.id.sort_comment) {
+            sortMode = "comment";
+        } else if (itemClick == R.id.sort_make) {
+            sortMode = "make";
+        } else if (itemClick == R.id.sort_value) {
+            sortMode = "value";
+        } else {
+            return false;
+        }
+
+        itemList.sort(sortMode, sortAscending);
+        itemArrayAdapter.notifyDataSetChanged();
+        return true;
+    }
+
+    /**
+     * Changes the order items are sorted in
+     * @return True if the new sort order is ascending, otherwise false
+     */
+    private boolean toggleSortOrder() {
+        sortAscending = !sortAscending;
+        itemList.sort(sortMode, sortAscending);
+        itemArrayAdapter.notifyDataSetChanged();
+        return sortAscending;
+    }
+
     // FILTER MENU HANDLING
 
     /**
@@ -148,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles clicking of menu items
+     * Handles clicking of filter menu items
      *
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
