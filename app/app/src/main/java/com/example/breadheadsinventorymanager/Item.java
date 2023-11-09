@@ -13,6 +13,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -132,7 +133,7 @@ public class Item implements FirestorePuttable, Serializable {
 
     /**
      * Static utility to convert a dollar string to a value
-     * @param string A String formatted as a decimal value with or without a leading $j
+     * @param string A String formatted as a decimal value with or without a leading $
      * @return The returned value, i.e. a long amount of cents
      */
     public static long toValue(String string) {

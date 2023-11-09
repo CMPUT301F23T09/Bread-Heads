@@ -129,17 +129,21 @@ public class ItemList extends ArrayList<Item> {
             int result = 0;
 
             switch(field) {
+                // lower case is used for sorting as that's more user-friendly (B is after a)
                 case "description":
-                    result = lhs.getDescription().compareTo(rhs.getDescription());
+                    result = lhs.getDescription().toLowerCase().compareTo(
+                            rhs.getDescription().toLowerCase());
                     break;
                 case "comment":
-                    result = lhs.getComment().compareTo(rhs.getComment());
+                    result = lhs.getComment().toLowerCase().compareTo(
+                            rhs.getComment().toLowerCase());
                     break;
                 case "date":
                     result = lhs.getDateObj().compareTo(rhs.getDateObj());
                     break;
                 case "make":
-                    result = lhs.getMake().compareTo(rhs.getMake());
+                    result = lhs.getMake().toLowerCase().compareTo(
+                            rhs.getMake().toLowerCase());
                     break;
                 case "value":
                     result = Long.compare(lhs.getValue(), rhs.getValue());
