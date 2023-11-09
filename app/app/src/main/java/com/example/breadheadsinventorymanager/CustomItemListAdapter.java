@@ -1,6 +1,7 @@
 package com.example.breadheadsinventorymanager;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filterable {
     private ItemList items;
@@ -82,40 +87,60 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-            JsonObject filters = JsonParser.parseString((String) constraint).getAsJsonObject();
+            JsonArray filtersJson = JsonParser.parseString((String) constraint).getAsJsonArray();
+            // conversion utility adapted from https://stackoverflow.com/a/8371455
+            Type listType = new TypeToken<List<String>>(){}.getType();
+            List<String> filters = new Gson().fromJson(filtersJson, listType);
 
-            if (constraint != null && constraint.length() > 1 && items != null) {
-                char filterType = constraint.charAt(0);
-                CharSequence filterContent = constraint.subSequence(1, constraint.length());
+            // parse filters
+            String description = null;
+            LocalDate initDate = null;
+            LocalDate finalDate = null;
+            ArrayList<String> makes = new ArrayList<>();
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("d/M/yyyy");
+            for (String filter : filters) {
+                switch (filter.charAt(0)) {
+                    case 'D': // description
+                        description = filter.substring(1).toLowerCase();
+                        Log.i("CILA", "desc: " + description);
+                        break;
+                    case '1': // lower date bound
+                        initDate = LocalDate.parse(filter.substring(1), format);
+                        Log.i("CILA", "init: " + initDate.toString());
+                        break;
+                    case '2': // upper date bound
+                        finalDate = LocalDate.parse(filter.substring(1), format);
+                        Log.i("CILA", "fin: " + finalDate.toString());
+                        break;
+                    case 'M': // make
+                        makes.add(filter.substring(1));
+                        Log.i("CILA", "makes: " + makes);
+                        break;
+                }
+            }
+
+            if (items != null) {
                 ItemList output = new ItemList();
-
                 for (int i = 0; i < items.size(); i++) {
+                    boolean keepFlag = true; // do we keep the item or not? default "yes"
                     Item item = items.get(i);
-                    DateTimeFormatter format = DateTimeFormatter.ofPattern("d/M/yyyy");
-                    switch (filterType) {
-                        case 'D': // description
-                            if (item.getDescription().toLowerCase()
-                                    .contains(filterContent.toString().toLowerCase())) {
-                                output.add(item);
-                            }
-                            break;
-                        case '1': // initial date in range
-                            if (!item.getDateObj().isBefore(LocalDate.parse(constraint, format))) {
-                                output.add(item);
-                            }
-                            break;
-                        case '2':
-                            if (!item.getDateObj().isAfter(LocalDate.parse(constraint, format))) {
-                                output.add(item);
-                            }
-                            break;
-                        case 'M': // make
-                            if (item.getMake().equals(filterContent.toString())) {
-                                output.add(item);
-                            }
-                            break;
+
+                    if (description != null) {
+                        keepFlag = item.getDescription().toLowerCase().contains(description) && keepFlag;
+                    }
+                    if (initDate != null) {
+                        keepFlag = !(item.getDateObj().isBefore(initDate)) && keepFlag;
+                    }
+                    if (finalDate != null) {
+                        keepFlag = !(item.getDateObj().isAfter(finalDate)) && keepFlag;
+                    }
+                    if (!makes.isEmpty()) {
+                        keepFlag = makes.contains(item.getMake()) && keepFlag;
                     }
 
+                    if (keepFlag) { // passed all applicable tests
+                        output.add(item);
+                    }
                 }
 
                 results.values = output;

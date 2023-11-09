@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private String sortMode = "description"; // which field to sort by
     private boolean sortAscending = true; // whether to sort in ascending or descending order
 
-    private HashMap<Character, CharSequence> filters = new HashMap<>();
+    private ArrayList<CharSequence> filters = new ArrayList<>();
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -462,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * means that the list cannot have more than one filter active at a time
      */
     private void resetAdapter() {
-        filters = new HashMap<>();
+        filters = new ArrayList<>();
         toggleFilterVisibility();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
@@ -501,8 +503,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         String json = gson.toJson(filters);
         Log.i("JSON", json);
         itemArrayAdapter.getFilter().filter(json);
-        filters.forEach((k, v) ->
-                itemArrayAdapter.getFilter().filter(k + v.toString()));
         itemListView.setAdapter(itemArrayAdapter);
     }
 
@@ -514,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
         // update adapter to show filtered results
-        filters.put('M', menuItem.toString());
+        filters.add('M' + menuItem.toString());
         activateFilters();
         return true;
     }
@@ -537,11 +537,18 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // creates a list to then set a new adapter to
             // modified code from this video https://www.youtube.com/watch?v=7Sw98YZW-ik
             public boolean onQueryTextChange(String newText) {
-                if (filters.containsKey('D')) {
-                    filters.remove('D'); // clear previous text filters
+                // clear previous description filters
+                ArrayList<CharSequence> newFilters = filters;
+                for (CharSequence filter : filters) {
+                    if (filter.charAt(0) == 'D') {
+                        newFilters.remove(filter);
+                    }
                 }
+                filters = newFilters;
+
+
                 if (newText.length() > 0) {
-                    filters.put('D', newText);
+                    filters.add('D' + newText);
                 }
                 activateFilters();
                 return false;
@@ -570,17 +577,25 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                     String endString = endDate.getText().toString();
 
                     // remove existing filters
-                    filters.remove('1');
-                    filters.remove('2');
+                    if (!filters.isEmpty()) {
+                        ArrayList<CharSequence> newFilters = (ArrayList<CharSequence>) filters.clone();
+                        for (CharSequence filter : filters) {
+                            if (filter.charAt(0) == '1' || filter.charAt(0) == '2') {
+                                newFilters.remove(filter);
+                            }
+                        }
+                        filters = newFilters;
+                    }
+
 
                     if (startString.length() > 0) {
                         LocalDate newDateStart = LocalDate.parse(startString, formatter);
-                        filters.put('1', startString);
+                        filters.add('1' + startString);
                     }
 
                     if (endString.length() > 0) {
                         LocalDate newDateEnd = LocalDate.parse(endString, formatter);
-                        filters.put('2', endString);
+                        filters.add('2' + endString);
                     }
 
                     // update adapter to new filter
