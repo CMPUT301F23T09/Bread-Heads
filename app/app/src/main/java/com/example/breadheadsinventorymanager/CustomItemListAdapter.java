@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class CustomItemListAdapter extends ArrayAdapter<Item> {
     private ItemList items;
     private Context context;
-    private ItemList newItemList;
 
     public CustomItemListAdapter(Context context, ItemList items) {
         super(context, 0, items);

@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,10 +49,15 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     // obligatory id's for lists/adapters
     private ItemList itemList;
+    //private ItemList filteredList;
     private ArrayAdapter<Item> itemArrayAdapter;
     private ListView itemListView;
     private Filter filter;
     private ArrayAdapter<Item> filterAdapter;
+
+    // ids for recycler view for filtering
+    private RecyclerView filterRecyclerView;
+    private ArrayList<RecyclerItem> recyclerList;
 
     private FirestoreInteract database;
 
@@ -73,9 +79,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterDateButton = findViewById(R.id.date_filter_button);
         totalValue = findViewById(R.id.total_value);
 
-        // filter init
+        // filter setup
         filter = new Filter();
-        filterAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
+        //filteredList = new ItemList();
+
         //ListView and adapter setup
         database = new FirestoreInteract();
         itemList = new ItemList();
@@ -85,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 itemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Item selectedItem = itemArrayAdapter.getItem(position);
+                        Item selectedItem = (Item) itemListView.getAdapter().getItem(position);
                         Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
                         intent.putExtra("item", selectedItem);
                         startActivity(intent);
@@ -130,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                //resetAdapter(); // clear filter
                 updateList();
             }
         });
@@ -250,8 +256,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * resets the adapter to the original ItemList and clears the filtered list in filter
      */
     private void resetAdapter() {
+        // toggle visibility and reset text query
         toggleFilterVisibility();
         filter.clearFilter();
+        filter.clearCriteria();
+        startDate.setText("");
+        endDate.setText("");
         itemListView.setAdapter(itemArrayAdapter);
         itemArrayAdapter.notifyDataSetChanged();
     }
@@ -267,10 +277,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             dateErrorMsg.setVisibility(GONE);
             startDate.setVisibility(GONE);
             endDate.setVisibility(GONE);
-            startDate.setText("");
-            endDate.setText("");
-
-            // toggle invisible and reset query
         }
         if (searchBox.getVisibility() == VISIBLE) {
             searchBox.setVisibility(GONE);
@@ -287,18 +293,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
-        ItemList results = new ItemList();
 
-        /*// compare the make selected to the makes of itemList
-        for (int i = 0; i < itemList.size(); i++) {
-            if (itemList.get(i).getMake().equals(menuItem.toString())) {
-                    results.add(itemList.get(i));
-            }
-        }*/
-
-        // update adapter to show filtered results
-        filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.filterByMake(itemList, menuItem.toString()));
+        // update adapter to show filtered results vie filter function call
+        filter.filterMake(menuItem.toString(), itemList);
+        filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.processFilter(itemList));
         itemListView.setAdapter(filterAdapter);
+        filterAdapter.notifyDataSetChanged();
         return true;
     }
 
@@ -313,21 +313,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         searchBox.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                // update adapter to show the filtered results
+                filter.filterDescription(query, itemList);
+                filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.processFilter(itemList));
+                itemListView.setAdapter(filterAdapter);
+                filterAdapter.notifyDataSetChanged();
                 return false;
             }
 
             @Override
-            // creates a list to then set a new adapter to
             // modified code from this video https://www.youtube.com/watch?v=7Sw98YZW-ik
             public boolean onQueryTextChange(String newText) {
-                /*for (int i = 0; i < itemList.size(); i++) {
-                    if (itemList.get(i).getDescription().contains(newText)) {
-                        results.add(itemList.get(i));
-                    }
-                }*/
-                // update adapter to show the filtered results
-                filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.filterByDescription(itemList, newText));
-                itemListView.setAdapter(filterAdapter);
                 return false;
             }
         });
@@ -354,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                     String endString = endDate.getText().toString();
                     LocalDate newDateStart = LocalDate.parse(startString, formatter);
                     LocalDate newDateEnd = LocalDate.parse(endString, formatter);
-
+                    // check for valid date range
                     if (newDateStart.isAfter(currentDate) || newDateEnd.isAfter(currentDate) || newDateEnd.isBefore(newDateStart)) {
                         dateErrorMsg.setText(R.string.date_in_future);
                         dateErrorMsg.setVisibility(VISIBLE);
@@ -363,8 +359,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
                     // update adapter to new filter
                     // call to Filter class when setting adapter
-                    filterAdapter = new CustomItemListAdapter(getApplicationContext(), filter.filterByDateRange(itemList, newDateStart, newDateEnd));
-                    itemListView.setAdapter(filterAdapter);
+                    filter.filterDate(newDateStart, newDateEnd, itemList);
+                    ItemList tempList = filter.processFilter(itemList);
+                    if(tempList != null) {
+                        filterAdapter = new CustomItemListAdapter(getApplicationContext(), tempList);
+                        itemListView.setAdapter(filterAdapter);
+                        filterAdapter.notifyDataSetChanged();
+                    }
+
                     dateErrorMsg.setVisibility(GONE);
                 } catch (DateTimeParseException e) {
                     dateErrorMsg.setText(R.string.invalid_date_range);
