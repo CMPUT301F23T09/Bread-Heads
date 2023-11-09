@@ -59,7 +59,8 @@
         android:layout_width="55dp"
         android:layout_height="65dp"
         android:adjustViewBounds="true"
-        android:background="#F9F9F9"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#F9F9F9"
         android:contentDescription="@string/prevButtonDescription"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/itemImage"
@@ -85,12 +86,13 @@
 
     <TextView
         android:id="@+id/makeTitle"
-        android:layout_width="65dp"
+        android:layout_width="70dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="20dp"
         android:text="@string/makeTitle"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/modelTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itemImage"
@@ -109,11 +111,12 @@
 
     <TextView
         android:id="@+id/modelTitle"
-        android:layout_width="65dp"
+        android:layout_width="70dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
         android:text="@string/modelTitle"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/dateTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/makeTitle"
@@ -121,11 +124,12 @@
 
     <TextView
         android:id="@+id/dateTitle"
-        android:layout_width="65dp"
+        android:layout_width="70dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
         android:text="@string/dateTitle"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/modelTitle"
         tools:ignore="TextSizeCheck" />
