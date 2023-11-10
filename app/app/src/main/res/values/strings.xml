@@ -37,4 +37,6 @@
     <string name="date_in_future">Date is in the future!</string>
     <string name="totalValueTitle">Total Value: $%1$s</string>
     <string name="sort_readable">Sort</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
 </resources>

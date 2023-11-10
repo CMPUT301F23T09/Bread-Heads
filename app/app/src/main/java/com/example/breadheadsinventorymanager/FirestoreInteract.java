@@ -2,9 +2,6 @@ package com.example.breadheadsinventorymanager;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -48,8 +45,8 @@ public class FirestoreInteract {
      */
     public FirestoreInteract(FirebaseFirestore database, CollectionReference itemDB, CollectionReference userDB) {
         this.database = database;
-        this.itemDB = itemDB;
-        this.userDB = userDB;
+        FirestoreInteract.itemDB = itemDB;
+        FirestoreInteract.userDB = userDB;
     }
 
     /**
@@ -65,11 +62,8 @@ public class FirestoreInteract {
         } else {
             DocumentReference doc = itemDB.document(); // firestore will generate ID for us
             Task<Void> task = doc.set(obj.formatForFirestore());
-            return task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    obj.setId(doc.getId()); // make sure this item's ID matches firestore's
-                }
+            return task.addOnCompleteListener(task1 -> {
+                obj.setId(doc.getId()); // make sure this item's ID matches firestore's
             });
         }
     }
@@ -104,17 +98,14 @@ public class FirestoreInteract {
      * @return a Task; use .addOnSuccessListener() to run code after data retrieval
      */
     public Task<QuerySnapshot> populateWithItems(ArrayList<Item> list) {
-        return itemDB.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("FirestoreInteract.java", document.getId() + " => " + document.getData());
-                        list.add(new Item(document));
-                    }
-                } else {
-                    Log.d("FirestoreInteract.java", "Error getting documents: ", task.getException());
+        return itemDB.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Log.d("FirestoreInteract.java", document.getId() + " => " + document.getData());
+                    list.add(new Item(document));
                 }
+            } else {
+                Log.d("FirestoreInteract.java", "Error getting documents: ", task.getException());
             }
         });
     }
