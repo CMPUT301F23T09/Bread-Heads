@@ -1,12 +1,9 @@
 package com.example.breadheadsinventorymanager;
 
-import static android.text.TextUtils.substring;
-
 import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.widget.CheckBox;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -14,17 +11,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Represents an item in the inventory and all the data it contains.
@@ -44,6 +36,9 @@ public class Item implements FirestorePuttable, Serializable {
     private ArrayList<String> imagePaths = new ArrayList<>();
     private transient CheckBox checkBox; // must be transient so the class can be serialized
     private TagList tags = new TagList();
+
+    // valid format for date setting
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Empty constructor.
@@ -113,7 +108,8 @@ public class Item implements FirestorePuttable, Serializable {
      * [01.01.01] only requires a serial number "when applicable"
      */
     public Item(String date, String description, String make, String model, String comments, long value) {
-        this.date = date;
+        this.date = LocalDate.parse(date, formatter)
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")); // coerce date into nice format
         this.description = description;
         this.make = make;
         this.model = model;
@@ -169,8 +165,7 @@ public class Item implements FirestorePuttable, Serializable {
      * @return the Local date object of the item
      */
     public LocalDate getDateObj() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-        return LocalDate.parse(this.date, formatter);
+        return LocalDate.parse(getDate(), formatter);
 
     }
 
@@ -270,9 +265,9 @@ public class Item implements FirestorePuttable, Serializable {
         return comment;
     }
 
-    // Setters
     public void setDate(String date) {
-        this.date = date;
+        this.date = LocalDate.parse(date, formatter)
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));  // coerce date into nice format
     }
 
     public void setDescription(String description) {
@@ -323,8 +318,16 @@ public class Item implements FirestorePuttable, Serializable {
         this.tags = tags;
     }
 
+    /**
+     * Sets CheckBox object associated with this Item.
+     * @param checkBox Checkbox object
+     */
     public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
 
+    /**
+     * Gets CheckBox object associated with this Item.
+     * @return Object's associated CheckBox
+     */
     public CheckBox getCheckBox() {return this.checkBox;}
 }
 
