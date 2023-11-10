@@ -9,32 +9,30 @@
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginBottom="80dp"
         android:text="@string/dateText"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/dateTitle"
         app:layout_constraintStart_toEndOf="@+id/dateTitle"
-        app:layout_constraintTop_toBottomOf="@+id/previousButton"
+        app:layout_constraintTop_toBottomOf="@+id/modelTitle"
         tools:ignore="TextSizeCheck" />
 
     <TextView
         android:id="@+id/modelText"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="140dp"
         android:text="@string/modelText"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/modelTitle"
         app:layout_constraintStart_toEndOf="@+id/modelTitle"
-        app:layout_constraintTop_toBottomOf="@+id/previousButton"
+        app:layout_constraintTop_toTopOf="@+id/modelTitle"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="TextSizeCheck" />
 
     <TextView
         android:id="@+id/itemDescription"
         android:layout_width="wrap_content"
         android:layout_height="41dp"
+        android:layout_marginTop="5dp"
         android:text="@string/itemName"
         android:textAlignment="center"
         android:textSize="24sp"
@@ -50,7 +48,7 @@
         android:layout_height="208dp"
         android:layout_marginBottom="350dp"
         android:contentDescription="@string/imageContentDescription"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -60,83 +58,80 @@
         android:id="@+id/previousButton"
         android:layout_width="55dp"
         android:layout_height="65dp"
-        android:layout_marginBottom="350dp"
         android:adjustViewBounds="true"
-        android:background="#F9F9F9"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#F9F9F9"
         android:contentDescription="@string/prevButtonDescription"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/itemImage"
         app:layout_constraintEnd_toStartOf="@+id/itemImage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/itemImage"
         app:srcCompat="@drawable/previous" />
 
     <ImageButton
         android:id="@+id/nextButton"
         android:layout_width="55dp"
         android:layout_height="65dp"
-        android:layout_marginBottom="350dp"
         android:adjustViewBounds="true"
         android:background="#00FFFFFF"
         android:backgroundTint="#F9F9F9"
         android:contentDescription="@string/nextButtonDescription"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/itemImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemImage"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/itemImage"
         app:srcCompat="@drawable/next" />
 
     <TextView
         android:id="@+id/makeTitle"
-        android:layout_width="65dp"
+        android:layout_width="70dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginTop="20dp"
         android:text="@string/makeTitle"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/modelTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previousButton"
+        app:layout_constraintTop_toBottomOf="@+id/itemImage"
         tools:ignore="TextSizeCheck" />
 
     <TextView
         android:id="@+id/makeText"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="200dp"
         android:text="@string/makeText"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/makeTitle"
         app:layout_constraintStart_toEndOf="@+id/makeTitle"
-        app:layout_constraintTop_toBottomOf="@+id/previousButton"
+        app:layout_constraintTop_toTopOf="@id/makeTitle"
         tools:ignore="TextSizeCheck" />
 
     <TextView
         android:id="@+id/modelTitle"
-        android:layout_width="65dp"
+        android:layout_width="70dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
-        android:layout_marginBottom="140dp"
         android:text="@string/modelTitle"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/dateTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previousButton"
+        app:layout_constraintTop_toBottomOf="@+id/makeTitle"
         tools:ignore="TextSizeCheck" />
 
     <TextView
         android:id="@+id/dateTitle"
-        android:layout_width="65dp"
+        android:layout_width="70dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
-        android:layout_marginBottom="80dp"
         android:text="@string/dateTitle"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/previousButton"
+        app:layout_constraintTop_toBottomOf="@id/modelTitle"
         tools:ignore="TextSizeCheck" />
 
     <TextView
@@ -144,11 +139,10 @@
         android:layout_width="65dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
-        android:layout_marginBottom="250dp"
         android:text="@string/tagsTitle"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tagsRecyclerView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dateTitle"
         tools:ignore="TextSizeCheck" />
@@ -158,12 +152,12 @@
         android:layout_width="100dp"
         android:layout_height="33dp"
         android:layout_marginStart="15dp"
-        android:layout_marginBottom="180dp"
         android:text="@string/commentsTitle"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/commentText"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tagsRecyclerView"
         tools:ignore="TextSizeCheck" />
 
     <TextView
@@ -181,11 +175,10 @@
         android:id="@+id/valueTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
         android:text="@string/valueTitle"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomBar"
         app:layout_constraintEnd_toEndOf="@+id/bottomBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
@@ -198,7 +191,7 @@
         android:text="@string/valueText"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bottomBar"
         app:layout_constraintStart_toEndOf="@+id/valueTitle"
         app:layout_constraintTop_toTopOf="@+id/bottomBar" />
 
@@ -210,24 +203,23 @@
         android:layout_marginEnd="15dp"
         android:background="@color/background_grey_light"
         android:scrollbars="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/commentText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tagsTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/CommentsTitle" />
 
     <TextView
         android:id="@+id/commentText"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="90dp"
+        android:layout_marginBottom="15dp"
         android:background="@color/background_grey_light"
         android:text="@string/commentText"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CommentsTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/CommentsTitle" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

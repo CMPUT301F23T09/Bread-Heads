@@ -41,4 +41,6 @@
     <string name="firebase_firestore_image_not_loaded_message">Image can\'t be loaded...</string>
     <string name="image_upload_failed_message">Image upload failed...</string>
     <string name="serial_number">Serial Number</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
 </resources>

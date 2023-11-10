@@ -177,7 +177,7 @@ public class AddItemFragment extends DialogFragment {
         // if this passes, then we know that our date string is in the right format to perform logic on later
         // does not except dates after current date or of invalid format (given in textView hint)
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
             LocalDate newDate = LocalDate.parse(date, formatter);
             LocalDate currentDate = LocalDate.now();
             if(newDate.isAfter(currentDate)) {

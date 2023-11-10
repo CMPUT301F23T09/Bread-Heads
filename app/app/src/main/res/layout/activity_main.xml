@@ -79,6 +79,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
+    <Button
+        android:id="@+id/select_mode_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orderInCategory="1"
+        android:text="Confirm"
+        android:visibility="invisible"
+        android:clickable="false"
+        app:layout_constraintEnd_toStartOf="@+id/select_mode_cancel"
+        app:layout_constraintBottom_toTopOf="@id/main_activity_bottom_bar"
+        tools:layout_editor_absoluteX="219dp"
+        tools:layout_editor_absoluteY="667dp" />
+
+    <Button
+        android:id="@+id/select_mode_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orderInCategory="2"
+        android:text="Cancel"
+        android:visibility="invisible"
+        android:clickable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_activity_bottom_bar"
+        tools:layout_editor_absoluteX="307dp"
+        tools:layout_editor_absoluteY="667dp" />
+
     <TextView
         android:id="@+id/invalid_date_message"
         android:layout_width="wrap_content"
@@ -110,7 +136,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/totalValueTitle"
         android:textColor="#FFFFFF"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,10 +147,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:backgroundTint="@color/light_green"
         android:contentDescription="@string/sort_readable"
+        android:foregroundTint="@color/dark_green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/main_activity_bottom_bar"
         app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
-        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size"
+        app:tint="@color/dark_green" />
+
+    <Button
+        android:id="@+id/sort_order_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/light_green"
+        android:text="Ascending"
+        android:textAllCaps="false"
+        android:textColor="@color/dark_green"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sort_button"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

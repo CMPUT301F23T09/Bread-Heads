@@ -7,6 +7,7 @@ import static java.lang.Math.round;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.widget.CheckBox;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -21,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -38,9 +40,9 @@ public class Item implements FirestorePuttable, Serializable {
     private String comment = ""; // comment is optional
     private long value; // in cents
 
-    // second half
     private ArrayList<String> imagePaths = new ArrayList<String>();
-    // private TagList tags; // second half
+    private transient CheckBox checkBox; // must be transient so the class can be serialized
+    private TagList tags;
 
     /**
      * Empty constructor.
@@ -59,6 +61,7 @@ public class Item implements FirestorePuttable, Serializable {
         this.model = model;
         this.comment = comments;
         this.value = value;
+        this.tags = new TagList();
     }
 
     /**
@@ -67,6 +70,7 @@ public class Item implements FirestorePuttable, Serializable {
     public Item(String date, String description, String make, String model, String comments, long value, String serialNum) {
         this(date, description, make, model, comments, value);
         this.serialNum = serialNum;
+        this.tags = new TagList();
     }
 
     /**
@@ -75,6 +79,7 @@ public class Item implements FirestorePuttable, Serializable {
     public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths) {
         this(date, description, make, model, comments, value);
         this.imagePaths = imagePaths;
+        this.tags = new TagList();
     }
 
     /**
@@ -84,6 +89,7 @@ public class Item implements FirestorePuttable, Serializable {
         this(date, description, make, model, comments, value);
         this.serialNum = serialNum;
         this.imagePaths = imagePaths;
+        this.tags = new TagList();
     }
 
     /**
@@ -99,8 +105,8 @@ public class Item implements FirestorePuttable, Serializable {
         serialNum = document.getString("serialNum");
         value = (long) document.get("value");
         comment = document.getString("comment");
-        // TODO PART 2: photos and tags
         imagePaths = (ArrayList<String>) document.get("imagePaths");
+        tags = new TagList((List<String>) document.get("tags"));
     }
 
     /**
@@ -114,10 +120,24 @@ public class Item implements FirestorePuttable, Serializable {
         make = document.getString("make");
         model = document.getString("model");
         serialNum = document.getString("serialNum");
-        value = (long) document.get("value");
+        value = document.getLong("value");
         comment = document.getString("comment");
-        // TODO PART 2: photos and tags
         imagePaths = (ArrayList<String>) document.get("imagePaths");
+        tags = new TagList((List<String>) document.get("tags"));
+    }
+
+    /**
+     * Constructor given most fields, not incl. serial number.
+     * [01.01.01] only requires a serial number "when applicable"
+     */
+    public Item(String date, String description, String make, String model, String comments, long value) {
+        this.date = date;
+        this.description = description;
+        this.make = make;
+        this.model = model;
+        this.value = value;
+        this.comment = comments;
+        this.tags = new TagList();
     }
 
     /**
@@ -150,7 +170,7 @@ public class Item implements FirestorePuttable, Serializable {
 
     /**
      * Static utility to convert a dollar string to a value
-     * @param string A String formatted as a decimal value with or without a leading $j
+     * @param string A String formatted as a decimal value with or without a leading $
      * @return The returned value, i.e. a long amount of cents
      */
     public static long toValue(String string) {
@@ -186,8 +206,8 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("serialNum", serialNum);
         map.put("value", value);
         map.put("comment", comment);
-        // TODO SECOND HALF: photos and tags
         map.put("imagePaths", imagePaths);
+        map.put("tags", tags);
 
         return map;
     }
@@ -273,4 +293,18 @@ public class Item implements FirestorePuttable, Serializable {
     public ArrayList<String> getImagePaths() {
         return imagePaths;
     }
+
+    public TagList getTags() {
+        return tags;
+    }
+
+    public void setTags(TagList tags) {
+        this.tags = tags;
+    }
+
+    public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
+
+    public CheckBox getCheckBox() {return this.checkBox;}
+
 }
+

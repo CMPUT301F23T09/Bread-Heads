@@ -37,6 +37,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("com.google.code.gson:gson:2.9.0")
     coreLibraryDesugaring("com.android.tools.desugar_jdk:2.0.3")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.12.4")

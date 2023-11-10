@@ -2,6 +2,8 @@ package com.example.breadheadsinventorymanager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import junit.framework.TestCase;
 
@@ -10,13 +12,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Collections;
 
 public class ItemListTest {
 
 
     private Item item1;
     private Item item2;
+
+    private Item item3;
 
     private ItemList itemList;
 
@@ -25,13 +32,14 @@ public class ItemListTest {
 
     @Before
     public void setUp() {
-
         itemList = new ItemList();
 
-        item1 = new Item("2023-10-31", "Description1", "Make1", "Model1", "Serial1", 10);
+        item1 = new Item("31/08/2023", "Description1", "Make1", "Model1", "Serial1", 10);
         item1.setId("1");
-        item2 = new Item("2023-9-31", "Description2", "Make2", "Model2", "Serial2", 20);
+        item2 = new Item("31/09/2023", "Description2", "Make2", "Model2", "Serial2", 20);
         item2.setId("2");
+        item3 = new Item("2023-8-31", "Description3", "Make3", "Model3", "Serial3", 30);
+        item3.setId("3");
 
         Collection<Item> itemCollection = new ArrayList<>();
         itemCollection.add(item1);
@@ -43,14 +51,14 @@ public class ItemListTest {
     @Test
     public void overriddenMethodsTest() {
         ItemList list1 = new ItemList();
-        Item item1 = new Item("Jan 23", "Item 1", "Maker",
+        Item item1 = new Item("23/01/2023", "Item 1", "Maker",
                 "My Model", "151SERIAL", 1050);
         list1.add(item1);
         ItemList list2 = new ItemList(list1);
 
         assertEquals(list1, list2);
 
-        Item item2 = new Item("Jan 23", "Item 1", "Maker",
+        Item item2 = new Item("23/01/2023", "Item 1", "Maker",
                 "My Model", "151SERIAL", 25);
         list1.add(item2);
 
@@ -76,13 +84,12 @@ public class ItemListTest {
     }
 
     @Test
-
     public void getMakeListTests() {
         ItemList list1 = new ItemList();
 
-        Item item1 = new Item("Jan 23", "Item 1", "Apple", "My Model", "151SERIAL", 1050);
-        Item item2 = new Item("Jan 23", "Item 2", "Banana", "My Model", "151SERIAL", 25);
-        Item item3 = new Item("Jan 23", "Item 3", "Banana", "My Model", "151SERIAL", 25);
+        Item item1 = new Item("23/01/2023", "Item 1", "Apple", "My Model", "151SERIAL", 1050);
+        Item item2 = new Item("23/01/2023", "Item 2", "Banana", "My Model", "151SERIAL", 25);
+        Item item3 = new Item("23/01/2023", "Item 3", "Banana", "My Model", "151SERIAL", 25);
 
         list1.add(item1);
         list1.add(item2);
@@ -160,7 +167,178 @@ public class ItemListTest {
         TestCase.assertEquals(10, itemListC.getSum(), 0.001);
         itemListC.remove("1");
         TestCase.assertEquals(0, itemListC.getSum(), 0.001);
+    }
+
+    @Test
+    public void testSortItemsByTagsAlphabeticallyAscending() {
+        // Create items with tags
+        item1.getTags().add(new Tag("Apple"));
+        item1.getTags().add(new Tag("Banana"));
+
+        item2.getTags().add(new Tag("Banana"));
+        item2.getTags().add(new Tag("Cherry"));
+
+        item3.getTags().add(new Tag("Cherry"));
+        item3.getTags().add(new Tag("Apple"));
+
+        itemList.addAll(Arrays.asList(item1, item2, item3));
+
+        itemList.sortItemsByTagsAlphabetically(true);
+
+        // Verify the order after sorting
+        assertEquals("Description1", itemList.get(0).getDescription());
+        assertEquals("Description3", itemList.get(1).getDescription());
+        assertEquals("Description2", itemList.get(2).getDescription());
+    }
+
+    @Test
+    public void testSortItemsByTagsAlphabeticallyDescending() {
+        // Create items with tags
+        item1.getTags().add(new Tag("Banana"));
+        item1.getTags().add(new Tag("Cherry"));
+
+        item2.getTags().add(new Tag("Cherry"));
+        item2.getTags().add(new Tag("Apple"));
+
+        item3.getTags().add(new Tag("Apple"));
+        item3.getTags().add(new Tag("Banana"));
+
+        itemList.addAll(Arrays.asList(item1, item2, item3));
+
+        itemList.sortItemsByTagsAlphabetically(false);
+
+        // Verify the order after sorting
+        assertEquals("Description1", itemList.get(0).getDescription());
+        assertEquals("Description2", itemList.get(1).getDescription());
+        assertEquals("Description3", itemList.get(2).getDescription());
+    }
+
+    @Test
+    public void testFilterTags() {
+        // Create items with tags
+
+        item1.getTags().add(new Tag("Apple"));
+        item1.getTags().add(new Tag("Banana"));
+        item1.getTags().add(new Tag("Cherry"));
+
+        item2.getTags().add(new Tag("Banana"));
+        item2.getTags().add(new Tag("Cherry"));
+
+        item3.getTags().add(new Tag("Cherry"));
+        item3.getTags().add(new Tag("Apple"));
 
 
-}
+        itemList.addAll(Arrays.asList(item1, item2, item3));
+        Tag filter1= new Tag("Apple");
+        Tag filter2= new Tag("Grape");
+        Tag filter3= new Tag("Banana");
+        Tag filter4= new Tag("Cherry");
+
+        // Define the tags to filter by
+        List<Tag> tagsToFilter = Arrays.asList(filter1,filter3);
+
+        // Call the filterTags method
+        List<Item> filteredItems = itemList.filterTags(tagsToFilter);
+
+        // Verify the filtered items' string IDs
+        assertEquals(1, filteredItems.size());
+        assertEquals("1", filteredItems.get(0).getId());
+
+        // Define the tags to filter by
+        tagsToFilter = Arrays.asList(filter2);
+
+        // Call the filterTags method
+        filteredItems = itemList.filterTags(tagsToFilter);
+        // Verify the filtered items' string IDs
+        assertEquals(0, filteredItems.size());
+
+        tagsToFilter = Arrays.asList(filter2,filter4);
+
+        filteredItems = itemList.filterTags(tagsToFilter);
+        // Verify the filtered items' string IDs
+        assertEquals(0, filteredItems.size());
+
+        tagsToFilter = Arrays.asList(filter4);
+
+        filteredItems = itemList.filterTags(tagsToFilter);
+        // Verify the filtered items' string IDsW
+        assertEquals(3, filteredItems.size());
+        assertEquals("1", filteredItems.get(0).getId());
+        assertEquals("2", filteredItems.get(1).getId());
+        assertEquals("3", filteredItems.get(2).getId());
+
+
+
+    }
+
+    @Test
+    public void testSort() {
+        Item item3 = new Item("31/12/2000", "Description3", "z", "Z", "a", 20);
+        item3.setId("3");
+
+        itemList.add(item1);
+        itemList.add(item2);
+        itemList.add(item3);
+
+        // tests are ascending first, then descending
+        itemList.sort("description", true);
+        assertEquals(itemList.get(0), item1);
+        assertEquals(itemList.get(1), item2);
+        assertEquals(itemList.get(2), item3);
+        assertEquals(itemList.size(), 3);
+
+        itemList.sort("description", false);
+        assertEquals(itemList.get(0), item3);
+        assertEquals(itemList.get(1), item2);
+        assertEquals(itemList.get(2), item1);
+        assertEquals(itemList.size(), 3);
+
+        itemList.sort("date", true);
+        assertEquals(itemList.get(0), item3);
+        assertEquals(itemList.get(1), item1);
+        assertEquals(itemList.get(2), item2);
+        assertEquals(itemList.size(), 3);
+
+        ItemList reversedList = itemList;
+        Collections.reverse(reversedList);
+        itemList.sort("date", false);
+        assertEquals(reversedList, itemList);
+        assertEquals(itemList.size(), 3);
+
+        itemList.sort("comment", true);
+        assertEquals(itemList.get(0), item3);
+        assertEquals(itemList.get(1), item1);
+        assertEquals(itemList.get(2), item2);
+        assertEquals(itemList.size(), 3);
+
+        reversedList = itemList;
+        Collections.reverse(reversedList);
+        itemList.sort("comment", false);
+        assertEquals(reversedList, itemList);
+        assertEquals(itemList.size(), 3);
+
+        itemList.sort("make", true);
+        assertEquals(itemList.get(0), item1);
+        assertEquals(itemList.get(1), item2);
+        assertEquals(itemList.get(2), item3);
+        assertEquals(itemList.size(), 3);
+
+        reversedList = itemList;
+        Collections.reverse(reversedList);
+        itemList.sort("make", false);
+        assertEquals(reversedList, itemList);
+        assertEquals(itemList.size(), 3);
+
+        itemList.sort("value", true);
+        assertEquals(itemList.size(), 3);
+        assertTrue(itemList.get(0).getValue() <= itemList.get(1).getValue());
+        assertTrue(itemList.get(1).getValue() <= itemList.get(2).getValue());
+        assertTrue(itemList.get(0).getValue() <= itemList.get(2).getValue());
+
+        reversedList = itemList;
+        Collections.reverse(reversedList);
+        itemList.sort("value", false);
+        assertEquals(reversedList, itemList);
+        assertEquals(itemList.size(), 3);
+    }
 }
