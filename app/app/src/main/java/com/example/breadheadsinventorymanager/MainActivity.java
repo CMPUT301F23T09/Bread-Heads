@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -478,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         toggleFilterVisibility();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
+        updateTotalValue();
     }
 
     /**
@@ -512,9 +514,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         Gson gson = new Gson();
         String json = gson.toJson(filters);
-        itemArrayAdapter.getFilter().filter(json);
-        itemListView.setAdapter(itemArrayAdapter);
-        updateTotalValue();
+        itemArrayAdapter.getFilter().filter(json, new Filter.FilterListener() {
+            @Override
+            public void onFilterComplete(int count) {
+                itemListView.setAdapter(itemArrayAdapter);
+                updateTotalValue();
+            }
+        });
     }
 
     /**

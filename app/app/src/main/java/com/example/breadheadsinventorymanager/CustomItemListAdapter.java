@@ -25,32 +25,32 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Custom adapter that can be filtered and plays well with sorting.
+ */
 public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filterable {
     private ItemList items;
     private final Context context;
 
+    /**
+     * Preferred constructor for CustomItemListAdapter.
+     * @param context
+     * @param items List of items
+     */
     public CustomItemListAdapter(Context context, ItemList items) {
         super(context, 0, items);
         this.items = items;
         this.context = context;
     }
 
-    /**
-     * Returns sum of underlying item list (with filters applied).
-     * @return sum as a long
-     */
     public long getSum() {
         long sum = 0;
-        for (Item item : items) {
-            sum += item.getValue();
+        for (int i = 0; i < getCount(); i++) {
+            sum += (getItem(i) == null ? 0 : getItem(i).getValue());
         }
         return sum;
     }
 
-    /**
-     * Returns sum of underlying item list (with filters applied).
-     * @return sum as a String formatted like 120.50.
-     */
     public String getSumAsDollarString() {
         return Item.toDollarString(getSum());
     }
@@ -61,13 +61,6 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
             return 0;
         }
         return this.items.size();
-    }
-
-
-    // overriding this is necessary so that we retrieve the correct item
-    @Override
-    public Item getItem(int position) {
-        return items.get(position);
     }
 
     @NonNull
@@ -101,6 +94,12 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         return view;
     }
 
+    /*
+    ================
+    CUSTOM FILTERING
+    ================
+     */
+
     @NonNull
     @Override
     public Filter getFilter() {
@@ -115,7 +114,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
      * This approach is kinda clunky but is necessary because the arguments of Filter() methods must
      * be CharSequences.
      */
-    private Filter customFilter = new Filter() {
+    private final Filter customFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
@@ -188,4 +187,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
             notifyDataSetChanged();
         }
     };
+
+    // overriding this is necessary so that we retrieve the correct item
+    @Override
+    public Item getItem(int position) {
+        return items.get(position);
+    }
 }
