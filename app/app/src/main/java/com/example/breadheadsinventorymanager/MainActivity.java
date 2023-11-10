@@ -188,6 +188,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     // ADD ITEM DIALOG HANDLING
 
+    /**
+     * the interface method that adds to the database when the OK button of the addItem dialog is pressed
+     * @param item the item to add to the database
+     */
     @Override
     public void onOKPressed(Item item) {
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -490,8 +494,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTERING UTILITY FUNCTIONS
 
     /**
-     * resets the adapter to the original ItemList and the recycler view of active filters
-     * means that the list cannot have more than one filter active at a time
+     * resets the adapter to the original ItemList and the recyclerview of active filters
      */
     private void resetAdapter() {
         filters = new ArrayList<>();
@@ -547,7 +550,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 i++;
                 continue;
             }
-            recyclerViewList.add(filters.get(i).toString());
+            // skip the string identifier and add to recyclerView for visual purposes
+            String item = filters.get(i).toString();
+            item = item.substring(1);
+            recyclerViewList.add(item);
         }
         filterView.setVisibility(VISIBLE);
         filterRecyclerAdapter.notifyDataSetChanged();

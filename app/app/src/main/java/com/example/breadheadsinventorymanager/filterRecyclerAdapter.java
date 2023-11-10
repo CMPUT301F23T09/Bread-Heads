@@ -19,6 +19,10 @@ import java.util.ArrayList;
 // https://www.youtube.com/watch?v=7GPUpvcU1FE very helpful guide to setting up click listeners for recyclerViews
 // https://www.youtube.com/watch?v=Zj9ZE6_HtEo another great video on how to set up recyclerViews
 // both videos were used to create this class
+
+/**
+ * Custom recyclerView adapter with a special clickListener for the items
+ */
 public class filterRecyclerAdapter extends RecyclerView.Adapter<filterRecyclerAdapter.MyHolder> {
 
     private final AddItemFragment.OnFragmentInteractionListener recyclerViewInterface;
