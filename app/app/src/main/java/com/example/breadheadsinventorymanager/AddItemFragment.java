@@ -155,9 +155,13 @@ public class AddItemFragment extends DialogFragment {
     }
 
     /**
-     * interface for button pressed in dialog
+     * Interface for button pressed in dialog and a function for recyclerView item clicks
+     * This is bad practise :P
      */
     public interface OnFragmentInteractionListener {
+        // function for tapping OK on the addItem dialog
         void onOKPressed(Item item);
+        // function for tapping on a recyclerView item
+        void onRecyclerItemPressed(int position);
     }
 }

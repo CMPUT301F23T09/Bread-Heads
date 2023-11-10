@@ -6,6 +6,8 @@ import static android.view.View.VISIBLE;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,6 +38,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -70,7 +73,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // 'D': description. '1'/'2': lower/upper bound on date resp. 'M': make.
     // multiple makes can be applied at once! multiple filters are ANDed; different makes are ORed.
     private ArrayList<CharSequence> filters = new ArrayList<>();
-    
+
+    // The recyclerView for displaying active filters setup
+    private RecyclerView filterView;
+    private ArrayList<String> recyclerViewList;
+    private LinearLayoutManager linearLayoutManager;
+    private filterRecyclerAdapter filterRecyclerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
+        filterView = findViewById(R.id.active_filter_recycler_view);
         searchBox = findViewById(R.id.search_view);
         startDate = findViewById(R.id.filter_date_start);
         endDate = findViewById(R.id.filter_date_end);
@@ -86,6 +96,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         totalValue = findViewById(R.id.total_value);
         sortButton = findViewById(R.id.sort_button);
         sortOrderButton = findViewById(R.id.sort_order_button);
+
+        // filter recyclerView setup
+        recyclerViewList = new ArrayList<>();
+        linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        filterRecyclerAdapter = new filterRecyclerAdapter(getApplicationContext(), recyclerViewList, this);
+        filterView.setLayoutManager(linearLayoutManager);
+        filterView.setAdapter(filterRecyclerAdapter);
 
         //ListView and adapter setup
         database = new FirestoreInteract();
@@ -181,6 +198,29 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
     }
 
+    /**
+     * removes the filter from the recyclerView and refilters the list
+     * @param position
+     */
+    @Override
+    public void onRecyclerItemPressed(int position) {
+        Log.d("h1", filters.get(position).toString());
+        // check if its a description or date
+        if (filters.get(position).toString().charAt(0) == 'D') {
+            filters.remove(position);
+            searchBox.setQuery(getIntent().getDataString(), false);
+        } else if (filters.get(position).toString().charAt(0) == '1') {
+            recyclerViewList.remove(position);
+            // remove filter at position twice, as the filter indexes shift backwards
+            filters.remove(position);
+            filters.remove(position);
+        } else {
+            recyclerViewList.remove(position);
+            filters.remove(position);
+        }
+        filterRecyclerAdapter.notifyDataSetChanged();
+        activateFilters();
+    }
     /**
      * handles creating the dialog and switching to associated fragment
      */
@@ -450,12 +490,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTERING UTILITY FUNCTIONS
 
     /**
-     * resets the adapter to the original ItemList
+     * resets the adapter to the original ItemList and the recycler view of active filters
      * means that the list cannot have more than one filter active at a time
      */
     private void resetAdapter() {
         filters = new ArrayList<>();
+        recyclerViewList.clear();
         toggleFilterVisibility();
+        filterRecyclerAdapter.notifyDataSetChanged();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
     }
@@ -474,8 +516,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             startDate.setText("");
             endDate.setText("");
 
-            // toggle invisible and reset query
+
         }
+        // toggle invisible and reset query
         if (searchBox.getVisibility() == VISIBLE) {
             searchBox.setVisibility(GONE);
             searchBox.setQuery(getIntent().getDataString(), false);
@@ -490,8 +533,24 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
+        recyclerViewList.clear();
         Gson gson = new Gson();
         String json = gson.toJson(filters);
+
+        // basically recreates the recyclerView list
+        for(int i = 0; i < filters.size(); i++) {
+            // if its a 1, then we know that the filter is a date, and that the next filter will also be a date
+            if (filters.get(i).toString().charAt(0) == '1') {
+                String date = filters.get(i).toString().substring(1, 11) + " - " + filters.get(i + 1).toString().substring(1, 11);
+                recyclerViewList.add(date);
+                // increment i to skip next filter item
+                i++;
+                continue;
+            }
+            recyclerViewList.add(filters.get(i).toString());
+        }
+        filterView.setVisibility(VISIBLE);
+        filterRecyclerAdapter.notifyDataSetChanged();
         itemArrayAdapter.getFilter().filter(json);
         itemListView.setAdapter(itemArrayAdapter);
     }
@@ -504,7 +563,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
         // update adapter to show filtered results
-        filters.add('M' + menuItem.toString());
+        String makeCheck = "M" + menuItem.toString();
+        if (!(filters.contains(makeCheck))) {
+            filters.add('M' + menuItem.toString());
+        }
         activateFilters();
         return true;
     }
@@ -536,9 +598,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 }
                 filters = newFilters;
 
-
+                // adds the description to filters if it is not already a filter
                 if (newText.length() > 0) {
-                    filters.add('D' + newText);
+                    String descCheck = "D" + newText;
+                    if(!(filters.contains(descCheck))) {
+                        filters.add('D' + newText);
+                    }
                 }
                 activateFilters();
                 return false;
@@ -556,7 +621,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         endDate.setVisibility(VISIBLE);
         filterDateButton.setVisibility(VISIBLE);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         // when pressed, it will filter the dates by range entered, display error message otherwise
         filterDateButton.setOnClickListener(new View.OnClickListener() {
@@ -580,12 +645,21 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
                     if (startString.length() > 0) {
                         LocalDate.parse(startString, formatter); // called for try-catch
-                        filters.add('1' + startString);
+                        String dateCheck =  "1" + startString;
+                        if (!(filters.contains(dateCheck))) {
+                            filters.add('1' + startString);
+
+                        }
                     }
 
                     if (endString.length() > 0) {
                         LocalDate.parse(endString, formatter); // called for try-catch
-                        filters.add('2' + endString);
+                        String dateCheck =  "2" + endString;
+                        if (!(filters.contains(dateCheck))) {
+                            filters.add('2' + endString);
+
+                        }
+
                     }
 
                     // update adapter to new filter

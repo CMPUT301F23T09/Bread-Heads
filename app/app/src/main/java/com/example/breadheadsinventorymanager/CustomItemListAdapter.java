@@ -103,7 +103,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
             LocalDate initDate = null;
             LocalDate finalDate = null;
             ArrayList<String> makes = new ArrayList<>();
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("d/M/yyyy");
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             for (String filter : filters) {
                 switch (filter.charAt(0)) {
                     case 'D': // description
