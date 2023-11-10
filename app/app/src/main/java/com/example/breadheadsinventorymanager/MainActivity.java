@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
-    private ArrayAdapter<Item> itemArrayAdapter;
+    private CustomItemListAdapter itemArrayAdapter;
     private ListView itemListView;
     private FirestoreInteract database;
     private TagList tagList;
@@ -139,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Updates the total value displayed at the bottom of the screen
      */
     private void updateTotalValue() {
-        totalValue.setText(getString(R.string.totalValueTitle, itemList.getSumAsDollarString()));
+        totalValue.setText(getString(R.string.totalValueTitle,
+                itemArrayAdapter.getSumAsDollarString()));
         totalValue.setVisibility(View.VISIBLE);
     }
 
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 itemListView = findViewById(R.id.items_main_list);
                 itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
                 itemListView.setAdapter(itemArrayAdapter);
-                updateTotalValue();
+                activateFilters();
             }
         });
     }
@@ -390,6 +391,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         itemList.sort(sortMode, sortAscending);
         itemArrayAdapter.notifyDataSetChanged();
+        activateFilters();
         return true;
     }
 
@@ -401,6 +403,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         sortAscending = !sortAscending;
         itemList.sort(sortMode, sortAscending);
         itemArrayAdapter.notifyDataSetChanged();
+        activateFilters();
         return sortAscending;
     }
 
@@ -427,17 +430,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int itemClick = item.getItemId();
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
-            //resetAdapter();
             showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
-            //resetAdapter();
             showDescriptionSearch();
             return true;
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
-            //resetAdapter();
             showMakeSubMenu();
             return true;
         } else if (itemClick == R.id.remove_filter) {
@@ -514,6 +514,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         String json = gson.toJson(filters);
         itemArrayAdapter.getFilter().filter(json);
         itemListView.setAdapter(itemArrayAdapter);
+        updateTotalValue();
     }
 
     /**

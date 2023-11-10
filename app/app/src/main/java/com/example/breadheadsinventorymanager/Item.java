@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -199,6 +200,45 @@ public class Item implements FirestorePuttable, Serializable {
 
     /*
     ============================================
+    Sorting utility
+    ============================================
+     */
+
+    /**
+     * Returns a comparator for sorting by the specified parameter
+     * @param sortMode The field to sort by; accepts "comment", "make", "date", "value", or
+     *                 "description". Defaults to description if not specified
+     * @param ascending True if sorting in ascending order, else false
+     * @return The comparator for the specified field in the given order
+     */
+    public static Comparator<Item> getComparator(String sortMode, boolean ascending) {
+        Comparator<Item> comparator;
+        switch (sortMode) {
+            case("comment"):
+                comparator = (Item lhs, Item rhs) ->
+                    String.CASE_INSENSITIVE_ORDER.compare(lhs.getComment(), rhs.getComment());
+                break;
+            case("make"):
+                comparator = (Item lhs, Item rhs) ->
+                        String.CASE_INSENSITIVE_ORDER.compare(lhs.getMake(), rhs.getMake());
+                break;
+            case("date"):
+                comparator = Comparator.comparing(Item::getDateObj);
+                break;
+            case("value"):
+                comparator = Comparator.comparing(Item::getValue);
+                break;
+            default:
+                // default to description
+                comparator = (Item lhs, Item rhs) ->
+                        String.CASE_INSENSITIVE_ORDER.compare(lhs.getDescription(), rhs.getDescription());
+                break;
+        }
+        return ascending ? comparator : comparator.reversed();
+    }
+
+    /*
+    ============================================
     Obligatory getters/setters
     ============================================
      */
@@ -286,6 +326,5 @@ public class Item implements FirestorePuttable, Serializable {
     public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
 
     public CheckBox getCheckBox() {return this.checkBox;}
-
 }
 

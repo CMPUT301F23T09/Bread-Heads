@@ -27,12 +27,32 @@ import java.util.List;
 
 public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filterable {
     private ItemList items;
-    private Context context;
+    private final Context context;
 
     public CustomItemListAdapter(Context context, ItemList items) {
         super(context, 0, items);
         this.items = items;
         this.context = context;
+    }
+
+    /**
+     * Returns sum of underlying item list (with filters applied).
+     * @return sum as a long
+     */
+    public long getSum() {
+        long sum = 0;
+        for (Item item : items) {
+            sum += item.getValue();
+        }
+        return sum;
+    }
+
+    /**
+     * Returns sum of underlying item list (with filters applied).
+     * @return sum as a String formatted like 120.50.
+     */
+    public String getSumAsDollarString() {
+        return Item.toDollarString(getSum());
     }
 
     @Override
@@ -41,6 +61,13 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
             return 0;
         }
         return this.items.size();
+    }
+
+
+    // overriding this is necessary so that we retrieve the correct item
+    @Override
+    public Item getItem(int position) {
+        return items.get(position);
     }
 
     @NonNull
@@ -65,12 +92,11 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         itemMakeTV.setText(item.getMake());
         itemModelTV.setText(item.getModel());
         itemAcquisitionDateTV.setText(item.getDate());
-        itemValueTV.setText("$" + item.getValueDollarString());
+        itemValueTV.setText(String.format("$%s", item.getValueDollarString()));
 
         // Create a unique Checkbox for each item that is accessible elsewhere
         CheckBox checkBox = view.findViewById(R.id.checkBox);
         item.setCheckBox(checkBox);
-
 
         return view;
     }
@@ -89,13 +115,13 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
      * This approach is kinda clunky but is necessary because the arguments of Filter() methods must
      * be CharSequences.
      */
-    Filter customFilter = new Filter() {
+    private Filter customFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             JsonArray filtersJson = JsonParser.parseString((String) constraint).getAsJsonArray();
             // conversion utility adapted from https://stackoverflow.com/a/8371455
-            Type listType = new TypeToken<List<String>>(){}.getType();
+            Type listType = new TypeToken<List<String>>() {}.getType();
             List<String> filters = new Gson().fromJson(filtersJson, listType);
 
             // parse filters
@@ -121,11 +147,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
                 }
             }
 
-            if (items != null) {
+            if (items != null && constraint != null && constraint.length() > 0) {
                 ItemList output = new ItemList();
-                for (int i = 0; i < items.size(); i++) {
+                for (Item item : items) {
                     boolean keepFlag = true; // do we keep the item or not? default "yes"
-                    Item item = items.get(i);
 
                     if (description != null) {
                         // unnecessary '&& keepFlag' kept for clarity
@@ -149,6 +174,9 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
 
                 results.values = output;
                 results.count = output.size();
+            } else {
+                results.values = items;
+                results.count = items.size();
             }
 
             return results;
