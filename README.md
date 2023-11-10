@@ -1,6 +1,6 @@
 # Bread Heads Inventory Manager
 
-A simple app to manage a list of inventories.
+A simple app to manage an inventory. Inventories consist of a list of items with useful fields, including description, make, model, comment, and value. This list can be modified, filtered, and sorted.
 
 Currently an early WIP. Basic list functionality is in place. Tag management is implemented on the backend but currently not functional in-app pending UI implementation. Attaching photos from galleries and retrieving them from Firestore is functional. We are working on expanding features to include:
 
