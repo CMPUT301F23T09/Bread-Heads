@@ -12,26 +12,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-// adapter for the recycler view for displaying active filters
-// https://www.youtube.com/watch?v=7GPUpvcU1FE very helpful guide to setting up click listeners for recyclerViews
-// https://www.youtube.com/watch?v=Zj9ZE6_HtEo another great video on how to set up recyclerViews
-// both videos were used to create this class
-
 /**
- * Custom recyclerView adapter with a special clickListener for the items
+ * Custom recyclerView adapter to display active filters and allow for removing them by tap.
+ * <a href="https://www.youtube.com/watch?v=7GPUpvcU1FE">very helpful guide to setting up click listeners for recyclerViews</a> ;
+ * <a href="https://www.youtube.com/watch?v=Zj9ZE6_HtEo">another great video on how to set up recyclerViews</a>
+ * both videos were used to create this class
  */
 public class FilterRecyclerAdapter extends RecyclerView.Adapter<FilterRecyclerAdapter.MyHolder> {
-
     private final AddItemFragment.OnFragmentInteractionListener recyclerViewInterface;
-
     ArrayList<String> data;
     Context context;
 
     /**
      * Constructor for FilterRecyclerAdapter
-     * @param context
-     * @param data
-     * @param recyclerViewInterface
+     * @param context Context it lives in
+     * @param data Data to popualte with
+     * @param recyclerViewInterface Recycler View Interface to populate
      */
     public FilterRecyclerAdapter(Context context, ArrayList<String> data, AddItemFragment.OnFragmentInteractionListener recyclerViewInterface) {
         this.data = data;
@@ -56,8 +52,10 @@ public class FilterRecyclerAdapter extends RecyclerView.Adapter<FilterRecyclerAd
         return data.size();
     }
 
+    /**
+     * Custom view holder that lets us tap to remove filters
+     */
     static class MyHolder extends RecyclerView.ViewHolder {
-
         TextView filterString;
         ImageButton removeButton;
         public MyHolder(@NonNull View itemView, AddItemFragment.OnFragmentInteractionListener recyclerViewInterface) {

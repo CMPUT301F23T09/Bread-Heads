@@ -553,14 +553,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // basically recreates the recyclerView list
             for(int i = 0; i < filters.size(); i++) {
                 Log.d("h2", filters.get(i).toString());
-                // if its a 1, then we know that the filter is a date, and that the next filter will also be a date
-                /*if (filters.get(i).toString().charAt(0) == '1') {
-                    String date = filters.get(i).toString().substring(1, 11) + " - " + filters.get(i + 1).toString().substring(1, 11);
-                    recyclerViewList.add(date);
-                    // increment i to skip next filter item
-                    i++;
-                    continue;
-                }*/
                 // skip the string identifier and add to recyclerView for visual purposes
                 String item = filters.get(i).toString();
                 item = item.substring(1);
