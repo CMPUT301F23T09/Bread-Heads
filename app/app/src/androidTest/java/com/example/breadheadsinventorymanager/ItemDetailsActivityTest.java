@@ -1,6 +1,8 @@
 package com.example.breadheadsinventorymanager;
 
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -47,7 +49,7 @@ public class ItemDetailsActivityTest {
         onView(withId(R.id.modelText)).check(matches(withText("Sample Model")));
         onView(withId(R.id.dateText)).check(matches(withText("01/01/2023")));
         onView(withId(R.id.commentText)).check(matches(withText("Sample Comment")));
-        onView(withId(R.id.valueText)).check(matches(withText("10.00")));  // Adjust this value based on formatting
+        onView(withId(R.id.valueText)).check(matches(withText("10.00")));
     }
 
     @Test
@@ -57,5 +59,29 @@ public class ItemDetailsActivityTest {
         onView(withText("Sample Item")).perform(click());
         Espresso.pressBack();
         onView(withId(R.id.search_list)).check(matches(isDisplayed()));
+    }
+
+    //test that the delete button works by going into item details activity then clicking delete
+    // it then it checks if the message popped up then it tests clicking cancel then it clicks the
+    // delete button again this time it clicks confirm then it checks MainActivity to confirm that
+    // the delete works
+    @Test
+    public void testDeleteItem() {
+        onView(withText("Sample Item")).perform(click());
+        onView(withId(R.id.delete_item)).perform(click());
+
+        onView(withText("Are you sure you want to delete this item?")).check(matches(isDisplayed()));
+
+        onView(withText("Cancel")).perform(click());
+
+        onView(withId(R.id.itemDescription)).check(matches(withText("Sample Item")));
+
+        onView(withId(R.id.delete_item)).perform(click());
+
+        onView(withText("Confirm")).perform(click());
+
+        onView(withId(R.id.search_list)).check(matches(isDisplayed()));
+
+        onView(withText("Sample Item")).check(matches(isDisplayed()));
     }
 }

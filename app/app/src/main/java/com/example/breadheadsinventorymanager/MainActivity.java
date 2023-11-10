@@ -173,6 +173,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     // ADD ITEM DIALOG HANDLING
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateList();
+    }
 
     /**
      * Uploads the item and related images to firebase and refreshes the app UI
@@ -180,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @param imageMap The contained images
      */
     @Override
-    public void onOKPressed(Item item, Map<String, Uri> imageMap) {
+    public void onOKPressed(Item item, Map<String, Uri> imageMap) { 
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
