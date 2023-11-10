@@ -315,6 +315,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         // when the cancel button is pressed
         cancel_button.setOnClickListener(v -> {
+            defaultItemClickListener();
+
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
