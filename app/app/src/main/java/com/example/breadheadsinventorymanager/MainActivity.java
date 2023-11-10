@@ -552,7 +552,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
             // basically recreates the recyclerView list
             for(int i = 0; i < filters.size(); i++) {
-                Log.d("h2", filters.get(i).toString());
                 // skip the string identifier and add to recyclerView for visual purposes
                 String item = filters.get(i).toString();
                 item = item.substring(1);
@@ -577,9 +576,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         if (!(filters.contains(makeCheck))) {
             filters.add('M' + menuItem.toString());
         }
-        for(int i = 0; i < filters.size(); i++) {
-            Log.d("h4", filters.get(i).toString());
-        }
+
         activateFilters();
         return true;
     }
@@ -684,9 +681,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                         }
 
                     }
-                    for(int i = 0; i < filters.size(); i++) {
-                        Log.d("h3", filters.get(i).toString());
-                    }
+
                     // update adapter to new filter
                     dateErrorMsg.setVisibility(GONE);
                     activateFilters();
