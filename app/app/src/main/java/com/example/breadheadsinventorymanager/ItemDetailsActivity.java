@@ -62,9 +62,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
         ImageView itemImage = findViewById(R.id.itemImage);
         database = new FirestoreInteract();
 
-        if (!selectedItem.getImagePaths().isEmpty()) { // If the item's list of image paths is initialized and non-empty
-            String firstImagePath = selectedItem.getImagePaths().get(currentImageIndex);
-            updateImage(firstImagePath, itemImage);
+        if (selectedItem.getImagePaths() != null) {
+            if (!selectedItem.getImagePaths().isEmpty()) { // If the item's list of image paths is initialized and non-empty
+                String firstImagePath = selectedItem.getImagePaths().get(currentImageIndex);
+                updateImage(firstImagePath, itemImage);
+            }
         }
 
         ImageButton prevBtn = findViewById(R.id.previousButton), nextBtn = findViewById(R.id.nextButton);
@@ -123,8 +125,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private void updateImage(String imagePath, ImageView itemImage) {
         StorageReference imageRef = database.getStorageReference().child(imagePath);
 
-        final long ONE_MEGABYTE = 1024 * 1024;
-        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        final long TWELVE_MEGABYTE = 1024 * 1024 * 12;
+        imageRef.getBytes(TWELVE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);

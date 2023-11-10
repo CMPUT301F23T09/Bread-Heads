@@ -176,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     /**
      * Uploads the item and related images to firebase and refreshes the app UI
-     * @param item
-     * @param imageMap
+     * @param item The item
+     * @param imageMap The contained images
      */
     @Override
     public void onOKPressed(Item item, Map<String, Uri> imageMap) {

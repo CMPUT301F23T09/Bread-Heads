@@ -87,6 +87,7 @@ public class FirestoreInteract {
                             Toast.makeText(view.getContext(), R.string.image_upload_failed_message, Toast.LENGTH_LONG).show();
                         }
                     });
+        }
     }
 
     /**

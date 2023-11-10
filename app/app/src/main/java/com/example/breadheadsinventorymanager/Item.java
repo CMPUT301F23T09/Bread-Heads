@@ -40,9 +40,9 @@ public class Item implements FirestorePuttable, Serializable {
     private String comment = ""; // comment is optional
     private long value; // in cents
 
-    private ArrayList<String> imagePaths = new ArrayList<String>();
+    private ArrayList<String> imagePaths = new ArrayList<>();
     private transient CheckBox checkBox; // must be transient so the class can be serialized
-    private TagList tags;
+    private TagList tags = new TagList();
 
     /**
      * Empty constructor.
@@ -50,27 +50,11 @@ public class Item implements FirestorePuttable, Serializable {
     public Item() {}
 
     /**
-     * Constructor with all mandatory fields
-     * fixme: adopt a different constructor structure (e.g factory pattern) and exclude comments from this list
-     * fixme: OR, only use the constructor with all parameters and just provide an empty string/array for optional fields
-     */
-    public Item(String date, String description, String make, String model, String comments, long value) {
-        this.date = date;
-        this.description = description;
-        this.make = make;
-        this.model = model;
-        this.comment = comments;
-        this.value = value;
-        this.tags = new TagList();
-    }
-
-    /**
      * Constructor with serial number but not imagePaths
      */
     public Item(String date, String description, String make, String model, String comments, long value, String serialNum) {
         this(date, description, make, model, comments, value);
         this.serialNum = serialNum;
-        this.tags = new TagList();
     }
 
     /**
@@ -79,7 +63,6 @@ public class Item implements FirestorePuttable, Serializable {
     public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths) {
         this(date, description, make, model, comments, value);
         this.imagePaths = imagePaths;
-        this.tags = new TagList();
     }
 
     /**
@@ -89,7 +72,6 @@ public class Item implements FirestorePuttable, Serializable {
         this(date, description, make, model, comments, value);
         this.serialNum = serialNum;
         this.imagePaths = imagePaths;
-        this.tags = new TagList();
     }
 
     /**
@@ -103,10 +85,9 @@ public class Item implements FirestorePuttable, Serializable {
         make = document.getString("make");
         model = document.getString("model");
         serialNum = document.getString("serialNum");
-        value = (long) document.get("value");
+        value = document.getLong("value");
         comment = document.getString("comment");
         imagePaths = (ArrayList<String>) document.get("imagePaths");
-        tags = new TagList((List<String>) document.get("tags"));
     }
 
     /**
