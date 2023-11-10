@@ -86,9 +86,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
         prevBtn.setOnClickListener(new View.OnClickListener() { // LEFT
             @Override
             public void onClick(View v) {
-                if (!selectedItem.getImagePaths().isEmpty()) {
-                    String imagePath = findShuffledImagePath(selectedItem.getImagePaths(), -1);
-                    updateImage(imagePath, itemImage);
+                if (selectedItem.getImagePaths() != null) {
+                    if (!selectedItem.getImagePaths().isEmpty()) {
+                        String imagePath = findShuffledImagePath(selectedItem.getImagePaths(), -1);
+                        updateImage(imagePath, itemImage);
+                    }
                 }
             }
         });
@@ -96,9 +98,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
         nextBtn.setOnClickListener(new View.OnClickListener() { // RIGHT
             @Override
             public void onClick(View v) {
-                if (!selectedItem.getImagePaths().isEmpty()) {
-                    String imagePath = findShuffledImagePath(selectedItem.getImagePaths(), 1);
-                    updateImage(imagePath, itemImage);
+                if (selectedItem.getImagePaths() != null) {
+                    if (!selectedItem.getImagePaths().isEmpty()) {
+                        String imagePath = findShuffledImagePath(selectedItem.getImagePaths(), 1);
+                        updateImage(imagePath, itemImage);
+                    }
                 }
             }
         });
