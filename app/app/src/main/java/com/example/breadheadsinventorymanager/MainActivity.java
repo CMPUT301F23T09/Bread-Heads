@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -226,22 +227,43 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     @Override
     public void onRecyclerItemPressed(int position) {
-        Log.d("h1", filters.get(position).toString());
+        boolean containsDate = false;
+        int indexOfDate = 0;
+        for(int i = 0; i < filters.size(); i++) {
+            if(filters.get(i).toString().charAt(0) == '1') {
+                containsDate = true;
+                indexOfDate = i;
+            }
+        }
         // check if its a description or date
-        if (filters.get(position).toString().charAt(0) == 'D') {
-            filters.remove(position);
-            searchBox.setQuery(getIntent().getDataString(), false);
-        } else if (filters.get(position).toString().charAt(0) == '1') {
-            recyclerViewList.remove(position);
-            // remove filter at position twice, as the filter indexes shift backwards
-            filters.remove(position);
-            filters.remove(position);
+        if(containsDate) {
+            // if there is a date, then we need to check if its before or after the item to delete, since the date takes up two indexes of filters
+            if (filters.get(position).toString().charAt(0) == 'D') {
+                if ( indexOfDate > position) {
+                    filters.remove(position);
+                } else {
+                    filters.remove(position + 1);
+                }
+                searchBox.setQuery(getIntent().getDataString(), false);
+            } else if (filters.get(position).toString().charAt(0) == '1') {
+                // remove filter at position twice, as the filter indexes shift backwards
+                filters.remove(position);
+                filters.remove(position);
+            } else {
+                // if we are here then the item is a make
+                if ( indexOfDate > position) {
+                    filters.remove(position);
+                } else {
+                    filters.remove(position + 1);
+                }
+            }
         } else {
-            recyclerViewList.remove(position);
             filters.remove(position);
         }
-        filterRecyclerAdapter.notifyDataSetChanged();
+        recyclerViewList.remove(position);
         activateFilters();
+        filterRecyclerAdapter.notifyDataSetChanged();
+
     }
     /**
      * handles creating the dialog and switching to associated fragment
@@ -543,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
         if (searchBox.getVisibility() == VISIBLE) {
             searchBox.setVisibility(GONE);
-            searchBox.setQuery(getIntent().getDataString(), false);
+            //searchBox.setQuery(getIntent().getDataString(), false);
         }
     }
 
@@ -565,6 +587,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         // basically recreates the recyclerView list
         for(int i = 0; i < filters.size(); i++) {
+            Log.d("h2", filters.get(i).toString());
             // if its a 1, then we know that the filter is a date, and that the next filter will also be a date
             if (filters.get(i).toString().charAt(0) == '1') {
                 String date = filters.get(i).toString().substring(1, 11) + " - " + filters.get(i + 1).toString().substring(1, 11);
@@ -595,6 +618,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         String makeCheck = "M" + menuItem.toString();
         if (!(filters.contains(makeCheck))) {
             filters.add('M' + menuItem.toString());
+        }
+        for(int i = 0; i < filters.size(); i++) {
+            Log.d("h4", filters.get(i).toString());
         }
         activateFilters();
         return true;
@@ -627,7 +653,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 }
                 filters = newFilters;
 
-                // adds the description to filters if it is not already a filter
+                // adds the description to filters if it is not already a filter (prevents duplicates)
                 if (newText.length() > 0) {
                     String descCheck = "D" + newText;
                     if(!(filters.contains(descCheck))) {
@@ -690,7 +716,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                         }
 
                     }
-
+                    for(int i = 0; i < filters.size(); i++) {
+                        Log.d("h3", filters.get(i).toString());
+                    }
                     // update adapter to new filter
                     dateErrorMsg.setVisibility(GONE);
                     activateFilters();
