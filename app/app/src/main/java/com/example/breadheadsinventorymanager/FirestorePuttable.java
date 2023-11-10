@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 /**
  * Implementing this allows for objects to be put into a Firestore database collection.
+ * @see FirestoreInteract
  */
 public interface FirestorePuttable {
     /**

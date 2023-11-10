@@ -33,6 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Fragment for adding new items to the inventory.
+ */
 public class AddItemFragment extends DialogFragment {
 
     // editText ids

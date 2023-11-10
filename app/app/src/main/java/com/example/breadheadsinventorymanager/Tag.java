@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * A class representing a tag, which is a string identifier.
+ * User-defineable tag that can be applied to items.
  */
 public class Tag implements Serializable, FirestorePuttable {
     private String tag;

@@ -2,10 +2,14 @@ package com.example.breadheadsinventorymanager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,12 +23,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+
 import java.util.Objects;
 
+/**
+ * Activity to view and edit the details and attached information of an individual item.
+ */
 public class ItemDetailsActivity extends AppCompatActivity {
-
-    private int currentImageIndex = 0;
+    private Item selectedItem;
     private FirestoreInteract database;
+    private int currentImageIndex = 0;
 
     /**
      * Loads item details, display related images (if any) and sets button functionality
@@ -39,7 +50,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_details);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Item selectedItem = (Item) getIntent().getSerializableExtra("item");
+        selectedItem = (Item) getIntent().getSerializableExtra("item");
+
+        database = new FirestoreInteract();
 
         TextView dateText = findViewById(R.id.dateText);
         dateText.setText(selectedItem != null ? selectedItem.getDate() : null);
@@ -151,9 +164,11 @@ public class ItemDetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.edit_item) {
             // Handle the Edit button click
+            showEditItemFragment();
             return true;
         } else if (id == R.id.delete_item) {
             // Handle the Delete button click
+            showDeleteConfirmationDialog();
             return true;
         } else if (id == android.R.id.home) {
             // Handle the Up button (back button) click
@@ -162,4 +177,84 @@ public class ItemDetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void showEditItemFragment() {
+        Log.d("ItemDetailsActivity", "showEditItemFragment called");
+        Log.d("ItemDetailsActivity", "selectedItem is " + (selectedItem != null ? "not null" : "null"));
+
+        if (selectedItem != null) {
+            EditItemFragment editItemFragment = EditItemFragment.newInstance(selectedItem);
+            editItemFragment.listener = new EditItemFragment.OnFragmentInteractionListener() {
+                @Override
+                public void onItemUpdated(Item item) {
+                    Log.d("ItemDetailsActivity", "onItemUpdated called");
+                    Log.d("ItemDetailsActivity", "onItemUpdated called with item: " + item.getDescription());
+                    // Only update the Firestore if the item has changed
+                    if (!selectedItem.equals(item)) {
+                        database.putItem(item).addOnSuccessListener(aVoid -> {
+                            Log.d("ItemDetailsActivity", "Firestore update successful");
+                            // Refresh UI with the updated item
+                            updateUI(item);
+                        }).addOnFailureListener(e -> {
+                            Log.e("ItemDetailsActivity", "Error updating item in Firestore", e);
+                        });
+                    } else {
+                        // Item hasn't changed, just refresh UI
+                        updateUI(item);
+                    }
+                }
+            };
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            editItemFragment.show(transaction, "EDIT_ITEM");
+        }
+    }
+
+    // Method to update UI with the new item details
+    private void updateUI(Item updatedItem) {
+        Log.d("ItemDetailsActivity", "updateUI called");
+        TextView dateText = findViewById(R.id.dateText);
+        dateText.setText(updatedItem.getDate());
+
+        TextView modeText = findViewById(R.id.modelText);
+        modeText.setText(updatedItem.getModel());
+
+        TextView itemDescription = findViewById(R.id.itemDescription);
+        itemDescription.setText(updatedItem.getDescription());
+
+        TextView makeText = findViewById(R.id.makeText);
+        makeText.setText(updatedItem.getMake());
+
+        TextView commentText = findViewById(R.id.commentText);
+        commentText.setText(updatedItem.getComment());
+
+        TextView valueText = findViewById(R.id.valueText);
+        valueText.setText(updatedItem.getValueDollarString());
+    }
+    private void deleteSelectedItem() {
+        if (selectedItem != null) {
+            database.deleteItem(selectedItem).addOnSuccessListener(aVoid -> {
+                Log.d("ItemDetailsActivity", "Firestore delete successful");
+                finish();
+            }).addOnFailureListener(e -> {
+                Log.e("ItemDetailsActivity", "Error deleting item from Firestore", e);
+            });
+        }
+    }
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deleteSelectedItem();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
 }

@@ -11,16 +11,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -42,9 +41,10 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Main activity
+ * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
+ * the ability to add new items or delete existing ones, and related functionality.
  *
- * @version 1
+ * @version 2
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
     // id for search box to filter by description
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
-    private ArrayAdapter<Item> itemArrayAdapter;
+    private CustomItemListAdapter itemArrayAdapter;
     private ListView itemListView;
     private FirestoreInteract database;
     private TagList tagList;
@@ -139,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Updates the total value displayed at the bottom of the screen
      */
     private void updateTotalValue() {
-        totalValue.setText(getString(R.string.totalValueTitle, itemList.getSumAsDollarString()));
+        totalValue.setText(getString(R.string.totalValueTitle,
+                itemArrayAdapter.getSumAsDollarString()));
         totalValue.setVisibility(View.VISIBLE);
     }
 
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 itemListView = findViewById(R.id.items_main_list);
                 itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
                 itemListView.setAdapter(itemArrayAdapter);
-                updateTotalValue();
+                activateFilters();
             }
         });
     }
@@ -173,6 +174,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     // ADD ITEM DIALOG HANDLING
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateList();
+    }
 
     /**
      * Uploads the item and related images to firebase and refreshes the app UI
@@ -180,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @param imageMap The contained images
      */
     @Override
-    public void onOKPressed(Item item, Map<String, Uri> imageMap) {
+    public void onOKPressed(Item item, Map<String, Uri> imageMap) { 
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -191,10 +197,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // Upload images: fixme: eventually, should store image under a folder named after its
         // item's id. So grab the item's firestore id after uploading the item. Then, upload the
         // images
-        Iterator<Map.Entry<String, Uri>> it = imageMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, Uri> image = (Map.Entry<String, Uri>) it.next();
-            assert(item.getImagePaths().contains(image.getKey()));
+        for (Map.Entry<String, Uri> image : imageMap.entrySet()) {
+            assert (item.getImagePaths().contains(image.getKey()));
         }
         database.uploadImages(imageMap, findViewById(android.R.id.content).getRootView());
     }
@@ -358,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // SORT MENU HANDLING
 
     /**
-     * Handles sort menu creation
+     * Handles sort menu creation.
      */
     private void showSortMenu() {
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.sort_button));
@@ -368,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles clicking of sort menu items
+     * Handles clicking of sort menu items.
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
@@ -390,24 +394,26 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         itemList.sort(sortMode, sortAscending);
         itemArrayAdapter.notifyDataSetChanged();
+        activateFilters();
         return true;
     }
 
     /**
-     * Changes the order items are sorted in
+     * Changes the order items are sorted in.
      * @return True if the new sort order is ascending, otherwise false
      */
     private boolean toggleSortOrder() {
         sortAscending = !sortAscending;
         itemList.sort(sortMode, sortAscending);
         itemArrayAdapter.notifyDataSetChanged();
+        activateFilters();
         return sortAscending;
     }
 
     // FILTER MENU HANDLING
 
     /**
-     * Handles the menu creation after the "filter button" is tapped
+     * Handles the menu creation after the "filter button" is tapped.
      */
     private void showFilterMenu() {
         // shows the menu of filterable objects
@@ -418,8 +424,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles clicking of filter menu items
-     *
+     * Handles clicking of filter menu items.
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
@@ -427,17 +432,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int itemClick = item.getItemId();
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
-            //resetAdapter();
             showDateFilter();
             return true;
         } else if (itemClick == R.id.description) {
             // show description search field
-            //resetAdapter();
             showDescriptionSearch();
             return true;
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
-            //resetAdapter();
             showMakeSubMenu();
             return true;
         } else if (itemClick == R.id.remove_filter) {
@@ -450,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Shows and populates submenu for filtering by make
+     * Shows and populates submenu for filtering by make.
      */
     private void showMakeSubMenu() {
         // show submenu of all available makes
@@ -470,19 +472,19 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTERING UTILITY FUNCTIONS
 
     /**
-     * resets the adapter to the original ItemList
-     * means that the list cannot have more than one filter active at a time
+     * Resets the adapter to the original ItemList.
      */
     private void resetAdapter() {
         filters = new ArrayList<>();
         toggleFilterVisibility();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
+        updateTotalValue();
     }
 
     /**
-     * toggles visibility of the date range and description search fields
-     * sets entered text to nothing
+     * Toggles visibility of the date range and description search fields.
+     * Sets entered text to nothing.
      */
     private void toggleFilterVisibility() {
         // toggle visibility of fields that should be invisible
@@ -512,12 +514,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         Gson gson = new Gson();
         String json = gson.toJson(filters);
-        itemArrayAdapter.getFilter().filter(json);
-        itemListView.setAdapter(itemArrayAdapter);
+        itemArrayAdapter.getFilter().filter(json, count -> {
+            itemListView.setAdapter(itemArrayAdapter); // putting in listener prevents blinking
+            updateTotalValue(); // uses sum of values of filtered items
+        });
     }
 
     /**
-     * Handles click events for make submenu
+     * Handles click events for make submenu.
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
      */
@@ -530,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles filtering itemList for make, creates a SearchView to search for a make
+     * Handles filtering itemList for make, creates a SearchView to search for a make.
      */
     private void showDescriptionSearch() {
         toggleFilterVisibility();
@@ -567,8 +571,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * handles filtering by date, checks for valid date then creates a new list
-     * for the adapter to latch on to
+     * Handles filtering by date, checks for valid date then creates a new list
+     * for the adapter to latch on to.
      */
     private void showDateFilter() {
         toggleFilterVisibility();
@@ -616,6 +620,5 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 }
             }
         });
-        }
-
+    }
 }

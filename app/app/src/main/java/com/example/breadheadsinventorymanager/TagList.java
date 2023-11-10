@@ -17,7 +17,7 @@ public class TagList extends ArrayList<Tag> {
 
     /**
      * Constructs a TagList from the given List of Strings
-     * @param list List<String> of all tags
+     * @param list List of all tags as Strings
      */
     protected TagList(List<String> list) {
         super();

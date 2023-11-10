@@ -1,12 +1,9 @@
 package com.example.breadheadsinventorymanager;
 
-import static android.text.TextUtils.substring;
-
 import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.widget.CheckBox;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -14,16 +11,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Represents an item in the inventory and all the data it contains.
@@ -43,6 +36,9 @@ public class Item implements FirestorePuttable, Serializable {
     private ArrayList<String> imagePaths = new ArrayList<>();
     private transient CheckBox checkBox; // must be transient so the class can be serialized
     private TagList tags = new TagList();
+
+    // valid format for date setting
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Empty constructor.
@@ -112,7 +108,8 @@ public class Item implements FirestorePuttable, Serializable {
      * [01.01.01] only requires a serial number "when applicable"
      */
     public Item(String date, String description, String make, String model, String comments, long value) {
-        this.date = date;
+        this.date = LocalDate.parse(date, formatter)
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")); // coerce date into nice format
         this.description = description;
         this.make = make;
         this.model = model;
@@ -168,8 +165,7 @@ public class Item implements FirestorePuttable, Serializable {
      * @return the Local date object of the item
      */
     public LocalDate getDateObj() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-        return LocalDate.parse(this.date, formatter);
+        return LocalDate.parse(getDate(), formatter);
 
     }
 
@@ -195,6 +191,45 @@ public class Item implements FirestorePuttable, Serializable {
 
     public void put(CollectionReference collection) {
         // pass
+    }
+
+    /*
+    ============================================
+    Sorting utility
+    ============================================
+     */
+
+    /**
+     * Returns a comparator for sorting by the specified parameter
+     * @param sortMode The field to sort by; accepts "comment", "make", "date", "value", or
+     *                 "description". Defaults to description if not specified
+     * @param ascending True if sorting in ascending order, else false
+     * @return The comparator for the specified field in the given order
+     */
+    public static Comparator<Item> getComparator(String sortMode, boolean ascending) {
+        Comparator<Item> comparator;
+        switch (sortMode) {
+            case("comment"):
+                comparator = (Item lhs, Item rhs) ->
+                    String.CASE_INSENSITIVE_ORDER.compare(lhs.getComment(), rhs.getComment());
+                break;
+            case("make"):
+                comparator = (Item lhs, Item rhs) ->
+                        String.CASE_INSENSITIVE_ORDER.compare(lhs.getMake(), rhs.getMake());
+                break;
+            case("date"):
+                comparator = Comparator.comparing(Item::getDateObj);
+                break;
+            case("value"):
+                comparator = Comparator.comparing(Item::getValue);
+                break;
+            default:
+                // default to description
+                comparator = (Item lhs, Item rhs) ->
+                        String.CASE_INSENSITIVE_ORDER.compare(lhs.getDescription(), rhs.getDescription());
+                break;
+        }
+        return ascending ? comparator : comparator.reversed();
     }
 
     /*
@@ -230,9 +265,9 @@ public class Item implements FirestorePuttable, Serializable {
         return comment;
     }
 
-    // Setters
     public void setDate(String date) {
-        this.date = date;
+        this.date = LocalDate.parse(date, formatter)
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));  // coerce date into nice format
     }
 
     public void setDescription(String description) {
@@ -283,9 +318,16 @@ public class Item implements FirestorePuttable, Serializable {
         this.tags = tags;
     }
 
+    /**
+     * Sets CheckBox object associated with this Item.
+     * @param checkBox Checkbox object
+     */
     public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
 
+    /**
+     * Gets CheckBox object associated with this Item.
+     * @return Object's associated CheckBox
+     */
     public CheckBox getCheckBox() {return this.checkBox;}
-
 }
 
