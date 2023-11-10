@@ -227,39 +227,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     @Override
     public void onRecyclerItemPressed(int position) {
-        boolean containsDate = false;
-        int indexOfDate = 0;
-        for(int i = 0; i < filters.size(); i++) {
-            if(filters.get(i).toString().charAt(0) == '1') {
-                containsDate = true;
-                indexOfDate = i;
-            }
-        }
-        // check if its a description or date
-        if(containsDate) {
-            // if there is a date, then we need to check if its before or after the item to delete, since the date takes up two indexes of filters
-            if (filters.get(position).toString().charAt(0) == 'D') {
-                if ( indexOfDate > position) {
-                    filters.remove(position);
-                } else {
-                    filters.remove(position + 1);
-                }
-                searchBox.setQuery(getIntent().getDataString(), false);
-            } else if (filters.get(position).toString().charAt(0) == '1') {
-                // remove filter at position twice, as the filter indexes shift backwards
-                filters.remove(position);
-                filters.remove(position);
-            } else {
-                // if we are here then the item is a make
-                if ( indexOfDate > position) {
-                    filters.remove(position);
-                } else {
-                    filters.remove(position + 1);
-                }
-            }
-        } else {
-            filters.remove(position);
-        }
+        filters.remove(position);
         recyclerViewList.remove(position);
         activateFilters();
         filterRecyclerAdapter.notifyDataSetChanged();
@@ -583,28 +551,28 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         itemArrayAdapter.getFilter().filter(json, count -> {
             itemListView.setAdapter(itemArrayAdapter); // putting in listener prevents blinking
             updateTotalValue(); // uses sum of values of filtered items
-        });
 
-        // basically recreates the recyclerView list
-        for(int i = 0; i < filters.size(); i++) {
-            Log.d("h2", filters.get(i).toString());
-            // if its a 1, then we know that the filter is a date, and that the next filter will also be a date
-            if (filters.get(i).toString().charAt(0) == '1') {
-                String date = filters.get(i).toString().substring(1, 11) + " - " + filters.get(i + 1).toString().substring(1, 11);
-                recyclerViewList.add(date);
-                // increment i to skip next filter item
-                i++;
-                continue;
+            // basically recreates the recyclerView list
+            for(int i = 0; i < filters.size(); i++) {
+                Log.d("h2", filters.get(i).toString());
+                // if its a 1, then we know that the filter is a date, and that the next filter will also be a date
+                /*if (filters.get(i).toString().charAt(0) == '1') {
+                    String date = filters.get(i).toString().substring(1, 11) + " - " + filters.get(i + 1).toString().substring(1, 11);
+                    recyclerViewList.add(date);
+                    // increment i to skip next filter item
+                    i++;
+                    continue;
+                }*/
+                // skip the string identifier and add to recyclerView for visual purposes
+                String item = filters.get(i).toString();
+                item = item.substring(1);
+                recyclerViewList.add(item);
             }
-            // skip the string identifier and add to recyclerView for visual purposes
-            String item = filters.get(i).toString();
-            item = item.substring(1);
-            recyclerViewList.add(item);
-        }
-        filterView.setVisibility(VISIBLE);
-        filterRecyclerAdapter.notifyDataSetChanged();
-        itemArrayAdapter.getFilter().filter(json);
-        itemListView.setAdapter(itemArrayAdapter);
+            filterView.setVisibility(VISIBLE);
+            filterRecyclerAdapter.notifyDataSetChanged();
+            itemArrayAdapter.getFilter().filter(json);
+            itemListView.setAdapter(itemArrayAdapter);
+        });
     }
 
     /**
@@ -676,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         endDate.setVisibility(VISIBLE);
         filterDateButton.setVisibility(VISIBLE);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
         // when pressed, it will filter the dates by range entered, display error message otherwise
         filterDateButton.setOnClickListener(new View.OnClickListener() {
