@@ -19,6 +19,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+
+/**
+ * Fragment for editing existing items in the inventory.
+ */
 public class EditItemFragment extends DialogFragment {
 
     // Define UI elements for editing

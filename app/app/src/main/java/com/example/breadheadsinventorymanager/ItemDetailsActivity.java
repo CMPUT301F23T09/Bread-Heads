@@ -29,6 +29,9 @@ import android.content.DialogInterface;
 
 import java.util.Objects;
 
+/**
+ * Activity to view and edit the details and attached information of an individual item.
+ */
 public class ItemDetailsActivity extends AppCompatActivity {
     private Item selectedItem;
     private FirestoreInteract database;

@@ -41,9 +41,10 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Main activity
+ * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
+ * the ability to add new items or delete existing ones, and related functionality.
  *
- * @version 1
+ * @version 2
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
     // id for search box to filter by description

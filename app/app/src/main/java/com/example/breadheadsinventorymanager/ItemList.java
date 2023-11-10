@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Stores a list of items
+ * List of items. Keeps track of the sum of the items present in the list through modification.
  *
  * @version 1.2
  */

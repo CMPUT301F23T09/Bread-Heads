@@ -29,8 +29,10 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Class to interact with Firestore
- * @version 1.1
+ * Class to interact with Firestore. Keeps track of the database and collections, and both sends
+ * and retrieves data when necessary.
+ * @version 1.2
+ * @see FirestorePuttable
  */
 public class FirestoreInteract {
     private FirebaseFirestore database; // can't be static; would create memory leak (uses context)
