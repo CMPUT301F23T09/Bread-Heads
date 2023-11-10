@@ -1,0 +1,3 @@
+com.example.breadheadsinventorymanager.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme

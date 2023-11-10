@@ -1,0 +1,578 @@
+11-09 17:07:45.646  7877  7907 I TestRunner: started: testItemDetailsActivityInfo(com.example.breadheadsinventorymanager.ItemDetailsActivityTest)
+11-09 17:07:45.667  7877  7907 W Settings: Setting always_finish_activities has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+11-09 17:07:45.681  1036  7902 D NetworkMonitor/100: PROBE_HTTP http://connectivitycheck.gstatic.com/generate_204 time=104ms ret=204 request={Connection=[close], User-Agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36]} headers={null=[HTTP/1.1 204 No Content], Connection=[close], Content-Length=[0], Cross-Origin-Resource-Policy=[cross-origin], Date=[Fri, 10 Nov 2023 00:07:47 GMT], X-Android-Received-Millis=[1699574865680], X-Android-Response-Source=[NETWORK 204], X-Android-Selected-Protocol=[http/1.1], X-Android-Sent-Millis=[1699574865631]}
+11-09 17:07:45.729   874   941 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-09 17:07:45.736  7877  7918 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+11-09 17:07:45.738   423   423 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+11-09 17:07:45.742  7877  7918 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+11-09 17:07:45.748  7877  7918 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+11-09 17:07:45.766  1139  1961 D EGL_emulation: app_time_stats: avg=170990.67ms min=170990.67ms max=170990.67ms count=1
+11-09 17:07:45.768  1036  7901 D NetworkMonitor/100: PROBE_HTTPS https://www.google.com/generate_204 time=194ms ret=204 request={Connection=[close], User-Agent=[Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36]} headers={null=[HTTP/1.1 204 No Content], Alt-Svc=[h3=":443"; ma=2592000,h3-29=":443"; ma=2592000], Connection=[close], Content-Length=[0], Cross-Origin-Resource-Policy=[cross-origin], Date=[Fri, 10 Nov 2023 00:07:47 GMT], X-Android-Received-Millis=[1699574865767], X-Android-Response-Source=[NETWORK 204], X-Android-Selected-Protocol=[http/1.1], X-Android-Sent-Millis=[1699574865718]}
+11-09 17:07:45.770  1036  7900 D NetworkMonitor/100: isCaptivePortal: isSuccessful()=true isPortal()=false RedirectUrl=null isPartialConnectivity()=false Time=255ms
+11-09 17:07:45.781   532   805 D ConnectivityService: [100 WIFI] validation passed
+11-09 17:07:45.835  7877  7877 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+11-09 17:07:45.845  7877  7877 D LifecycleMonitor: Lifecycle status change: com.example.breadheadsinventorymanager.MainActivity@af0009c in: PRE_ON_CREATE
+11-09 17:07:45.846  7877  7877 V ActivityScenario: Activity lifecycle changed event received but ignored because the reported transition was not ON_CREATE while the last known transition was PRE_ON_CREATE
+11-09 17:07:45.983  7877  7877 W nventorymanager: Accessing hidden method Landroid/view/View;->computeFitSystemWindows(Landroid/graphics/Rect;Landroid/graphics/Rect;)Z (unsupported, reflection, allowed)
+11-09 17:07:45.983  7877  7877 W nventorymanager: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (unsupported, reflection, allowed)
+11-09 17:07:46.022  7877  7877 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10187; state: ENABLED
+11-09 17:07:46.042   874   941 D EGL_emulation: app_time_stats: avg=20064.95ms min=9.89ms max=180183.75ms count=9
+11-09 17:07:46.094  7877  7877 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10187; state: ENABLED
+11-09 17:07:46.110   874   941 D EGL_emulation: app_time_stats: avg=1069.37ms min=1069.37ms max=1069.37ms count=1
+11-09 17:07:46.355  7877  7921 W DynamiteModule: Local module descriptor class for com.google.android.gms.providerinstaller.dynamite not found.
+11-09 17:07:46.376  4668  5185 W ProviderHelper: Unknown dynamite feature providerinstaller.dynamite
+11-09 17:07:46.382  7877  7921 I DynamiteModule: Considering local module com.google.android.gms.providerinstaller.dynamite:0 and remote module com.google.android.gms.providerinstaller.dynamite:0
+11-09 17:07:46.383  7877  7921 W ProviderInstaller: Failed to load providerinstaller module: No acceptable module com.google.android.gms.providerinstaller.dynamite found. Local version is 0 and remote version is 0.
+11-09 17:07:46.410  7877  7877 D LifecycleMonitor: Lifecycle status change: com.example.breadheadsinventorymanager.MainActivity@af0009c in: CREATED
+11-09 17:07:46.411  7877  7877 V ActivityScenario: Update currentActivityStage to CREATED, currentActivity=com.example.breadheadsinventorymanager.MainActivity@af0009c
+11-09 17:07:46.426  7877  7921 D nativeloader: Configuring clns-9 for other apk /system/framework/org.apache.http.legacy.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-09 17:07:46.433  7877  7877 D LifecycleMonitor: Lifecycle status change: com.example.breadheadsinventorymanager.MainActivity@af0009c in: STARTED
+11-09 17:07:46.433  7877  7877 V ActivityScenario: Update currentActivityStage to STARTED, currentActivity=com.example.breadheadsinventorymanager.MainActivity@af0009c
+11-09 17:07:46.436  7877  7921 D nativeloader: Configuring clns-10 for other apk /system/framework/com.android.media.remotedisplay.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-09 17:07:46.444  7877  7921 D nativeloader: Configuring clns-11 for other apk /system/framework/com.android.location.provider.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+11-09 17:07:46.448  7877  7921 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-09 17:07:46.449  7877  7921 D ApplicationLoaders: Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+11-09 17:07:46.458  7877  7877 D LifecycleMonitor: Lifecycle status change: com.example.breadheadsinventorymanager.MainActivity@af0009c in: RESUMED
+11-09 17:07:46.458  7877  7877 V ActivityScenario: Update currentActivityStage to RESUMED, currentActivity=com.example.breadheadsinventorymanager.MainActivity@af0009c
+11-09 17:07:46.469  7877  7921 D nativeloader: InitLlndkLibrariesProduct: libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libbinder_ndk.so:libc.so:libcgrouprc.so:libclang_rt.asan-x86_64-android.so:libcom.android.tethering.connectivity_native.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libselinux.so:libsync.so:libvndksupport.so:libvulkan.so
+11-09 17:07:46.469  7877  7921 D nativeloader: Configuring product-clns-12 for unbundled product apk /product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk. target_sdk_version=33, uses_libraries=, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64:/product/lib64:/system/product/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms:/product/lib64:/system/product/lib64
+11-09 17:07:46.473  7877  7877 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10187; state: DISABLED
+11-09 17:07:46.476  7877  7877 W OpenGLRenderer: Unknown dataspace 0
+11-09 17:07:46.485  7877  7921 D nativeloader: InitVndkspLibrariesProduct: android.hardware.common-V2-ndk.so:android.hardware.common.fmq-V1-ndk.so:android.hardware.graphics.allocator-V2-ndk.so:android.hardware.graphics.common-V4-ndk.so:android.hardware.graphics.common@1.0.so:android.hardware.graphics.common@1.1.so:android.hardware.graphics.common@1.2.so:android.hardware.graphics.composer3-V1-ndk.so:android.hardware.graphics.mapper@2.0.so:android.hardware.graphics.mapper@2.1.so:android.hardware.graphics.mapper@3.0.so:android.hardware.graphics.mapper@4.0.so:android.hardware.renderscript@1.0.so:android.hidl.memory.token@1.0.so:android.hidl.memory@1.0-impl.so:android.hidl.memory@1.0.so:android.hidl.safe_union@1.0.so:libRSCpuRef.so:libRSDriver.so:libRS_internal.so:libbase.so:libbcinfo.so:libblas.so:libc++.so:libcompiler_rt.so:libcutils.so:libdmabufheap.so:libgralloctypes.so:libhardware.so:libhidlbase.so:libhidlmemory.so:libion.so:libjsoncpp.so:liblzma.so:libprocessgroup.so:libunwindstack.so:libutils.so:libutilscallstack.so:libz.so
+11-09 17:07:46.499  7877  7877 D AutofillManager: view not autofillable - not passing ime action check
+11-09 17:07:46.548  7877  7921 V NativeCrypto: Registering com/google/android/gms/org/conscrypt/NativeCrypto's 295 native methods...
+11-09 17:07:46.583  7877  7921 W nventorymanager: Accessing hidden method Ljava/security/spec/ECParameterSpec;->getCurveName()Ljava/lang/String; (unsupported, reflection, allowed)
+11-09 17:07:46.587   423   434 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10187 pid=0
+11-09 17:07:46.587   423   434 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10187 => denied (377 us)
+11-09 17:07:46.587   423   852 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10187 pid=7877
+11-09 17:07:46.587   423   852 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10187 => denied (172 us)
+11-09 17:07:46.588   423   852 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10187 pid=7877
+11-09 17:07:46.588   423   852 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10187 => denied (429 us)
+11-09 17:07:46.589   423   434 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10187 pid=0
+11-09 17:07:46.589   423   434 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10187 => denied (2054 us)
+11-09 17:07:46.604  7877  7916 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+11-09 17:07:46.604  7877  7916 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-09 17:07:46.672   158   158 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-09 17:07:46.672  7877  7916 I Gralloc4: mapper 4.x is not supported
+11-09 17:07:46.683  7877  7916 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-09 17:07:46.689   532   951 D ConnectivityService: requestNetwork for uid/pid:10187/7877 activeRequest: null callbackRequest: 170 [NetworkRequest [ REQUEST id=171, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647
+11-09 17:07:46.691   532   798 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=171, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.691   532   798 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=171, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.692   532   798 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=171, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.692   532   798 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=171, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.692   532   805 D ConnectivityService: NetReassign [171 : null → 100] [c 0] [a 1] [i 2]
+11-09 17:07:46.717  7877  7921 I ProviderInstaller: Installed default security provider GmsCore_OpenSSL
+11-09 17:07:46.736   532   951 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10187 pid=0
+11-09 17:07:46.736   532   951 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10187 => denied (137 us)
+11-09 17:07:46.737   532   951 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10187 pid=0
+11-09 17:07:46.737   532   951 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10187 => denied (303 us)
+11-09 17:07:46.737   532   951 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10187 pid=0
+11-09 17:07:46.737   532   951 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10187 => denied (79 us)
+11-09 17:07:46.741   532   548 W ziparchive: Unable to open '/data/app/~~DqZ5GTF6JDUyGv9MUaBzFQ==/com.example.breadheadsinventorymanager-5fu3sh9agi6kTceehSwmdg==/base.dm': No such file or directory
+11-09 17:07:46.742   532   548 I ActivityTaskManager: Displayed com.example.breadheadsinventorymanager/.MainActivity for user 0: +1s62ms
+11-09 17:07:46.829   532   951 I ImeTracker: com.example.breadheadsinventorymanager:18379e3e: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-09 17:07:46.830   532   951 I ImeTracker: com.example.breadheadsinventorymanager:18379e3e: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-09 17:07:46.839  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+11-09 17:07:46.844  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+11-09 17:07:46.844  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.example.breadheadsinventorymanager fieldId=0 fieldName=null extras=null}, false)
+11-09 17:07:46.846  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+11-09 17:07:46.846  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+11-09 17:07:46.929   532  2283 D ConnectivityService: requestNetwork for uid/pid:10187/7877 activeRequest: null callbackRequest: 172 [NetworkRequest [ REQUEST id=173, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647
+11-09 17:07:46.931   532   798 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=173, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.931   532   798 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=173, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.931   532   798 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=173, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.931   532   798 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=173, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10187 RequestorUid: 10187 RequestorPkg: com.example.breadheadsinventorymanager UnderlyingNetworks: Null] ]
+11-09 17:07:46.931   532   805 D ConnectivityService: NetReassign [173 : null → 100] [c 0] [a 0] [i 1]
+11-09 17:07:46.967  1139  2205 D OneSearchSuggestProvider: Shut down the binder channel
+11-09 17:07:46.968  1139  1369 I IPCThreadState: oneway function results for code 2 on binder at 0x7e80fc4591f0 will be dropped but finished with status UNKNOWN_TRANSACTION
+11-09 17:07:46.977  2887  3847 I PBSessionCacheImpl: Deleted sessionId[12698859851839229] from persistence.
+11-09 17:07:46.986  1139  1192 I ImeTracker: com.google.android.apps.nexuslauncher:e149c0ca: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+11-09 17:07:46.986  1139  1192 I ImeTracker: com.google.android.apps.nexuslauncher:e149c0ca: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-09 17:07:46.992  2887  3489 W SearchServiceCore: Abort, client detached.
+11-09 17:07:47.028  4668  5185 I FontLog : (REDACTED) Received query %s, URI %s
+11-09 17:07:47.028  4668  5185 I FontLog : (REDACTED) Query [%s] resolved to %s
+11-09 17:07:47.028  7877  7907 W FileTestStorage: Output properties is not supported.
+11-09 17:07:47.031  7877  7907 I Tracing : Tracer added: class androidx.test.platform.tracing.AndroidXTracer
+11-09 17:07:47.032  4668  5185 I FontLog : (REDACTED) Fetch %s end status %s
+11-09 17:07:47.046  7877  7907 D CompatibilityChangeReporter: Compat change id reported: 247079863; UID 10187; state: DISABLED
+11-09 17:07:47.048  4668  5185 I FontLog : (REDACTED) Pulling font file for id = %d, cache size = %d
+11-09 17:07:47.055  4668  5185 I FontLog : (REDACTED) Pulling font file for id = %d, cache size = %d
+11-09 17:07:47.059  7877  7907 D EventInjectionStrategy: Creating injection strategy with input manager.
+11-09 17:07:47.060  7877  7907 W nventorymanager: Accessing hidden method Landroid/hardware/input/InputManager;->getInstance()Landroid/hardware/input/InputManager; (unsupported, reflection, allowed)
+11-09 17:07:47.060  7877  7907 W nventorymanager: Accessing hidden method Landroid/hardware/input/InputManager;->injectInputEvent(Landroid/view/InputEvent;I)Z (unsupported, reflection, allowed)
+11-09 17:07:47.060  7877  7907 W nventorymanager: Accessing hidden field Landroid/hardware/input/InputManager;->INJECT_INPUT_EVENT_MODE_WAIT_FOR_FINISH:I (unsupported, reflection, allowed)
+11-09 17:07:47.063   874   941 D EGL_emulation: app_time_stats: avg=13.22ms min=1.30ms max=81.04ms count=43
+11-09 17:07:47.080   874   926 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@513102
+11-09 17:07:47.080   532   546 W InputManager-JNI: Input channel object '285569c Splash Screen com.example.breadheadsinventorymanager (client)' was disposed without first being removed with the input manager!
+11-09 17:07:47.096  7877  7907 W nventorymanager: Accessing hidden method Landroid/view/ViewConfiguration;->getDoubleTapMinTime()I (unsupported, reflection, allowed)
+11-09 17:07:47.114  7877  7877 W nventorymanager: Accessing hidden method Landroid/os/MessageQueue;->next()Landroid/os/Message; (unsupported, reflection, allowed)
+11-09 17:07:47.114  7877  7877 W nventorymanager: Accessing hidden field Landroid/os/MessageQueue;->mMessages:Landroid/os/Message; (unsupported, reflection, allowed)
+11-09 17:07:47.116  7877  7877 W nventorymanager: Accessing hidden method Landroid/os/Message;->recycleUnchecked()V (unsupported, reflection, allowed)
+11-09 17:07:47.122  7877  7877 W nventorymanager: Accessing hidden method Landroid/view/WindowManagerGlobal;->getInstance()Landroid/view/WindowManagerGlobal; (unsupported, reflection, allowed)
+11-09 17:07:47.122  7877  7877 W nventorymanager: Accessing hidden field Landroid/view/WindowManagerGlobal;->mViews:Ljava/util/ArrayList; (unsupported, reflection, allowed)
+11-09 17:07:47.122  7877  7877 W nventorymanager: Accessing hidden field Landroid/view/WindowManagerGlobal;->mParams:Ljava/util/ArrayList; (unsupported, reflection, allowed)
+11-09 17:07:47.130   874   926 W FrameTracker: Missed App frame:UNKNOWN: 24, 44695, 33984632, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 24, 44695, 33984632, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44710, 33484166, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44732, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missing HWUI jank callback for vsyncId: 44732, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44747, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missing HWUI jank callback for vsyncId: 44747, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44762, 66734568, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44784, 83904402, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44806, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missing HWUI jank callback for vsyncId: 44806, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44836, 84108904, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44859, 67635872, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed App frame:UNKNOWN: 88, 44874, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 88, 44874, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missing HWUI jank callback for vsyncId: 44874, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missed SF frame:UNKNOWN: 80, 44919, 0, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.130   874   926 W FrameTracker: Missing HWUI jank callback for vsyncId: 44919, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.131   874   926 W FrameTracker: Missing SF jank callback for vsyncId: 44941, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+11-09 17:07:47.131  7877  7942 D TrafficStats: tagSocket(134) with statsTag=0xffffffff, statsUid=-1
+11-09 17:07:47.137  7877  7877 I ViewInteraction: Performing 'single click' action on view view.getId() is <2131230793/com.example.breadheadsinventorymanager:id/add_item>
+11-09 17:07:47.185  7877  7942 W nventorymanager: Accessing hidden field Ljava/net/Socket;->impl:Ljava/net/SocketImpl; (unsupported, reflection, allowed)
+11-09 17:07:47.209   420   436 D audioserver: FGS Logger Transaction failed
+11-09 17:07:47.209   420   436 D audioserver: -129
+11-09 17:07:47.232  7877  7877 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+11-09 17:07:47.232  7877  7877 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+11-09 17:07:47.288  2887  3542 W A       : [Download] response code: 400
+11-09 17:07:47.323   420   483 D audioserver: FGS Logger Transaction failed
+11-09 17:07:47.323   420   483 D audioserver: -129
+11-09 17:07:47.342  7877  7942 W nventorymanager: Accessing hidden method Ljava/security/spec/ECParameterSpec;->setCurveName(Ljava/lang/String;)V (unsupported, reflection, allowed)
+11-09 17:07:47.565  7877  7916 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-09 17:07:47.763   532   951 I ImeTracker: com.example.breadheadsinventorymanager:55476c98: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-09 17:07:47.763   532   951 I ImeTracker: com.example.breadheadsinventorymanager:55476c98: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-09 17:07:47.764  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+11-09 17:07:47.766  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+11-09 17:07:47.766  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.example.breadheadsinventorymanager fieldId=0 fieldName=null extras=null}, false)
+11-09 17:07:47.767  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+11-09 17:07:47.768  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+11-09 17:07:47.829  7877  7916 D EGL_emulation: app_time_stats: avg=16.62ms min=1.49ms max=236.15ms count=34
+11-09 17:07:48.093   874   941 D EGL_emulation: app_time_stats: avg=2.02ms min=1.07ms max=7.43ms count=45
+11-09 17:07:48.463  7877  7877 I ViewInteraction: Performing 'replace text(Sample Item)' action on view view.getId() is <2131230975/com.example.breadheadsinventorymanager:id/item_name_text>
+11-09 17:07:48.477  7877  7877 D CompatibilityChangeReporter: Compat change id reported: 163400105; UID 10187; state: ENABLED
+11-09 17:07:48.485  7877  7877 I AssistStructure: Flattened final assist data: 6628 bytes, containing 2 windows, 35 views
+11-09 17:07:48.490  7877  7877 I ViewInteraction: Performing 'replace text(Sample Make)' action on view view.getId() is <2131230973/com.example.breadheadsinventorymanager:id/item_make_text>
+11-09 17:07:48.510  7877  7877 I ViewInteraction: Performing 'replace text(Sample Model)' action on view view.getId() is <2131230974/com.example.breadheadsinventorymanager:id/item_model_text>
+11-09 17:07:48.530  7877  7877 I ViewInteraction: Performing 'replace text(01/01/2023)' action on view view.getId() is <2131230970/com.example.breadheadsinventorymanager:id/item_acquisition_date_text>
+11-09 17:07:48.543  7877  7877 I ViewInteraction: Performing 'replace text(1000)' action on view view.getId() is <2131230977/com.example.breadheadsinventorymanager:id/item_value_text>
+11-09 17:07:48.562  7877  7877 I ViewInteraction: Performing 'replace text(Sample Comment)' action on view view.getId() is <2131230971/com.example.breadheadsinventorymanager:id/item_comments_text>
+11-09 17:07:48.578  7877  7877 I ViewInteraction: Performing 'single click' action on view an instance of android.widget.TextView and view.getText() with or without transformation to match: is "OK"
+11-09 17:07:48.646   420   436 D audioserver: FGS Logger Transaction failed
+11-09 17:07:48.646   420   436 D audioserver: -129
+11-09 17:07:48.660  7877  7916 D EGL_emulation: app_time_stats: avg=55.14ms min=1.91ms max=563.99ms count=18
+11-09 17:07:48.666   420   483 D AudioFlinger: mixer(0x766ed9e4e930) throttle end: throttle time(35)
+11-09 17:07:48.676  7877  7877 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@bb5792
+11-09 17:07:48.693  7877  7916 D OpenGLRenderer: endAllActiveAnimators on 0x7e800c4722d0 (RippleDrawable) with handle 0x7e80fc464500
+11-09 17:07:48.694   532   951 W InputManager-JNI: Input channel object '952e560 com.example.breadheadsinventorymanager/com.example.breadheadsinventorymanager.MainActivity (client)' was disposed without first being removed with the input manager!
+11-09 17:07:48.707  7877  7877 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+11-09 17:07:48.707  7877  7877 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+11-09 17:07:48.728   532  2745 I ImeTracker: com.example.breadheadsinventorymanager:7608052f: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-09 17:07:48.729   532  2745 I ImeTracker: com.example.breadheadsinventorymanager:7608052f: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-09 17:07:48.730  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():3227
+11-09 17:07:48.732  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 0, unlocked = true
+11-09 17:07:48.733  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1877 onStartInput(EditorInfo{inputType=0x0(NULL) imeOptions=0x0 privateImeOptions=null actionName=UNSPECIFIED actionLabel=null actionId=0 initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0 hintText=null label=null packageName=com.example.breadheadsinventorymanager fieldId=0 fieldName=null extras=null}, false)
+11-09 17:07:48.733  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.shouldHideHeaderOnInitialState():4008 ShouldHideHeaderOnInitialState = false
+11-09 17:07:48.733  1563  1563 I GoogleInputMethodService: GoogleInputMethodService.updateDeviceLockedStatus():2087 repeatCheckTimes = 2, unlocked = true
+11-09 17:07:48.819   420   483 D audioserver: FGS Logger Transaction failed
+11-09 17:07:48.819   420   483 D audioserver: -129
+11-09 17:07:48.845  7877  7916 D EGL_emulation: app_time_stats: avg=13.14ms min=1.33ms max=320.24ms count=34
+11-09 17:07:48.958   532   562 I libprocessgroup: Successfully killed process cgroup uid 10121 pid 1963 in 0ms
+11-09 17:07:49.027  7877  7907 I UiAutomation: Initialized for user 0 on display 0
+11-09 17:07:49.041  1686  3951 I AiAiEcho: Settings changed for uri: content://settings/secure/accessibility_enabled
+11-09 17:07:49.042  1686  2162 I AiAiEcho: Predicting[0]:
+11-09 17:07:49.042  1686  2162 I AiAiEcho: EchoTargets:
+11-09 17:07:49.042  1686  2162 I AiAiEcho: Filtered by AiAi flag check:
+11-09 17:07:49.042  1686  2162 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+11-09 17:07:49.043  1686  2162 I AiAiEcho: Predicting[0]:
+11-09 17:07:49.050  1686  2162 I AiAiEcho: EchoTargets:
+11-09 17:07:49.050  1686  2162 I AiAiEcho: Filtered by AiAi flag check:
+11-09 17:07:49.050  1686  2162 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+11-09 17:07:49.050  2887  3053 I A       : NGA disabled due to not being eligible.
+11-09 17:07:49.051  1686  2162 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+11-09 17:07:49.060  7877  7877 D takeScreenshot: Found 1 global views to redraw
+11-09 17:07:49.073   355   355 I Zygote  : Process 5013 exited due to signal 9 (Killed)
+11-09 17:07:49.085  1686  2162 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface lockscreen with targets# 0 (types=[])
+11-09 17:07:49.086   874   874 W PageIndicator: Total number of pages invalid: 0. Assuming 1 page.
+11-09 17:07:49.092   355   355 I Zygote  : Process 4894 exited due to signal 9 (Killed)
+11-09 17:07:49.092   355   355 I Zygote  : Process 4787 exited due to signal 9 (Killed)
+11-09 17:07:49.110   532   562 I libprocessgroup: Successfully killed process cgroup uid 10146 pid 5186 in 0ms
+11-09 17:07:49.116   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=43, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10145 RequestorUid: 10145 RequestorPkg: com.google.android.apps.youtube.music UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.117   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=46, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10145 RequestorUid: 10145 RequestorPkg: com.google.android.apps.youtube.music UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.117   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=67, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10145 RequestorUid: 10145 RequestorPkg: com.google.android.apps.youtube.music UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.130  1064  1064 V MediaPlayerList: onActiveSessionsChanged: number of controllers: 0
+11-09 17:07:49.131   532   562 I libprocessgroup: Successfully killed process cgroup uid 10141 pid 1852 in 0ms
+11-09 17:07:49.135   158   158 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-09 17:07:49.137  7855  7875 I Gralloc4: mapper 4.x is not supported
+11-09 17:07:49.140   355   355 I Zygote  : Process 1346 exited due to signal 9 (Killed)
+11-09 17:07:49.141   355   355 I Zygote  : Process 1173 exited due to signal 9 (Killed)
+11-09 17:07:49.143   355   355 I Zygote  : Process 1528 exited due to signal 9 (Killed)
+11-09 17:07:49.144   355   355 I Zygote  : Process 1828 exited due to signal 9 (Killed)
+11-09 17:07:49.145   355   355 I Zygote  : Process 1852 exited due to signal 9 (Killed)
+11-09 17:07:49.146   355   355 I Zygote  : Process 1948 exited due to signal 9 (Killed)
+11-09 17:07:49.147   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=52, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10141 RequestorUid: 10141 RequestorPkg: com.google.android.youtube UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.147   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=58, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10141 RequestorUid: 10141 RequestorPkg: com.google.android.youtube UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.147   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=62, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10141 RequestorUid: 10141 RequestorPkg: com.google.android.youtube UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.148   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=65, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10141 RequestorUid: 10141 RequestorPkg: com.google.android.youtube UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.148   532   805 D ConnectivityService: releasing NetworkRequest [ REQUEST id=80, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10141 RequestorUid: 10141 RequestorPkg: com.google.android.youtube UnderlyingNetworks: Null] ] (release request)
+11-09 17:07:49.151   355   355 I Zygote  : Process 1963 exited due to signal 9 (Killed)
+11-09 17:07:49.153   355   355 I Zygote  : Process 2101 exited due to signal 9 (Killed)
+11-09 17:07:49.157   355   355 I Zygote  : Process 2386 exited due to signal 9 (Killed)
+11-09 17:07:49.165   355   355 I Zygote  : Process 2686 exited due to signal 9 (Killed)
+11-09 17:07:49.169   355   355 I Zygote  : Process 2854 exited due to signal 9 (Killed)
+11-09 17:07:49.170   355   355 I Zygote  : Process 2533 exited due to signal 9 (Killed)
+11-09 17:07:49.174   355   355 I Zygote  : Process 3451 exited due to signal 9 (Killed)
+11-09 17:07:49.184   532   562 I libprocessgroup: Successfully killed process cgroup uid 10123 pid 3633 in 0ms
+11-09 17:07:49.185   532   562 I libprocessgroup: Successfully killed process cgroup uid 10145 pid 1828 in 0ms
+11-09 17:07:49.186   532   562 I libprocessgroup: Successfully killed process cgroup uid 10130 pid 3594 in 0ms
+11-09 17:07:49.187   532   562 I libprocessgroup: Successfully killed process cgroup uid 10109 pid 4992 in 0ms
+11-09 17:07:49.188   355   355 I Zygote  : Process 3594 exited due to signal 9 (Killed)
+11-09 17:07:49.189   355   355 I Zygote  : Process 3633 exited due to signal 9 (Killed)
+11-09 17:07:49.195  1064  1064 D AvrcpTargetJni: sendPlayerSettingsNative
+11-09 17:07:49.196   355   355 I Zygote  : Process 4031 exited due to signal 9 (Killed)
+11-09 17:07:49.197   355   355 I Zygote  : Process 2638 exited due to signal 9 (Killed)
+11-09 17:07:49.197   355   355 I Zygote  : Process 4750 exited due to signal 9 (Killed)
+11-09 17:07:49.197   355   355 I Zygote  : Process 4863 exited due to signal 9 (Killed)
+11-09 17:07:49.197   532   562 I libprocessgroup: Successfully killed process cgroup uid 10163 pid 4031 in 0ms
+11-09 17:07:49.198   355   355 I Zygote  : Process 4947 exited due to signal 9 (Killed)
+11-09 17:07:49.198   355   355 I Zygote  : Process 4992 exited due to signal 9 (Killed)
+11-09 17:07:49.198   355   355 I Zygote  : Process 5186 exited due to signal 9 (Killed)
+11-09 17:07:49.198   355   355 I Zygote  : Process 5508 exited due to signal 9 (Killed)
+11-09 17:07:49.199   532   562 I libprocessgroup: Successfully killed process cgroup uid 10115 pid 1948 in 0ms
+11-09 17:07:49.199   532   562 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 5903 in 0ms
+11-09 17:07:49.200   532   562 I libprocessgroup: Successfully killed process cgroup uid 10126 pid 6242 in 0ms
+11-09 17:07:49.201   355   355 I Zygote  : Process 5566 exited due to signal 9 (Killed)
+11-09 17:07:49.201   355   355 I Zygote  : Process 2126 exited due to signal 9 (Killed)
+11-09 17:07:49.202   355   355 I Zygote  : Process 5903 exited due to signal 9 (Killed)
+11-09 17:07:49.203   355   355 I Zygote  : Process 6242 exited due to signal 9 (Killed)
+11-09 17:07:49.205   532   562 I libprocessgroup: Successfully killed process cgroup uid 10153 pid 2686 in 0ms
+11-09 17:07:49.209   532   562 I libprocessgroup: Successfully killed process cgroup uid 10108 pid 2533 in 0ms
+11-09 17:07:49.209  7855  7953 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+11-09 17:07:49.210  7855  7953 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+11-09 17:07:49.211   355   355 I Zygote  : Process 2199 exited due to signal 9 (Killed)
+11-09 17:07:49.212  7855  7953 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+11-09 17:07:49.216   355   355 I Zygote  : Process 1314 exited due to signal 9 (Killed)
+11-09 17:07:49.216   355   355 I Zygote  : Process 3395 exited due to signal 9 (Killed)
+11-09 17:07:49.216   355   355 I Zygote  : Process 1805 exited due to signal 9 (Killed)
+11-09 17:07:49.217   532   562 I libprocessgroup: Successfully killed process cgroup uid 10160 pid 5566 in 0ms
+11-09 17:07:49.217   532   562 I libprocessgroup: Successfully killed process cgroup uid 10154 pid 5508 in 0ms
+11-09 17:07:49.217   532   562 I libprocessgroup: Successfully killed process cgroup uid 10079 pid 2638 in 0ms
+11-09 17:07:49.219   532   562 I libprocessgroup: Successfully killed process cgroup uid 10088 pid 2386 in 0ms
+11-09 17:07:49.219   532   562 I libprocessgroup: Successfully killed process cgroup uid 10180 pid 2126 in 0ms
+11-09 17:07:49.220   532   562 I libprocessgroup: Successfully killed process cgroup uid 10182 pid 5013 in 0ms
+11-09 17:07:49.220   532   562 I libprocessgroup: Successfully killed process cgroup uid 2000 pid 4947 in 0ms
+11-09 17:07:49.220   355   355 I Zygote  : Process 4843 exited due to signal 9 (Killed)
+11-09 17:07:49.221   532   562 I libprocessgroup: Successfully killed process cgroup uid 10082 pid 2199 in 0ms
+11-09 17:07:49.221   532   562 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 4894 in 0ms
+11-09 17:07:49.222   532   562 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 4863 in 0ms
+11-09 17:07:49.222   532   562 I libprocessgroup: Successfully killed process cgroup uid 10137 pid 4843 in 0ms
+11-09 17:07:49.222   532   562 I libprocessgroup: Successfully killed process cgroup uid 10112 pid 3395 in 0ms
+11-09 17:07:49.223   532   562 I libprocessgroup: Successfully killed process cgroup uid 10162 pid 1314 in 0ms
+11-09 17:07:49.224   532   562 I libprocessgroup: Successfully killed process cgroup uid 10114 pid 4787 in 0ms
+11-09 17:07:49.224   532   562 I libprocessgroup: Successfully killed process cgroup uid 10107 pid 4750 in 0ms
+11-09 17:07:49.225   532   562 I libprocessgroup: Successfully killed process cgroup uid 10102 pid 2854 in 0ms
+11-09 17:07:49.225   532   562 I libprocessgroup: Successfully killed process cgroup uid 10126 pid 3451 in 0ms
+11-09 17:07:49.226   532   562 I libprocessgroup: Successfully killed process cgroup uid 10148 pid 1528 in 0ms
+11-09 17:07:49.229   355   355 I Zygote  : Process 1901 exited due to signal 9 (Killed)
+11-09 17:07:49.229   532   562 I libprocessgroup: Successfully killed process cgroup uid 10149 pid 1805 in 0ms
+11-09 17:07:49.229   532   562 I libprocessgroup: Successfully killed process cgroup uid 10100 pid 1901 in 0ms
+11-09 17:07:49.229  1064  1064 I bt_stack: [INFO:avrcp_service.cc(551)] virtual void bluetooth::avrcp::AvrcpService::SendPlayerSettingsChanged(std::vector<PlayerAttribute>, std::vector<uint8_t>)
+11-09 17:07:49.230   532   562 I libprocessgroup: Successfully killed process cgroup uid 10087 pid 1346 in 0ms
+11-09 17:07:49.230   532   562 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 2101 in 0ms
+11-09 17:07:49.231   532   562 I libprocessgroup: Successfully killed process cgroup uid 1002 pid 1173 in 0ms
+11-09 17:07:49.233  1064  1064 I bt_stack: [INFO:avrcp_service.cc(565)] attribute=PlayerAttribute::REPEAT : value=PlayerRepeatValue::OFF
+11-09 17:07:49.233  1064  1064 I bt_stack: attribute=PlayerAttribute::SHUFFLE : value=PlayerShuffleValue::OFF
+11-09 17:07:49.233  1064  1064 I bt_stack:
+11-09 17:07:49.236  1064  1064 V MediaPlayerList: onActiveSessionsChanged: number of controllers: 0
+11-09 17:07:49.236  1064  1064 V MediaPlayerList: onActiveSessionsChanged: number of controllers: 0
+11-09 17:07:49.236  1064  1064 D AvrcpTargetJni: sendPlayerSettingsNative
+11-09 17:07:49.236  1064  1064 I bt_stack: [INFO:avrcp_service.cc(551)] virtual void bluetooth::avrcp::AvrcpService::SendPlayerSettingsChanged(std::vector<PlayerAttribute>, std::vector<uint8_t>)
+11-09 17:07:49.236  1064  1064 I bt_stack: [INFO:avrcp_service.cc(565)] attribute=PlayerAttribute::REPEAT : value=PlayerRepeatValue::OFF
+11-09 17:07:49.236  1064  1064 I bt_stack: attribute=PlayerAttribute::SHUFFLE : value=PlayerShuffleValue::OFF
+11-09 17:07:49.236  1064  1064 I bt_stack:
+11-09 17:07:49.237  1064  1064 V MediaPlayerList: onActiveSessionsChanged: number of controllers: 0
+11-09 17:07:49.240  7855  7953 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+11-09 17:07:49.241  7855  7953 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-09 17:07:49.348  1683  1979 W MediaProvider: isAppCloneUserPair for user 0: false
+11-09 17:07:49.427  4668  6792 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+11-09 17:07:49.443  4668  7443 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+11-09 17:07:49.446  4668  7957 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+11-09 17:07:49.456  4668  7443 V NFC     : this device does not have NFC support
+11-09 17:07:49.462  4668  7443 W TapAndPay: NfcAdapter is null while obtaining CardEmulation instance. [CONTEXT service_id=79 ]
+11-09 17:07:49.462  4668  7443 W TapAndPay: java.lang.NullPointerException: NfcAdapter is null
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at android.nfc.cardemulation.CardEmulation.getInstance(CardEmulation.java:152)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at cdoy.<init>(:com.google.android.gms@231818047@23.18.18 (190800-535401451):0)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at com.google.android.gms.tapandpay.hce.task.TapAndPayAidRegistrationTaskOperation.a(:com.google.android.gms@231818047@23.18.18 (190800-535401451):5)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at com.google.android.gms.tapandpay.gcmtask.TapAndPayGcmTaskChimeraService.a(:com.google.android.gms@231818047@23.18.18 (190800-535401451):4)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at avzs.call(:com.google.android.gms@231818047@23.18.18 (190800-535401451):4)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at java.util.concurrent.FutureTask.run(FutureTask.java:264)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at aced.c(:com.google.android.gms@231818047@23.18.18 (190800-535401451):6)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at aced.run(:com.google.android.gms@231818047@23.18.18 (190800-535401451):7)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:644)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at acjn.run(:com.google.android.gms@231818047@23.18.18 (190800-535401451):0)
+11-09 17:07:49.462  4668  7443 W TapAndPay: 	at java.lang.Thread.run(Thread.java:1012)
+11-09 17:07:49.474  4668  7957 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+11-09 17:07:49.512  1683  1979 W MediaProvider: isAppCloneUserPair for user 0: false
+11-09 17:07:49.524  7877  7907 W ViewHierarchyExceptionHandler: The complete view hierarchy is available in artifact file 'view-hierarchy-1.txt'.
+11-09 17:07:49.528  7877  7877 D FirestoreInteract.java: 61gHYS8TFvTtKIqIH3DM => {date=01/01/2023, serialNum=null, description=Sample Item, model=Sample Model, comment=Sample Comment, make=Sample Make, value=100000, tags=[]}
+11-09 17:07:49.562  4668  7443 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+11-09 17:07:49.568  4668  6792 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+11-09 17:07:49.598   532   562 I libprocessgroup: Successfully killed process cgroup uid 10111 pid 6272 in 17ms
+11-09 17:07:49.604   355   355 I Zygote  : Process 6272 exited due to signal 9 (Killed)
+11-09 17:07:49.618  7877  7877 D LifecycleMonitor: Lifecycle status change: com.example.breadheadsinventorymanager.MainActivity@af0009c in: PAUSED
+11-09 17:07:49.619  7877  7877 V ActivityScenario: Update currentActivityStage to PAUSED, currentActivity=com.example.breadheadsinventorymanager.MainActivity@af0009c
+11-09 17:07:49.623   423   423 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+11-09 17:07:49.635   874   941 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-09 17:07:49.642   355   355 D Zygote  : Forked child process 7960
+11-09 17:07:49.653  7960  7960 I orymanager.test: Late-enabling -Xcheck:jni
+11-09 17:07:49.669  7960  7960 I orymanager.test: Using CollectorTypeCC GC.
+11-09 17:07:49.670  7960  7960 W orymanager.test: Unexpected CPU variant for x86: x86_64.
+11-09 17:07:49.670  7960  7960 W orymanager.test: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+11-09 17:07:49.676   874   941 D EGL_emulation: app_time_stats: avg=248.83ms min=3.34ms max=2661.12ms count=14
+11-09 17:07:49.681  2320  2341 I adbd    : jdwp connection from 7960
+11-09 17:07:49.727  7960  7960 D CompatibilityChangeReporter: Compat change id reported: 171979766; UID 10188; state: ENABLED
+11-09 17:07:49.728  7960  7960 D CompatibilityChangeReporter: Compat change id reported: 242716250; UID 10188; state: DISABLED
+11-09 17:07:49.748  7960  7960 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+11-09 17:07:49.751  7960  7960 D nativeloader: Configuring clns-6 for other apk /system/framework/android.test.mock.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/data/app/~~qTB3zmJCAwPfHipE-RDQcA==/com.example.breadheadsinventorymanager.test-jAfuYyE_3DtY0bKpMGIcIg==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.example.breadheadsinventorymanager.test
+11-09 17:07:49.752  7960  7960 D ApplicationLoaders: Returning zygote-cached class loader: /system/framework/android.test.base.jar
+11-09 17:07:49.758  7960  7960 D nativeloader: Configuring clns-7 for other apk /system/framework/android.test.runner.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/data/app/~~qTB3zmJCAwPfHipE-RDQcA==/com.example.breadheadsinventorymanager.test-jAfuYyE_3DtY0bKpMGIcIg==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.example.breadheadsinventorymanager.test
+11-09 17:07:49.759  7960  7960 W ziparchive: Unable to open '/data/app/~~qTB3zmJCAwPfHipE-RDQcA==/com.example.breadheadsinventorymanager.test-jAfuYyE_3DtY0bKpMGIcIg==/base.dm': No such file or directory
+11-09 17:07:49.760  7960  7960 W ziparchive: Unable to open '/data/app/~~qTB3zmJCAwPfHipE-RDQcA==/com.example.breadheadsinventorymanager.test-jAfuYyE_3DtY0bKpMGIcIg==/base.dm': No such file or directory
+11-09 17:07:49.808  7960  7960 D nativeloader: Configuring clns-8 for other apk /data/app/~~qTB3zmJCAwPfHipE-RDQcA==/com.example.breadheadsinventorymanager.test-jAfuYyE_3DtY0bKpMGIcIg==/base.apk. target_sdk_version=33, uses_libraries=, library_path=/data/app/~~qTB3zmJCAwPfHipE-RDQcA==/com.example.breadheadsinventorymanager.test-jAfuYyE_3DtY0bKpMGIcIg==/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.example.breadheadsinventorymanager.test
+11-09 17:07:49.817  7960  7960 V GraphicsEnvironment: Currently set values for:
+11-09 17:07:49.817  7960  7960 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+11-09 17:07:49.817  7960  7960 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+11-09 17:07:49.819  7960  7960 V GraphicsEnvironment: ANGLE GameManagerService for com.example.breadheadsinventorymanager.test: false
+11-09 17:07:49.819  7960  7960 V GraphicsEnvironment: com.example.breadheadsinventorymanager.test is not listed in per-application setting
+11-09 17:07:49.819  7960  7960 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+11-09 17:07:49.834  7960  7983 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+11-09 17:07:49.839  7960  7983 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+11-09 17:07:49.842  7960  7983 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+11-09 17:07:49.877  7960  7960 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10188; state: DISABLED
+11-09 17:07:49.880   874   941 D EGL_emulation: app_time_stats: avg=87.51ms min=1.07ms max=1235.16ms count=18
+11-09 17:07:49.881  7960  7960 W OpenGLRenderer: Unknown dataspace 0
+11-09 17:07:49.910   423  1328 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10188 pid=0
+11-09 17:07:49.910   423  1328 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10188 => denied (561 us)
+11-09 17:07:49.910   423  1328 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10188 pid=0
+11-09 17:07:49.910   423  1328 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10188 => denied (211 us)
+11-09 17:07:49.911   423   529 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10188 pid=7960
+11-09 17:07:49.911   423   529 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10188 => denied (1032 us)
+11-09 17:07:49.911   423   529 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10188 pid=7960
+11-09 17:07:49.911   423   529 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10188 => denied (483 us)
+11-09 17:07:49.913   423  1328 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10188 pid=0
+11-09 17:07:49.913   423  1328 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10188 => denied (3024 us)
+11-09 17:07:49.918  7960  7981 W OpenGLRenderer: Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+11-09 17:07:49.918  7960  7981 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-09 17:07:50.028   158   158 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-09 17:07:50.028  7960  7981 I Gralloc4: mapper 4.x is not supported
+11-09 17:07:50.414  1139  1193 D QuickstepModelDelegate: notifyAppTargetEvent action=1 launchLocation=workspace/0/[-1,-1]/[1,1]
+11-09 17:07:50.424   532  1745 W AppSearchIcing: icing-search-engine.cc:283: Error: 5, Message: Document (com.google.android.googlequicksearchbox$OneSearchZeroStateGoogleSuggestions/default, zp) not found.
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: Failed to fetch suggestions from AppSearch, fallback to AGA
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: java.util.concurrent.CompletionException: java.util.NoSuchElementException: No value present
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:308)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:323)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at java.util.concurrent.CompletableFuture$UniAccept.tryFire(CompletableFuture.java:684)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:486)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at java.util.concurrent.CompletableFuture.completeExceptionally(CompletableFuture.java:2138)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at com.google.android.apps.nexuslauncher.allapps.H0.onResult(Unknown Source:59)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.app.appsearch.SearchSessionUtil$1.lambda$onResult$0(SearchSessionUtil.java:129)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.app.appsearch.SearchSessionUtil$1.$r8$lambda$_nlk9WiPjSfaAsqKYmp0aPvSRC0(SearchSessionUtil.java:1)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.app.appsearch.SearchSessionUtil$1$$ExternalSyntheticLambda0.run(R8$$SyntheticClass:13)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.os.Handler.handleCallback(Handler.java:958)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.os.Handler.dispatchMessage(Handler.java:99)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.os.Looper.loopOnce(Looper.java:205)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.os.Looper.loop(Looper.java:294)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: Caused by: java.util.NoSuchElementException: No value present
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at java.util.Optional.get(Optional.java:144)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	at com.google.android.apps.nexuslauncher.allapps.H0.onResult(Unknown Source:16)
+11-09 17:07:50.429  1139  2205 E OneSearchSuggestProvider: 	... 8 more
+11-09 17:07:50.432  1139  2205 D OneSearchSuggestProvider: Created the binder channel successfully for end point service =com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService , mChannel=z1{delegate=s1{logId=21, target=directaddress:///AndroidComponentAddress%5BIntent%20%7B%20act=grpc.io.action.BIND%20cmp=com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService%20%7D%5D}} , mOneSearchConnection=X1.T@4ccd91c
+11-09 17:07:50.445  1686  2162 I AiAiEcho: Predicting[0]:
+11-09 17:07:50.445  1686  2162 I AiAiEcho: EchoTargets:
+11-09 17:07:50.445  1686  2162 I AiAiEcho: Filtered by AiAi flag check:
+11-09 17:07:50.445  1686  2162 I AiAiEcho: Ranked targets strategy: SORT, count: 0, ranking metadata:
+11-09 17:07:50.447  1686  2162 I AiAiEcho: #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+11-09 17:07:50.583  7960  7981 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-09 17:07:50.600  2887  3260 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-09 17:07:50.603  1139  1961 E OpenGLRenderer: Unable to match the desired swap behavior.
+11-09 17:07:50.605   874   874 I Choreographer: Skipped 33 frames!  The application may be doing too much work on its main thread.
+11-09 17:07:50.611  7877  7877 D LifecycleMonitor: Lifecycle status change: com.example.breadheadsinventorymanager.MainActivity@af0009c in: STOPPED
+11-09 17:07:50.611  7877  7877 V ActivityScenario: Update currentActivityStage to STOPPED, currentActivity=com.example.breadheadsinventorymanager.MainActivity@af0009c
+11-09 17:07:50.626   532   951 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10188 pid=0
+11-09 17:07:50.627   532   951 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10188 => denied (343 us)
+11-09 17:07:50.627   532   951 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10188 pid=0
+11-09 17:07:50.627   532   951 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10188 => denied (81 us)
+11-09 17:07:50.628   532   951 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10188 pid=0
+11-09 17:07:50.628   532   951 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10188 => denied (326 us)
+11-09 17:07:50.628  2887  2887 I A       : Created gRPC endpoint to "search" for service class com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService
+11-09 17:07:50.637  7877  7877 D LifecycleMonitor: Lifecycle status change: com.example.breadheadsinventorymanager.MainActivity@af0009c in: DESTROYED
+11-09 17:07:50.639  7877  7877 V ActivityScenario: Update currentActivityStage to DESTROYED, currentActivity=null
+11-09 17:07:50.641  7877  7877 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.view.ViewRootImpl$$ExternalSyntheticLambda17@c0aceac
+11-09 17:07:50.644  7877  7877 D AutofillManager: view not autofillable - not passing ime action check
+11-09 17:07:50.644  1588  1588 V InlineSuggestionRenderService: handleDestroySuggestionViews called for 0:2087059561
+11-09 17:07:50.648  7877  7907 E TestRunner: failed: testItemDetailsActivityInfo(com.example.breadheadsinventorymanager.ItemDetailsActivityTest)
+11-09 17:07:50.648  7877  7907 E TestRunner: ----- begin exception -----
+11-09 17:07:50.660  7960  7960 I Choreographer: Skipped 44 frames!  The application may be doing too much work on its main thread.
+11-09 17:07:50.660  7960  7973 I OpenGLRenderer: Davey! duration=761ms; Flags=1, FrameTimelineVsyncId=47186, IntendedVsync=670024741176, Vsync=670024741176, InputEventId=0, HandleInputStart=670038328500, AnimationStart=670038376600, PerformTraversalsStart=670038454000, DrawStart=670721008500, FrameDeadline=670041407842, FrameInterval=670038290900, FrameStartTime=16666666, SyncQueued=670721772200, SyncStart=670727803500, IssueDrawCommandsStart=670732698900, SwapBuffers=670760119900, FrameCompleted=670792400200, DequeueBufferDuration=29000, QueueBufferDuration=255500, GpuCompleted=670792400200, SwapBuffersCompleted=670762810700, DisplayPresentTime=0, CommandSubmissionCompleted=670760119900,
+11-09 17:07:50.669  2887  3489 I A       : Using proto config with mendel
+11-09 17:07:50.669  2887  3489 W A       : Queue length for executor EventBus is now 11. Perhaps some tasks are too long, or the pool is too small.
+11-09 17:07:50.670  2887  3129 I A       : Creating in-process transport to InProcessServerAddress[com.google.android.googlequicksearchbox/OnDeviceServer[Hash:31169432]]
+11-09 17:07:50.671  7877  7907 E TestRunner: androidx.test.espresso.NoMatchingViewException: No views in hierarchy found matching: an instance of android.widget.TextView and view.getText() with or without transformation to match: is "Sample Item"
+11-09 17:07:50.671  7877  7907 E TestRunner: If the target view is not part of the view hierarchy, you may need to use Espresso.onData to load it from one of the following AdapterViews:android.widget.ListView{3946a17 V.ED.VC.. ........ 44,11-1036,1668 #7f080102 app:id/items_main_list aid=1073741837}
+11-09 17:07:50.671  7877  7907 E TestRunner:
+11-09 17:07:50.671  7877  7907 E TestRunner: View Hierarchy:
+11-09 17:07:50.671  7877  7907 E TestRunner: +>DecorView{id=-1, visibility=VISIBLE, width=1080, height=2160, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, layout-params={(0,0)(fillxfill) ty=BASE_APPLICATION wanim=0x10302fe
+11-09 17:07:50.671  7877  7907 E TestRunner:   fl=LAYOUT_IN_SCREEN LAYOUT_INSET_DECOR SPLIT_TOUCH HARDWARE_ACCELERATED DRAWS_SYSTEM_BAR_BACKGROUNDS
+11-09 17:07:50.671  7877  7907 E TestRunner:   pfl=NO_MOVE_ANIMATION FORCE_DRAW_STATUS_BAR_BACKGROUND FIT_INSETS_CONTROLLED
+11-09 17:07:50.671  7877  7907 E TestRunner:   bhv=DEFAULT
+11-09 17:07:50.671  7877  7907 E TestRunner:   fitSides=}, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=3}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +->LinearLayout{id=-1, visibility=VISIBLE, width=1080, height=2094, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.FrameLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=2}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +-->ViewStub{id=16908746, res-name=action_mode_bar_stub, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +-->FrameLayout{id=-1, visibility=VISIBLE, width=1080, height=2028, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=66.0, child-count=1}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +--->ActionBarOverlayLayout{id=2131230874, res-name=decor_content_parent, visibility=VISIBLE, width=1080, height=2028, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.FrameLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=2}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +---->ContentFrameLayout{id=16908290, res-name=content, visibility=VISIBLE, width=1080, height=1874, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=androidx.appcompat.widget.ActionBarOverlayLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=154.0, child-count=1}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +----->ConstraintLayout{id=-1, visibility=VISIBLE, width=1080, height=1874, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.FrameLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=12}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatTextView{id=2131230994, res-name=main_activity_bottom_bar, visibility=VISIBLE, width=1080, height=206, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=1668.0, text=, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>SearchView{id=2131231149, res-name=search_view, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=1}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------->LinearLayout{id=16909473, res-name=search_bar, visibility=VISIBLE, width=0, height=0, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=3}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +-------->AppCompatTextView{id=16909472, res-name=search_badge, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, text=, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +-------->AppCompatImageView{id=16909474, res-name=search_button, desc=Search, visibility=VISIBLE, width=0, height=0, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +-------->LinearLayout{id=16909476, res-name=search_edit_frame, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=3}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +--------->AppCompatImageView{id=16909478, res-name=search_mag_icon, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +--------->LinearLayout{id=16909479, res-name=search_plate, visibility=VISIBLE, width=0, height=0, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=2}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +---------->SearchAutoComplete{id=16909480, res-name=search_src_text, visibility=VISIBLE, width=0, height=0, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=true, editor-info=[inputType=0x90001 imeOptions=0x3 privateImeOptions=null actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialToolType=0 initialCapsMode=0x0 hintText=    label=null packageName=null autofillId=null fieldId=0 fieldName=null extras=null hintLocales=null supportedHandwritingGestureTypes=SELECT|SELECT_RANGE|INSERT|DELETE|DELETE_RANGE|REMOVE_SPACE|JOIN_OR_SPLIT supportedHandwritingGesturePreviewTypes=SELECT|SELECT_RANGE|DELETE|DELETE_RANGE contentMimeTypes=null ], x=0.0, y=0.0, text=, hint=   , input-type=589825, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +---------->AppCompatImageView{id=16909475, res-name=search_close_btn, desc=Clear query, visibility=VISIBLE, width=0, height=0, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +--------->LinearLayout{id=16909579, res-name=submit_area, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=2}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +---------->AppCompatImageView{id=16909477, res-name=search_go_btn, desc=Submit query, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +---------->AppCompatImageView{id=16909482, res-name=search_voice_btn, desc=Voice search, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=android.widget.LinearLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatEditText{id=2131230925, res-name=filter_date_start, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=true, editor-info=[inputType=0x14 imeOptions=0x6 privateImeOptions=null actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialToolType=0 initialCapsMode=0x0 hintText=Start: DD/MM/YYYY label=null packageName=null autofillId=null fieldId=0 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, android.support.text.emoji.emojiCompat_replaceAll=false}] hintLocales=null supportedHandwritingGestureTypes=SELECT|SELECT_RANGE|INSERT|DELETE|DELETE_RANGE|REMOVE_SPACE|JOIN_OR_SPLIT supportedHandwritingGesturePreviewTypes=SELECT|SELECT_RANGE|DELETE|DELETE_RANGE contentMimeTypes=null ], x=0.0, y=0.0, text=, hint=Start: DD/MM/YYYY, input-type=20, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatEditText{id=2131230924, res-name=filter_date_end, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=true, editor-info=[inputType=0x14 imeOptions=0x6 privateImeOptions=null actionLabel=null actionId=0 initialSelStart=0 initialSelEnd=0 initialToolType=0 initialCapsMode=0x0 hintText=End: DD/MM/YYYY label=null packageName=null autofillId=null fieldId=0 fieldName=null extras=Bundle[{android.support.text.emoji.emojiCompat_metadataVersion=9, android.support.text.emoji.emojiCompat_replaceAll=false}] hintLocales=null supportedHandwritingGestureTypes=SELECT|SELECT_RANGE|INSERT|DELETE|DELETE_RANGE|REMOVE_SPACE|JOIN_OR_SPLIT supportedHandwritingGesturePreviewTypes=SELECT|SELECT_RANGE|DELETE|DELETE_RANGE contentMimeTypes=null ], x=0.0, y=0.0, text=, hint=End: DD/MM/YYYY, input-type=20, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>ListView{id=2131230978, res-name=items_main_list, visibility=VISIBLE, width=992, height=1657, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=44.0, y=11.0, child-count=0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatButton{id=2131231154, res-name=select_mode_confirm, visibility=INVISIBLE, width=242, height=132, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=596.0, y=1536.0, text=Confirm, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatButton{id=2131231153, res-name=select_mode_cancel, visibility=INVISIBLE, width=242, height=132, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=838.0, y=1536.0, text=Cancel, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatTextView{id=2131230964, res-name=invalid_date_message, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, text=Invalid Date Range, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatButton{id=2131230870, res-name=date_filter_button, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=true, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, text=Filter, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatTextView{id=2131231242, res-name=total_value, visibility=VISIBLE, width=439, height=74, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=597.0, y=1734.0, text=Total Value: $1000.00, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatImageButton{id=2131231171, res-name=sort_button, desc=Sort, visibility=VISIBLE, width=154, height=142, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=44.0, y=1700.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatButton{id=2131231176, res-name=sort_order_button, visibility=VISIBLE, width=242, height=132, has-focus=false, has-focusable=true, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.constraintlayout.widget.ConstraintLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=198.0, y=1705.0, text=Ascending, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +---->ActionBarContainer{id=2131230774, res-name=action_bar_container, visibility=VISIBLE, width=1080, height=154, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, layout-params=androidx.appcompat.widget.ActionBarOverlayLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=2}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +----->Toolbar{id=2131230772, res-name=action_bar, visibility=VISIBLE, width=1080, height=154, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, layout-params=android.widget.FrameLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=2}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>AppCompatImageButton{id=-1, desc=Navigate up, visibility=VISIBLE, width=198, height=154, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.appcompat.widget.Toolbar$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------>ActionMenuView{id=-1, visibility=VISIBLE, width=616, height=154, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, layout-params=androidx.appcompat.widget.Toolbar$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=464.0, y=0.0, child-count=4}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------->ActionMenuItemView{id=2131230876, res-name=delete_item, desc=delete item, visibility=VISIBLE, width=154, height=132, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.appcompat.widget.ActionMenuView$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=11.0, text=, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------->ActionMenuItemView{id=2131230926, res-name=filter_popup, desc=filter, visibility=VISIBLE, width=154, height=132, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.appcompat.widget.ActionMenuView$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=154.0, y=11.0, text=, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------->ActionMenuItemView{id=2131231145, res-name=search_list, desc=Search, visibility=VISIBLE, width=154, height=132, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.appcompat.widget.ActionMenuView$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=308.0, y=11.0, text=, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +------->ActionMenuItemView{id=2131230793, res-name=add_item, desc=Add Item, visibility=VISIBLE, width=154, height=132, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=true, is-enabled=true, is-focused=false, is-focusable=true, is-layout-requested=false, is-selected=false, layout-params=androidx.appcompat.widget.ActionMenuView$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=462.0, y=11.0, text=, input-type=0, ime-target=false, has-links=false}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +----->ActionBarContextView{id=2131230780, res-name=action_context_bar, visibility=GONE, width=0, height=0, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=true, is-selected=false, layout-params=android.widget.FrameLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0, child-count=0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +->View{id=16908336, res-name=navigationBarBackground, visibility=VISIBLE, width=1080, height=66, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, layout-params=android.widget.FrameLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=2094.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: |
+11-09 17:07:50.671  7877  7907 E TestRunner: +->View{id=16908335, res-name=statusBarBackground, visibility=VISIBLE, width=1080, height=66, has-focus=false, has-focusable=false, has-window-focus=true, is-clickable=false, is-enabled=true, is-focused=false, is-focusable=false, is-layout-requested=false, is-selected=false, layout-params=android.widget.FrameLayout$LayoutParams@YYYYYY, tag=null, root-is-layout-requested=true, has-input-connection=false, x=0.0, y=0.0}
+11-09 17:07:50.671  7877  7907 E TestRunner: The complete view hierarchy is available in artifact file 'view-hierarchy-1.txt'.
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.NoMatchingViewException$Builder.build(NoMatchingViewException.java:5)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.base.DefaultFailureHandler.lambda$getNoMatchingViewExceptionTruncater$0(DefaultFailureHandler.java:5)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.base.DefaultFailureHandler$$ExternalSyntheticLambda1.truncateExceptionMessage(Unknown Source:2)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.base.ViewHierarchyExceptionHandler.handleSafely(ViewHierarchyExceptionHandler.java:5)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.base.ViewHierarchyExceptionHandler.handleSafely(ViewHierarchyExceptionHandler.java:1)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.base.DefaultFailureHandler$TypedFailureHandler.handle(DefaultFailureHandler.java:4)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.base.DefaultFailureHandler.handle(DefaultFailureHandler.java:5)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.ViewInteraction.waitForAndHandleInteractionResults(ViewInteraction.java:8)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.ViewInteraction.desugaredPerform(ViewInteraction.java:11)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.espresso.ViewInteraction.perform(ViewInteraction.java:8)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at com.example.breadheadsinventorymanager.ItemDetailsActivityTest.testItemDetailsActivityInfo(ItemDetailsActivityTest.java:43)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at java.lang.reflect.Method.invoke(Native Method)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.internal.runner.junit4.statement.RunBefores.evaluate(RunBefores.java:80)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:128)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.Suite.runChild(Suite.java:27)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:67)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:58)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:446)
+11-09 17:07:50.671  7877  7907 E TestRunner: 	at android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2402)
+11-09 17:07:50.671  7877  7907 E TestRunner: ----- end exception -----
+11-09 17:07:50.673  2887  3489 I A       : Using proto config with mendel
+11-09 17:07:50.684  1139  1139 D SearchTargetUtil:  query= size=15
+11-09 17:07:50.684  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=clear tomato ketchup heinz,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=clear tomato ketchup heinz searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 362d5fb2-3303-4fb0-a5dd-9226313cdc9a
+11-09 17:07:50.684  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=peruvian mummies,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=peruvian mummies searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: e73c3986-7811-4347-8253-057c83aa858b
+11-09 17:07:50.684  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=saga cruise ships,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=saga cruise ships searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: d978181e-3b48-47c2-a874-e1e126c471d0
+11-09 17:07:50.686  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=baldurs gate patch notes,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=baldurs gate patch notes searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: f706dda4-3430-466c-95d5-a699472d0ef1
+11-09 17:07:50.686  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=property taxes,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=property taxes searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 0536e2cc-1b6f-47b3-b827-274157f6280d
+11-09 17:07:50.686  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=gta 6 trailer rockstar games,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=gta 6 trailer rockstar games searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: faaa43b3-454d-42e1-9878-151ba00abd14
+11-09 17:07:50.686  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=baby indi gregory,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=baby indi gregory searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 124400ec-7696-4696-a298-b29cf002785c
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=biden student loan forgiveness,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=biden student loan forgiveness searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 4f4ef9ba-bd96-4eb9-9499-bee29685652d
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=virginia election results,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=virginia election results searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 910d7d18-1020-4283-89c7-ea4115b73b5e
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=fbi manhunt helmetta nj,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=fbi manhunt helmetta nj searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: ada23530-17ee-406a-8197-64863e314434
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=interest rates mortgage rates,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=interest rates mortgage rates searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: ddeb4590-ef8b-4bc9-92cb-a21368e9ce52
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=free doughnuts krispy kreme,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=free doughnuts krispy kreme searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 8c9c7bd4-1e71-4097-a9b6-880bd9ab19e2
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=la rams carson wentz,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=la rams carson wentz searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 6d1855a4-5ca0-41cd-be1e-f7f34c6f9512
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=whole eye transplant surgery,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=whole eye transplant surgery searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: f177672b-2c7d-4370-9b3e-70f36f68eb32
+11-09 17:07:50.687  1139  1139 D SearchTargetUtil: layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox extras=Bundle{suggestion_type=33,suggest_truncate_start=false,is_answer=false,is_entity=false,is_personal=false,suggest_raw_text=risk of rain 2 seekers of the storm,group_id=web421438,response_id=aa086ce3-2335-4a4c-9cdb-30f6c0ba69c4,support_query_builder=false,} searchAction=risk of rain 2 seekers of the storm searchActionExtras=Bundle{learn_more_url=https://support.google.com/websearch/answer/106230?hl=106230,suggestion_action_text=Report this,should_start_for_result=true,allow_pinning=true,skip_logging_in_target_handler=false,suggestion_action_rpc=2,}ParentID: null targetID: 9fad29e7-a77a-4bbc-b7ec-e294fa736b42
+11-09 17:07:50.692  7877  7907 I TestRunner: finished: testItemDetailsActivityInfo(com.example.breadheadsinventorymanager.ItemDetailsActivityTest)

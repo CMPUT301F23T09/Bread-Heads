@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/item_name"
+        android:id="@+id/item_name_text"
+        android:inputType="textPersonName" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/make"
+        android:id="@+id/item_make_text"
+        android:inputType="textPersonName" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/model"
+        android:inputType="textPersonName"
+        android:id="@+id/item_model_text"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/serial_number"
+        android:inputType="text"
+        android:id="@+id/serial_number_text"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:maxLength="10"
+        android:hint="@string/dd_mm_yyyy"
+        android:inputType="datetime"
+        android:id="@+id/item_acquisition_date_text"/>
+    <EditText
+        android:id="@+id/item_value_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/value"
+        android:digits="0123456789."
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/item_comments_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/comments"
+        android:inputType="textPersonName" />
+
+    <!--Layout for buttons (add/delete tag and camera button) -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/add_tag"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_tag" />
+
+        <Button
+            android:id="@+id/remove_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/remove_tag"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <!-- TODO add functionality -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="82dp"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:focusable="true"
+            app:srcCompat="@android:drawable/ic_menu_camera" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/error_text_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/tomato_red"/>
+
+    <!--TODO make area for tags to show -->
+
+
+</LinearLayout>
