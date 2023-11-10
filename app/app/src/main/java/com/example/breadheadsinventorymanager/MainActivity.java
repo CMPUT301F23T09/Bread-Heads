@@ -700,6 +700,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                     activateFilters();
                 } catch (DateTimeParseException e) {
                     dateErrorMsg.setVisibility(VISIBLE);
+                    // reset filters - avoids bugs
+                    filters = new ArrayList<>();
+                    recyclerViewList.clear();
+                    activateFilters();
+                    filterRecyclerAdapter.notifyDataSetChanged();
                 }
             }
         });
