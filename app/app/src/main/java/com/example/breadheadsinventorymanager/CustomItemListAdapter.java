@@ -43,6 +43,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         this.context = context;
     }
 
+    /**
+     * Gets sum of all items present in the adapter, post-filter if applicable
+     * @return long sum of filtered items in cents
+     */
     public long getSum() {
         long sum = 0;
         for (int i = 0; i < getCount(); i++) {
@@ -51,6 +55,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         return sum;
     }
 
+    /**
+     * Gets sum of all items present in the adapter, post-filter if applicable
+     * @return String sum of filtered items, formatted like $103.50
+     */
     public String getSumAsDollarString() {
         return Item.toDollarString(getSum());
     }
