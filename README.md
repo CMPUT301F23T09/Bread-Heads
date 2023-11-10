@@ -19,7 +19,7 @@ Compiling this project into a usable app requires hooking it up to a Firebase da
 
 ## Attributions
 
-This app was developed for CMPUT 301 at the University of Alberta in Fall 2023, based off many provided resources and user stories. [Team information](https://github.com/CMPUT301F23T09/Bread-Heads/blob/main/doc/team.txt). Code adapted from other sources is cited where it appears, but in general we avoided using external code for this project. Some methods were adapted from provided examples in lab slides and exercises, however.
+This app was developed for CMPUT 301 at the University of Alberta in Fall 2023, based off many provided resources and user stories. [Team information](https://github.com/CMPUT301F23T09/Bread-Heads/blob/main/doc/team.txt). Code adapted from other sources is cited where it appears, but in general we avoided using external code for this project. Some methods were adapted from provided examples in lab slides and exercises, however; these are again attributed with comments where they appear.
 
 ## Notes
 
