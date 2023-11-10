@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // SORT MENU HANDLING
 
     /**
-     * Handles sort menu creation
+     * Handles sort menu creation.
      */
     private void showSortMenu() {
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.sort_button));
@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles clicking of sort menu items
+     * Handles clicking of sort menu items.
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Changes the order items are sorted in
+     * Changes the order items are sorted in.
      * @return True if the new sort order is ascending, otherwise false
      */
     private boolean toggleSortOrder() {
@@ -411,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTER MENU HANDLING
 
     /**
-     * Handles the menu creation after the "filter button" is tapped
+     * Handles the menu creation after the "filter button" is tapped.
      */
     private void showFilterMenu() {
         // shows the menu of filterable objects
@@ -422,8 +422,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles clicking of filter menu items
-     *
+     * Handles clicking of filter menu items.
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
@@ -451,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Shows and populates submenu for filtering by make
+     * Shows and populates submenu for filtering by make.
      */
     private void showMakeSubMenu() {
         // show submenu of all available makes
@@ -471,8 +470,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // FILTERING UTILITY FUNCTIONS
 
     /**
-     * resets the adapter to the original ItemList
-     * means that the list cannot have more than one filter active at a time
+     * Resets the adapter to the original ItemList.
      */
     private void resetAdapter() {
         filters = new ArrayList<>();
@@ -483,8 +481,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * toggles visibility of the date range and description search fields
-     * sets entered text to nothing
+     * Toggles visibility of the date range and description search fields.
+     * Sets entered text to nothing.
      */
     private void toggleFilterVisibility() {
         // toggle visibility of fields that should be invisible
@@ -524,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles click events for make submenu
+     * Handles click events for make submenu.
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
      */
@@ -537,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles filtering itemList for make, creates a SearchView to search for a make
+     * Handles filtering itemList for make, creates a SearchView to search for a make.
      */
     private void showDescriptionSearch() {
         toggleFilterVisibility();
@@ -574,8 +572,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * handles filtering by date, checks for valid date then creates a new list
-     * for the adapter to latch on to
+     * Handles filtering by date, checks for valid date then creates a new list
+     * for the adapter to latch on to.
      */
     private void showDateFilter() {
         toggleFilterVisibility();
