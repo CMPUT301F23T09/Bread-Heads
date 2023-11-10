@@ -11,13 +11,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -193,10 +191,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // Upload images: fixme: eventually, should store image under a folder named after its
         // item's id. So grab the item's firestore id after uploading the item. Then, upload the
         // images
-        Iterator<Map.Entry<String, Uri>> it = imageMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, Uri> image = (Map.Entry<String, Uri>) it.next();
-            assert(item.getImagePaths().contains(image.getKey()));
+        for (Map.Entry<String, Uri> image : imageMap.entrySet()) {
+            assert (item.getImagePaths().contains(image.getKey()));
         }
         database.uploadImages(imageMap, findViewById(android.R.id.content).getRootView());
     }
@@ -512,12 +508,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         Gson gson = new Gson();
         String json = gson.toJson(filters);
-        itemArrayAdapter.getFilter().filter(json, new Filter.FilterListener() {
-            @Override
-            public void onFilterComplete(int count) {
-                itemListView.setAdapter(itemArrayAdapter);
-                updateTotalValue();
-            }
+        itemArrayAdapter.getFilter().filter(json, count -> {
+            itemListView.setAdapter(itemArrayAdapter); // putting in listener prevents blinking
+            updateTotalValue(); // uses sum of values of filtered items
         });
     }
 
@@ -621,6 +614,5 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 }
             }
         });
-        }
-
+    }
 }
