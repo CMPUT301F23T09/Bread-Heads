@@ -168,7 +168,7 @@ public class Item implements FirestorePuttable, Serializable {
      * @return the Local date object of the item
      */
     public LocalDate getDateObj() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
         return LocalDate.parse(this.date, formatter);
 
     }
