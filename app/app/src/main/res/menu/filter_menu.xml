@@ -5,8 +5,10 @@
         android:contentDescription="@string/Date"
         android:title="@string/Date"/>
     <item android:id="@+id/description"
-        android:title="@string/description"/>
+        android:title="@string/description"
+        android:contentDescription="@string/description"/>
     <item android:id="@+id/make_menu"
+        android:contentDescription="@string/make"
         android:title="@string/make">
         <!-- make submenu -->
         <menu></menu>

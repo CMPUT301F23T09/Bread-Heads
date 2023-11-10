@@ -6,11 +6,14 @@ import static android.view.View.VISIBLE;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -31,12 +33,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.google.type.DateTime;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -73,7 +75,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     // 'D': description. '1'/'2': lower/upper bound on date resp. 'M': make.
     // multiple makes can be applied at once! multiple filters are ANDed; different makes are ORed.
     private ArrayList<CharSequence> filters = new ArrayList<>();
-    
+
+    // The recyclerView for displaying active filters setup
+    private RecyclerView filterView;
+    private ArrayList<String> recyclerViewList;
+    private LinearLayoutManager linearLayoutManager;
+    private FilterRecyclerAdapter filterRecyclerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
+        filterView = findViewById(R.id.active_filter_recycler_view);
         searchBox = findViewById(R.id.search_view);
         startDate = findViewById(R.id.filter_date_start);
         endDate = findViewById(R.id.filter_date_end);
@@ -89,6 +98,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         totalValue = findViewById(R.id.total_value);
         sortButton = findViewById(R.id.sort_button);
         sortOrderButton = findViewById(R.id.sort_order_button);
+
+        // filter recyclerView setup
+        recyclerViewList = new ArrayList<>();
+        linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        filterRecyclerAdapter = new FilterRecyclerAdapter(getApplicationContext(), recyclerViewList, this);
+        filterView.setLayoutManager(linearLayoutManager);
+        filterView.setAdapter(filterRecyclerAdapter);
 
         //ListView and adapter setup
         database = new FirestoreInteract();
@@ -186,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @param imageMap The contained images
      */
     @Override
-    public void onOKPressed(Item item, Map<String, Uri> imageMap) { 
+    public void onOKPressed(Item item, Map<String, Uri> imageMap) {
         database.putItem(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -203,6 +219,18 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         database.uploadImages(imageMap, findViewById(android.R.id.content).getRootView());
     }
 
+    /**
+     * removes the filter from the recyclerView and refilters the list
+     * @param position
+     */
+    @Override
+    public void onRecyclerItemPressed(int position) {
+        filters.remove(position);
+        recyclerViewList.remove(position);
+        activateFilters();
+        filterRecyclerAdapter.notifyDataSetChanged();
+
+    }
     /**
      * handles creating the dialog and switching to associated fragment
      */
@@ -473,10 +501,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     /**
      * Resets the adapter to the original ItemList.
+     * resets the adapter to the original ItemList and the recyclerview of active filters
      */
     private void resetAdapter() {
         filters = new ArrayList<>();
+        recyclerViewList.clear();
         toggleFilterVisibility();
+        filterRecyclerAdapter.notifyDataSetChanged();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
         updateTotalValue();
@@ -500,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
         if (searchBox.getVisibility() == VISIBLE) {
             searchBox.setVisibility(GONE);
-            searchBox.setQuery(getIntent().getDataString(), false);
+            //searchBox.setQuery(getIntent().getDataString(), false);
         }
     }
 
@@ -512,11 +543,25 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
+        recyclerViewList.clear();
         Gson gson = new Gson();
         String json = gson.toJson(filters);
         itemArrayAdapter.getFilter().filter(json, count -> {
             itemListView.setAdapter(itemArrayAdapter); // putting in listener prevents blinking
             updateTotalValue(); // uses sum of values of filtered items
+
+            // basically recreates the recyclerView list
+            for(int i = 0; i < filters.size(); i++) {
+                Log.d("h2", filters.get(i).toString());
+                // skip the string identifier and add to recyclerView for visual purposes
+                String item = filters.get(i).toString();
+                item = item.substring(1);
+                recyclerViewList.add(item);
+            }
+            filterView.setVisibility(VISIBLE);
+            filterRecyclerAdapter.notifyDataSetChanged();
+            itemArrayAdapter.getFilter().filter(json);
+            itemListView.setAdapter(itemArrayAdapter);
         });
     }
 
@@ -528,7 +573,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
         // update adapter to show filtered results
-        filters.add('M' + menuItem.toString());
+        String makeCheck = "M" + menuItem.toString();
+        if (!(filters.contains(makeCheck))) {
+            filters.add('M' + menuItem.toString());
+        }
+        for(int i = 0; i < filters.size(); i++) {
+            Log.d("h4", filters.get(i).toString());
+        }
         activateFilters();
         return true;
     }
@@ -560,9 +611,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 }
                 filters = newFilters;
 
-
+                // adds the description to filters if it is not already a filter (prevents duplicates)
                 if (newText.length() > 0) {
-                    filters.add('D' + newText);
+                    String descCheck = "D" + newText;
+                    if(!(filters.contains(descCheck))) {
+                        filters.add('D' + newText);
+                    }
                 }
                 activateFilters();
                 return false;
@@ -584,6 +638,18 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         // when pressed, it will filter the dates by range entered, display error message otherwise
         filterDateButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Fixes a date's format to comply with a uniform dd/MM/yyyy format.
+             * Throws an exception if invalid date.
+             * @param input Date in d/M/yyyy format (e.g. 01/1/2000)
+             * @return Date in dd/MM/yyyy format (e.g. 01/01/2000)
+             */
+            public String fixDateFormatting(String input) {
+                return LocalDate.parse(input, formatter)
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            }
+
+
             @Override
             public void onClick(View v) {
                 try {
@@ -603,20 +669,34 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
 
                     if (startString.length() > 0) {
-                        LocalDate.parse(startString, formatter); // called for try-catch
-                        filters.add('1' + startString);
+                        startString = fixDateFormatting(startString);
+                        String dateCheck =  "1" + startString;
+                        if (!(filters.contains(dateCheck))) {
+                            filters.add('1' + startString);
+                        }
                     }
 
                     if (endString.length() > 0) {
-                        LocalDate.parse(endString, formatter); // called for try-catch
-                        filters.add('2' + endString);
-                    }
+                        endString = fixDateFormatting(endString);
+                        String dateCheck =  "2" + endString;
+                        if (!(filters.contains(dateCheck))) {
+                            filters.add('2' + endString);
+                        }
 
+                    }
+                    for(int i = 0; i < filters.size(); i++) {
+                        Log.d("h3", filters.get(i).toString());
+                    }
                     // update adapter to new filter
                     dateErrorMsg.setVisibility(GONE);
                     activateFilters();
                 } catch (DateTimeParseException e) {
                     dateErrorMsg.setVisibility(VISIBLE);
+                    // reset filters - avoids bugs
+                    filters = new ArrayList<>();
+                    recyclerViewList.clear();
+                    activateFilters();
+                    filterRecyclerAdapter.notifyDataSetChanged();
                 }
             }
         });
