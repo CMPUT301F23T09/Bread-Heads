@@ -32,9 +32,7 @@ import java.util.Objects;
 public class ItemDetailsActivity extends AppCompatActivity {
     private Item selectedItem;
     private FirestoreInteract database;
-
     private int currentImageIndex = 0;
-    private FirestoreInteract database;
 
     /**
      * Loads item details, display related images (if any) and sets button functionality

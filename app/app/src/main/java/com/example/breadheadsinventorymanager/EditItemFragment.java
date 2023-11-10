@@ -187,7 +187,7 @@ public class EditItemFragment extends DialogFragment {
 
         // Check the date format and validity
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
             LocalDate newDate = LocalDate.parse(date, formatter);
             LocalDate currentDate = LocalDate.now();
             if (newDate.isAfter(currentDate)) {
