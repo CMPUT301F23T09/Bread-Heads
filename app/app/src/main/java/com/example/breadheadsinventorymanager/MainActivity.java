@@ -22,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -34,13 +33,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.google.type.DateTime;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private RecyclerView filterView;
     private ArrayList<String> recyclerViewList;
     private LinearLayoutManager linearLayoutManager;
-    private filterRecyclerAdapter filterRecyclerAdapter;
+    private FilterRecyclerAdapter filterRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // filter recyclerView setup
         recyclerViewList = new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        filterRecyclerAdapter = new filterRecyclerAdapter(getApplicationContext(), recyclerViewList, this);
+        filterRecyclerAdapter = new FilterRecyclerAdapter(getApplicationContext(), recyclerViewList, this);
         filterView.setLayoutManager(linearLayoutManager);
         filterView.setAdapter(filterRecyclerAdapter);
 
@@ -648,6 +646,18 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         // when pressed, it will filter the dates by range entered, display error message otherwise
         filterDateButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Fixes a date's format to comply with a uniform dd/MM/yyyy format.
+             * Throws an exception if invalid date.
+             * @param input Date in d/M/yyyy format (e.g. 01/1/2000)
+             * @return Date in dd/MM/yyyy format (e.g. 01/01/2000)
+             */
+            public String fixDateFormatting(String input) {
+                return LocalDate.parse(input, formatter)
+                        .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            }
+
+
             @Override
             public void onClick(View v) {
                 try {
@@ -667,20 +677,18 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
 
                     if (startString.length() > 0) {
-                        LocalDate.parse(startString, formatter); // called for try-catch
+                        startString = fixDateFormatting(startString);
                         String dateCheck =  "1" + startString;
                         if (!(filters.contains(dateCheck))) {
                             filters.add('1' + startString);
-
                         }
                     }
 
                     if (endString.length() > 0) {
-                        LocalDate.parse(endString, formatter); // called for try-catch
+                        endString = fixDateFormatting(endString);
                         String dateCheck =  "2" + endString;
                         if (!(filters.contains(dateCheck))) {
                             filters.add('2' + endString);
-
                         }
 
                     }

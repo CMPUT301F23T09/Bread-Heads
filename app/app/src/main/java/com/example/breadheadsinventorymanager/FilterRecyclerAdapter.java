@@ -4,14 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -23,13 +20,20 @@ import java.util.ArrayList;
 /**
  * Custom recyclerView adapter with a special clickListener for the items
  */
-public class filterRecyclerAdapter extends RecyclerView.Adapter<filterRecyclerAdapter.MyHolder> {
+public class FilterRecyclerAdapter extends RecyclerView.Adapter<FilterRecyclerAdapter.MyHolder> {
 
     private final AddItemFragment.OnFragmentInteractionListener recyclerViewInterface;
 
     ArrayList<String> data;
     Context context;
-    public filterRecyclerAdapter(Context context, ArrayList<String> data, AddItemFragment.OnFragmentInteractionListener recyclerViewInterface) {
+
+    /**
+     * Constructor for FilterRecyclerAdapter
+     * @param context
+     * @param data
+     * @param recyclerViewInterface
+     */
+    public FilterRecyclerAdapter(Context context, ArrayList<String> data, AddItemFragment.OnFragmentInteractionListener recyclerViewInterface) {
         this.data = data;
         this.context = context;
         this.recyclerViewInterface = recyclerViewInterface;
