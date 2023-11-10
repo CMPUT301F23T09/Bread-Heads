@@ -1,33 +1,53 @@
 package com.example.breadheadsinventorymanager;
 
+import android.net.Uri;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 /**
- * Class to interact with Firestore
- * @version 1.1
+ * Class to interact with Firestore. Keeps track of the database and collections, and both sends
+ * and retrieves data when necessary.
+ * @version 1.2
+ * @see FirestorePuttable
  */
 public class FirestoreInteract {
     private FirebaseFirestore database; // can't be static; would create memory leak (uses context)
+    // For storing images
+    private FirebaseStorage storage;
 
     // static variables that point to collections in the Firebase database
     private static CollectionReference itemDB;
     private static CollectionReference userDB;
     private static CollectionReference testDB;
     private static CollectionReference tagDB;
+
+
+    // points to the Firestore storage for images (large files)
+    private static StorageReference storageReference;
 
 
     /**
@@ -40,7 +60,36 @@ public class FirestoreInteract {
         userDB = database.collection("users");
         testDB = database.collection("test");
         tagDB = database.collection("tags");
+        // Images
+        storage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
+        storageReference = storage.getReference();
+    }
 
+    /**
+     * Uploads images that are provided with a reference path to its prospective location on firebase storage
+     * @param imageMap: maps image paths to the Uri image resource
+     * @param view: the current view to display upload failure/success messages
+     */
+    public void uploadImages(Map<String, Uri> imageMap, View view) {
+        Iterator<Map.Entry<String, Uri>> it = imageMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Uri> image = (Map.Entry<String, Uri>) it.next();
+            StorageReference imageRef = storageReference.child(image.getKey());
+
+            imageRef.putFile(image.getValue())
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(view.getContext(), R.string.image_uploaded_notification, Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(view.getContext(), R.string.image_upload_failed_message, Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
     /**
@@ -221,7 +270,9 @@ public class FirestoreInteract {
     public static void setTestDB(CollectionReference testDB) {
         FirestoreInteract.testDB = testDB;
     }
-
+  
+    public static StorageReference getStorageReference() { return storageReference; }
+  
     /**
      * Gets the (static) tag collection
      */
@@ -235,5 +286,4 @@ public class FirestoreInteract {
     public static void setTagDB(CollectionReference tagDB) {
         FirestoreInteract.tagDB = tagDB;
     }
-
 }

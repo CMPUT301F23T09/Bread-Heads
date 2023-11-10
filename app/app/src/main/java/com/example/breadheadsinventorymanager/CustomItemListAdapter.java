@@ -25,14 +25,42 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Custom adapter that can be filtered and plays well with sorting.
+ */
 public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filterable {
     private ItemList items;
-    private Context context;
+    private final Context context;
 
+    /**
+     * Preferred constructor for CustomItemListAdapter.
+     * @param context
+     * @param items List of items
+     */
     public CustomItemListAdapter(Context context, ItemList items) {
         super(context, 0, items);
         this.items = items;
         this.context = context;
+    }
+
+    /**
+     * Gets sum of all items present in the adapter, post-filter if applicable
+     * @return long sum of filtered items in cents
+     */
+    public long getSum() {
+        long sum = 0;
+        for (int i = 0; i < getCount(); i++) {
+            sum += (getItem(i) == null ? 0 : getItem(i).getValue());
+        }
+        return sum;
+    }
+
+    /**
+     * Gets sum of all items present in the adapter, post-filter if applicable
+     * @return String sum of filtered items, formatted like $103.50
+     */
+    public String getSumAsDollarString() {
+        return Item.toDollarString(getSum());
     }
 
     @Override
@@ -65,15 +93,20 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         itemMakeTV.setText(item.getMake());
         itemModelTV.setText(item.getModel());
         itemAcquisitionDateTV.setText(item.getDate());
-        itemValueTV.setText("$" + item.getValueDollarString());
+        itemValueTV.setText(String.format("$%s", item.getValueDollarString()));
 
         // Create a unique Checkbox for each item that is accessible elsewhere
         CheckBox checkBox = view.findViewById(R.id.checkBox);
         item.setCheckBox(checkBox);
 
-
         return view;
     }
+
+    /*
+    ================
+    CUSTOM FILTERING
+    ================
+     */
 
     @NonNull
     @Override
@@ -89,13 +122,13 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
      * This approach is kinda clunky but is necessary because the arguments of Filter() methods must
      * be CharSequences.
      */
-    Filter customFilter = new Filter() {
+    private final Filter customFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             JsonArray filtersJson = JsonParser.parseString((String) constraint).getAsJsonArray();
             // conversion utility adapted from https://stackoverflow.com/a/8371455
-            Type listType = new TypeToken<List<String>>(){}.getType();
+            Type listType = new TypeToken<List<String>>() {}.getType();
             List<String> filters = new Gson().fromJson(filtersJson, listType);
 
             // parse filters
@@ -121,11 +154,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
                 }
             }
 
-            if (items != null) {
+            if (items != null && constraint != null && constraint.length() > 0) {
                 ItemList output = new ItemList();
-                for (int i = 0; i < items.size(); i++) {
+                for (Item item : items) {
                     boolean keepFlag = true; // do we keep the item or not? default "yes"
-                    Item item = items.get(i);
 
                     if (description != null) {
                         // unnecessary '&& keepFlag' kept for clarity
@@ -149,6 +181,9 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
 
                 results.values = output;
                 results.count = output.size();
+            } else {
+                results.values = items;
+                results.count = items.size();
             }
 
             return results;
@@ -160,4 +195,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
             notifyDataSetChanged();
         }
     };
+
+    // overriding this is necessary so that we retrieve the correct item
+    @Override
+    public Item getItem(int position) {
+        return items.get(position);
+    }
 }

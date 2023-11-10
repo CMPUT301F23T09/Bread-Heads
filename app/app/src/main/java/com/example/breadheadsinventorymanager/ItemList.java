@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Stores a list of items
+ * List of items. Keeps track of the sum of the items present in the list through modification.
  *
  * @version 1.2
  */
@@ -93,7 +93,7 @@ public class ItemList extends ArrayList<Item> {
     /**
      * Gets sum of values of all Items in this list
      */
-    public double getSum() {
+    public long getSum() {
         return sum;
     }
 
@@ -211,32 +211,7 @@ public class ItemList extends ArrayList<Item> {
         if ("tags".equals(field)) {
             sortItemsByTagsAlphabetically(ascending);
         } else {
-            Collections.sort(this, (lhs, rhs) -> {
-                int result = 0;
-
-                switch (field) {
-                    case "description":
-                        result = lhs.getDescription().toLowerCase().compareTo(rhs.getDescription().toLowerCase());
-                        break;
-                    case "comment":
-                        result = lhs.getComment().toLowerCase().compareTo(
-                            rhs.getComment().toLowerCase());
-                        break;
-                    case "date":
-                        result = lhs.getDateObj().compareTo(rhs.getDateObj());
-                        break;
-                    case "make":
-                        result = lhs.getMake().toLowerCase().compareTo(
-                            rhs.getMake().toLowerCase());
-                        break;
-                    case "value":
-                        result = Long.compare(lhs.getValue(), rhs.getValue());
-                        break;
-                }
-
-                // If descending, flip all comparisons
-                return ascending ? result : -result;
-            });
+            Collections.sort(this, Item.getComparator(field, ascending));
         }
     }
 

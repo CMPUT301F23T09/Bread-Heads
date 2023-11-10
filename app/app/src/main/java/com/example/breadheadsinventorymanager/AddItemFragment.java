@@ -2,17 +2,25 @@ package com.example.breadheadsinventorymanager;
 
 import static java.lang.Long.parseLong;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -20,18 +28,29 @@ import androidx.fragment.app.DialogFragment;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
+/**
+ * Fragment for adding new items to the inventory.
+ */
 public class AddItemFragment extends DialogFragment {
 
     // editText ids
     EditText itemNameBox;
     EditText itemModelBox;
     EditText itemMakeBox;
+    EditText itemSerialNumBox;
     EditText itemDateBox;
     EditText itemCommentsBox;
     EditText itemValueBox;
     TextView errorBox;
+    com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
 
+    private ActivityResultLauncher<String> mGetContent;
+    private Map<String, Uri> imageMap = new HashMap<String, Uri>();
     private OnFragmentInteractionListener listener;
 
     /**
@@ -47,6 +66,18 @@ public class AddItemFragment extends DialogFragment {
         } else {
             throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
         }
+
+        // For accessing the Gallery for images - must be called upon instantiation (in onAttach)
+        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri uri) {
+                        // Handle the new image
+                        String imagePath = "images/" + UUID.randomUUID().toString();
+                        imageMap.put(imagePath, uri); //fixme: use try catch in case key already exists, implement after edit is complete.
+                    }
+                }
+        );
     }
 
     /**
@@ -67,10 +98,12 @@ public class AddItemFragment extends DialogFragment {
         itemNameBox = view.findViewById(R.id.item_name_text);
         itemMakeBox = view.findViewById(R.id.item_make_text);
         itemModelBox = view.findViewById(R.id.item_model_text);
+        itemSerialNumBox = view.findViewById(R.id.serial_number_text);
         itemDateBox = view.findViewById(R.id.item_acquisition_date_text);
         itemValueBox = view.findViewById(R.id.item_value_text);
         itemCommentsBox = view.findViewById(R.id.item_comments_text);
         errorBox = view.findViewById(R.id.error_text_message);
+        addImageBtn = view.findViewById(R.id.add_image_button);
 
         // addItemDialog builder code modified from this stackOverflow post
         //https://stackoverflow.com/questions/6275677/alert-dialog-in-android-should-not-dismiss
@@ -85,6 +118,14 @@ public class AddItemFragment extends DialogFragment {
                             //Do nothing here. Override onClick() so we can do things when OK is tapped
                         }
                     }).create();
+
+        // Open gallery to append photos to an item
+        addImageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGetContent.launch("image/*");
+            }
+        });
 
         // set a listener for the OK button
         addItemDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -115,6 +156,7 @@ public class AddItemFragment extends DialogFragment {
     public boolean checkDataEntry() {
         String name = itemNameBox.getText().toString();
         String make = itemMakeBox.getText().toString();
+        String serialNumber = itemSerialNumBox.getText().toString(); //fixme: No checking for this number yet
         String model = itemModelBox.getText().toString();
         String date = itemDateBox.getText().toString();
         String value = itemValueBox.getText().toString();
@@ -150,18 +192,15 @@ public class AddItemFragment extends DialogFragment {
             return false;
         }
         // create the item object
-        listener.onOKPressed(new Item(date, name, make, model, comments, newValue));
+        ArrayList<String> imagePathsForUpload = new ArrayList<String>(imageMap.keySet());
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload), imageMap);
         return true;
     }
 
     /**
-     * Interface for button pressed in dialog and a function for recyclerView item clicks
-     * This is bad practise :P
+     * interface for button pressed in dialog
      */
     public interface OnFragmentInteractionListener {
-        // function for tapping OK on the addItem dialog
-        void onOKPressed(Item item);
-        // function for tapping on a recyclerView item
-        void onRecyclerItemPressed(int position);
+        void onOKPressed(Item item, Map<String, Uri> imageMap);
     }
 }

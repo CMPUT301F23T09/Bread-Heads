@@ -1,7 +1,5 @@
 package com.example.breadheadsinventorymanager;
 
-import static android.text.TextUtils.substring;
-
 import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
@@ -13,15 +11,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Represents an item in the inventory and all the data it contains.
@@ -35,11 +30,15 @@ public class Item implements FirestorePuttable, Serializable {
     private String make;
     private String model;
     private String serialNum;
-    private long value; // in cents
-    private transient CheckBox checkBox; // must be transient so the class can be serialized
     private String comment = ""; // comment is optional
-    private TagList tags;
-    // private ArrayList<Photo> photos; // second half
+    private long value; // in cents
+
+    private ArrayList<String> imagePaths = new ArrayList<>();
+    private transient CheckBox checkBox; // must be transient so the class can be serialized
+    private TagList tags = new TagList();
+
+    // valid format for date setting
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Empty constructor.
@@ -47,17 +46,28 @@ public class Item implements FirestorePuttable, Serializable {
     public Item() {}
 
     /**
-     * Constructor given all fields, incl. serial number.
+     * Constructor with serial number but not imagePaths
      */
-    public Item(String date, String description, String make, String model, String serialNum, String comments, long value) {
-        this.date = date;
-        this.description = description;
-        this.make = make;
-        this.model = model;
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum) {
+        this(date, description, make, model, comments, value);
         this.serialNum = serialNum;
-        this.value = value;
-        this.comment = comments;
-        this.tags = new TagList();
+    }
+
+    /**
+     * Constructor with imagePaths but not serial number
+     */
+    public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths) {
+        this(date, description, make, model, comments, value);
+        this.imagePaths = imagePaths;
+    }
+
+    /**
+     * Constructor with everything (no tags)
+     */
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths) {
+        this(date, description, make, model, comments, value);
+        this.serialNum = serialNum;
+        this.imagePaths = imagePaths;
     }
 
     /**
@@ -73,8 +83,7 @@ public class Item implements FirestorePuttable, Serializable {
         serialNum = document.getString("serialNum");
         value = document.getLong("value");
         comment = document.getString("comment");
-        tags = new TagList((List<String>) document.get("tags"));
-        // TODO PART 2: photos
+        imagePaths = (ArrayList<String>) document.get("imagePaths");
     }
 
     /**
@@ -90,6 +99,7 @@ public class Item implements FirestorePuttable, Serializable {
         serialNum = document.getString("serialNum");
         value = document.getLong("value");
         comment = document.getString("comment");
+        imagePaths = (ArrayList<String>) document.get("imagePaths");
         tags = new TagList((List<String>) document.get("tags"));
     }
 
@@ -98,7 +108,8 @@ public class Item implements FirestorePuttable, Serializable {
      * [01.01.01] only requires a serial number "when applicable"
      */
     public Item(String date, String description, String make, String model, String comments, long value) {
-        this.date = date;
+        this.date = LocalDate.parse(date, formatter)
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")); // coerce date into nice format
         this.description = description;
         this.make = make;
         this.model = model;
@@ -154,11 +165,9 @@ public class Item implements FirestorePuttable, Serializable {
      * @return the Local date object of the item
      */
     public LocalDate getDateObj() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return LocalDate.parse(this.date, formatter);
+        return LocalDate.parse(getDate(), formatter);
 
     }
-
 
     /*
     ============================================
@@ -174,14 +183,53 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("serialNum", serialNum);
         map.put("value", value);
         map.put("comment", comment);
+        map.put("imagePaths", imagePaths);
         map.put("tags", tags);
-        // TODO SECOND HALF: photos
 
         return map;
     }
 
     public void put(CollectionReference collection) {
         // pass
+    }
+
+    /*
+    ============================================
+    Sorting utility
+    ============================================
+     */
+
+    /**
+     * Returns a comparator for sorting by the specified parameter
+     * @param sortMode The field to sort by; accepts "comment", "make", "date", "value", or
+     *                 "description". Defaults to description if not specified
+     * @param ascending True if sorting in ascending order, else false
+     * @return The comparator for the specified field in the given order
+     */
+    public static Comparator<Item> getComparator(String sortMode, boolean ascending) {
+        Comparator<Item> comparator;
+        switch (sortMode) {
+            case("comment"):
+                comparator = (Item lhs, Item rhs) ->
+                    String.CASE_INSENSITIVE_ORDER.compare(lhs.getComment(), rhs.getComment());
+                break;
+            case("make"):
+                comparator = (Item lhs, Item rhs) ->
+                        String.CASE_INSENSITIVE_ORDER.compare(lhs.getMake(), rhs.getMake());
+                break;
+            case("date"):
+                comparator = Comparator.comparing(Item::getDateObj);
+                break;
+            case("value"):
+                comparator = Comparator.comparing(Item::getValue);
+                break;
+            default:
+                // default to description
+                comparator = (Item lhs, Item rhs) ->
+                        String.CASE_INSENSITIVE_ORDER.compare(lhs.getDescription(), rhs.getDescription());
+                break;
+        }
+        return ascending ? comparator : comparator.reversed();
     }
 
     /*
@@ -217,9 +265,9 @@ public class Item implements FirestorePuttable, Serializable {
         return comment;
     }
 
-    // Setters
     public void setDate(String date) {
-        this.date = date;
+        this.date = LocalDate.parse(date, formatter)
+                .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));  // coerce date into nice format
     }
 
     public void setDescription(String description) {
@@ -254,6 +302,13 @@ public class Item implements FirestorePuttable, Serializable {
         this.id = id;
     }
 
+    public void addImagePath(String imagePath) {
+        imagePaths.add(imagePath);
+    }
+
+    public ArrayList<String> getImagePaths() {
+        return imagePaths;
+    }
 
     public TagList getTags() {
         return tags;
@@ -263,9 +318,16 @@ public class Item implements FirestorePuttable, Serializable {
         this.tags = tags;
     }
 
+    /**
+     * Sets CheckBox object associated with this Item.
+     * @param checkBox Checkbox object
+     */
     public void setCheckBox(CheckBox checkBox) {this.checkBox = checkBox;}
 
+    /**
+     * Gets CheckBox object associated with this Item.
+     * @return Object's associated CheckBox
+     */
     public CheckBox getCheckBox() {return this.checkBox;}
-
 }
 
