@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -31,11 +32,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="@string/serial_number"
+        android:inputType="text"
+        android:id="@+id/serial_number_text"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
         android:maxLength="10"
         android:hint="@string/dd_mm_yyyy"
         android:inputType="datetime"
         android:id="@+id/item_acquisition_date_text"/>
-
     <EditText
         android:id="@+id/item_value_text"
         android:layout_width="match_parent"
@@ -96,6 +103,7 @@
         android:gravity="center"
         android:visibility="gone"
         android:textColor="@color/tomato_red"/>
+
     <!--TODO make area for tags to show -->
 
 

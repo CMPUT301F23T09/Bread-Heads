@@ -6,6 +6,7 @@ import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.widget.CheckBox;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -13,11 +14,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.Serializable;
-
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +37,12 @@ public class Item implements FirestorePuttable, Serializable {
     private String make;
     private String model;
     private String serialNum;
-    private long value; // in cents
-    private transient CheckBox checkBox; // must be transient so the class can be serialized
     private String comment = ""; // comment is optional
-    private TagList tags;
-    // private ArrayList<Photo> photos; // second half
+    private long value; // in cents
+
+    private ArrayList<String> imagePaths = new ArrayList<>();
+    private transient CheckBox checkBox; // must be transient so the class can be serialized
+    private TagList tags = new TagList();
 
     /**
      * Empty constructor.
@@ -47,17 +50,28 @@ public class Item implements FirestorePuttable, Serializable {
     public Item() {}
 
     /**
-     * Constructor given all fields, incl. serial number.
+     * Constructor with serial number but not imagePaths
      */
-    public Item(String date, String description, String make, String model, String serialNum, String comments, long value) {
-        this.date = date;
-        this.description = description;
-        this.make = make;
-        this.model = model;
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum) {
+        this(date, description, make, model, comments, value);
         this.serialNum = serialNum;
-        this.value = value;
-        this.comment = comments;
-        this.tags = new TagList();
+    }
+
+    /**
+     * Constructor with imagePaths but not serial number
+     */
+    public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths) {
+        this(date, description, make, model, comments, value);
+        this.imagePaths = imagePaths;
+    }
+
+    /**
+     * Constructor with everything (no tags)
+     */
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths) {
+        this(date, description, make, model, comments, value);
+        this.serialNum = serialNum;
+        this.imagePaths = imagePaths;
     }
 
     /**
@@ -71,10 +85,9 @@ public class Item implements FirestorePuttable, Serializable {
         make = document.getString("make");
         model = document.getString("model");
         serialNum = document.getString("serialNum");
-        value = (long) document.get("value");
+        value = document.getLong("value");
         comment = document.getString("comment");
-        tags = new TagList((List<String>) document.get("tags"));
-        // TODO PART 2: photos
+        imagePaths = (ArrayList<String>) document.get("imagePaths");
     }
 
     /**
@@ -90,6 +103,7 @@ public class Item implements FirestorePuttable, Serializable {
         serialNum = document.getString("serialNum");
         value = document.getLong("value");
         comment = document.getString("comment");
+        imagePaths = (ArrayList<String>) document.get("imagePaths");
         tags = new TagList((List<String>) document.get("tags"));
     }
 
@@ -159,7 +173,6 @@ public class Item implements FirestorePuttable, Serializable {
 
     }
 
-
     /*
     ============================================
     Implement the FirestorePuttable interface
@@ -174,8 +187,8 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("serialNum", serialNum);
         map.put("value", value);
         map.put("comment", comment);
+        map.put("imagePaths", imagePaths);
         map.put("tags", tags);
-        // TODO SECOND HALF: photos
 
         return map;
     }
@@ -254,6 +267,13 @@ public class Item implements FirestorePuttable, Serializable {
         this.id = id;
     }
 
+    public void addImagePath(String imagePath) {
+        imagePaths.add(imagePath);
+    }
+
+    public ArrayList<String> getImagePaths() {
+        return imagePaths;
+    }
 
     public TagList getTags() {
         return tags;

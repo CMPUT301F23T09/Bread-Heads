@@ -37,6 +37,10 @@
     <string name="date_in_future">Date is in the future!</string>
     <string name="totalValueTitle">Total Value: $%1$s</string>
     <string name="sort_readable">Sort</string>
+    <string name="image_uploaded_notification">Image Uploaded</string>
+    <string name="firebase_firestore_image_not_loaded_message">Image can\'t be loaded...</string>
+    <string name="image_upload_failed_message">Image upload failed...</string>
+    <string name="serial_number">Serial Number</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
 </resources>
