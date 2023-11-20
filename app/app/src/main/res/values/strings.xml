@@ -45,4 +45,6 @@
     <string name="serial_number">Serial Number</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+    <string name="choose_existing_photo">Choose Existing Photo</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

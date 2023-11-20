@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,7 +48,7 @@ public class AddItemFragment extends DialogFragment {
     EditText itemCommentsBox;
     EditText itemValueBox;
     TextView errorBox;
-    com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
+    ImageButton addImageBtn;
 
     private ActivityResultLauncher<String> mGetContent;
     private Map<String, Uri> imageMap = new HashMap<String, Uri>();
