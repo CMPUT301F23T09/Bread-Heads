@@ -48,7 +48,7 @@ import java.util.Objects;
  *
  * @version 2
  */
-public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener,AddTagFragment.OnFragmentInteractionListener{
     // id for search box to filter by description
     private SearchView searchBox;
     private EditText startDate;
@@ -186,7 +186,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private Task<QuerySnapshot> updateTags() {
         tagList = new TagList();
-        return database.populateWithTags(tagList);
+        return database.populateWithTags(tagList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+            }
+        });
     }
 
     // ADD ITEM DIALOG HANDLING
@@ -218,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
         database.uploadImages(imageMap, findViewById(android.R.id.content).getRootView());
     }
-
+    @Override
     public void onOKPressed(Tag tag) {
         database.putTag(tag).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -250,7 +255,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     private void showAddTag() {
-        new AddTagFragment().show(getSupportFragmentManager(), "ADDTAG");
+        AddTagFragment addTagFragment = new AddTagFragment();
+        addTagFragment.show(getSupportFragmentManager(), "ADD_TAG");
+
     }
 
 
@@ -286,11 +293,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
         popup.getMenuInflater().inflate(R.menu.add_menu, popup.getMenu());
         popup.show();
-    }
-
-    public void onTagAdded(Tag tag) {
-        // Handle the added tag, for example, add it to your TagList
-        // tagList.addTag(tag);
     }
 
     /**

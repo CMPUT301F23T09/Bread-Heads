@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -17,14 +19,22 @@ import androidx.fragment.app.DialogFragment;
 import com.example.breadheadsinventorymanager.Tag;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class AddTagFragment extends DialogFragment {
 
     // Remove the listener declaration
     private AddTagFragment.OnFragmentInteractionListener listener;
 
-
-
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof AddItemFragment.OnFragmentInteractionListener) {
+            listener = (AddTagFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context + "OnFragmentInteractionListener is not implemented");
+        }
+    }
 
     @NonNull
     @Override
