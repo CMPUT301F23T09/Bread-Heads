@@ -48,7 +48,7 @@ import java.util.Objects;
  *
  * @version 2
  */
-public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener{
     // id for search box to filter by description
     private SearchView searchBox;
     private EditText startDate;
@@ -219,6 +219,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         database.uploadImages(imageMap, findViewById(android.R.id.content).getRootView());
     }
 
+    public void onOKPressed(Tag tag) {
+        database.putTag(tag).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                updateTags();
+            }
+        });
+    }
+
+
+
     /**
      * removes the filter from the recyclerView and refilters the list
      * @param position
@@ -238,6 +249,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         new AddItemFragment().show(getSupportFragmentManager(), "ADD_ITEM");
     }
 
+    private void showAddTag() {
+        new AddTagFragment().show(getSupportFragmentManager(), "ADDTAG");
+    }
+
+
+
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
 
     /**
@@ -250,6 +267,30 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.topbar, menu);
         return true;
+    }
+
+    private void showAddMenu() {
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.add_item));
+        popup.setOnMenuItemClickListener(item -> {
+            // Handle item clicks here using if-else statements
+            if (item.getItemId() == R.id.add_new_item) {
+                showAddItem();
+                return true;
+            } else if (item.getItemId() == R.id.add_new_tag) {
+                // Handle other menu item clicks if needed
+                showAddTag();
+                return true;
+            } else {
+                return false;
+            }
+        });
+        popup.getMenuInflater().inflate(R.menu.add_menu, popup.getMenu());
+        popup.show();
+    }
+
+    public void onTagAdded(Tag tag) {
+        // Handle the added tag, for example, add it to your TagList
+        // tagList.addTag(tag);
     }
 
     /**
@@ -269,7 +310,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             return true;
         } else if (id == R.id.add_item) {
             // show dialog for adding an item
-            showAddItem();
+            showAddMenu();
+            //showAddItem();
             return true;
         } else if (id == R.id.delete_item) {
             // enter select mode to be able to delete one or more items
