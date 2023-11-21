@@ -41,7 +41,8 @@
         android:ems="10"
         android:maxLength="10"
         android:hint="@string/dd_mm_yyyy"
-        android:inputType="datetime"
+        android:digits="1234567890/"
+        android:inputType="date"
         android:id="@+id/item_acquisition_date_text"/>
     <EditText
         android:id="@+id/item_value_text"
