@@ -1,8 +1,6 @@
 package com.example.breadheadsinventorymanager;
 
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -28,7 +26,8 @@ public class ItemDetailsActivityTest {
     @Before
     //runs before each test it creates a sample item
     public void createSampleItem() {
-        onView(withId(R.id.add_item)).perform(click());
+        //TODO: update tests, no longer add_item. Instead we click add_element followed by add_new_item
+        onView(withId(R.id.add_element)).perform(click());
         onView(withId(R.id.item_name_text)).perform(replaceText("Sample Item"));
         onView(withId(R.id.item_make_text)).perform(replaceText("Sample Make"));
         onView(withId(R.id.item_model_text)).perform(replaceText("Sample Model"));

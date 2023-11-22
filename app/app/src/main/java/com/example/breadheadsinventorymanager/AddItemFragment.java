@@ -2,6 +2,7 @@ package com.example.breadheadsinventorymanager;
 
 import static java.lang.Long.parseLong;
 
+import android.util.Log;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,9 +14,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -30,6 +35,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,10 +54,15 @@ public class AddItemFragment extends DialogFragment {
     EditText itemValueBox;
     TextView errorBox;
     com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
+    Button addTagBtn;
+    Button removeTagBtn;
 
     private ActivityResultLauncher<String> mGetContent;
     private Map<String, Uri> imageMap = new HashMap<String, Uri>();
     private OnFragmentInteractionListener listener;
+
+    private List<String> selectedTags = new ArrayList<>();
+
 
     /**
      * Called when the fragment is first attached to MainActivity
@@ -104,6 +115,9 @@ public class AddItemFragment extends DialogFragment {
         itemCommentsBox = view.findViewById(R.id.item_comments_text);
         errorBox = view.findViewById(R.id.error_text_message);
         addImageBtn = view.findViewById(R.id.add_image_button);
+        addTagBtn = view.findViewById(R.id.add_tag);
+        removeTagBtn = view.findViewById(R.id.remove_tag);
+
 
         // addItemDialog builder code modified from this stackOverflow post
         //https://stackoverflow.com/questions/6275677/alert-dialog-in-android-should-not-dismiss
@@ -124,6 +138,15 @@ public class AddItemFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 mGetContent.launch("image/*");
+            }
+        });
+
+        // add tag/s need a check box here
+        addTagBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the tag selection dialog
+                showTagSelectionDialog();
             }
         });
 
@@ -193,7 +216,7 @@ public class AddItemFragment extends DialogFragment {
         }
         // create the item object
         ArrayList<String> imagePathsForUpload = new ArrayList<String>(imageMap.keySet());
-        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload), imageMap);
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload,selectedTags), imageMap);
         return true;
     }
 
@@ -203,5 +226,49 @@ public class AddItemFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         void onRecyclerItemPressed(int position);
         void onOKPressed(Item item, Map<String, Uri> imageMap);
+    }
+    private void showTagSelectionDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+
+        // Inflate the custom layout
+        View dialogView = inflater.inflate(R.layout.taglist_dialog, null);
+        builder.setView(dialogView);
+
+        // Get the container for checkboxes
+        LinearLayout tagListContainer = dialogView.findViewById(R.id.tagListContainer);
+
+        // Get the global tag list
+        TagList globalTagList = ((MainActivity) getActivity()).getGlobalTagList();
+
+        // Create checkboxes for each tag
+        for (Tag tag : globalTagList) {
+            CheckBox checkBox = new CheckBox(getContext());
+            checkBox.setText(tag.getTag());
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    // Add the tag to the selectedTags list
+                    selectedTags.add(tag.getTag());
+                } else {
+                    // Remove the tag from the selectedTags list
+                    selectedTags.remove(tag.getTag());
+                }
+            });
+
+            tagListContainer.addView(checkBox);
+        }
+
+        builder.setPositiveButton("Confirm", (dialog, which) -> {
+            // Handle Confirm button click if needed
+            Log.d("TagSelection", "Selected Tags: " + selectedTags);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            // Clear the selectedTags list when "Cancel" is pressed
+            selectedTags.clear();
+        });
+
+        // Show the dialog
+        builder.show();
     }
 }

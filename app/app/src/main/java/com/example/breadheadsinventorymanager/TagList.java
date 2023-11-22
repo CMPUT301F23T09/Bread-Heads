@@ -2,6 +2,7 @@ package com.example.breadheadsinventorymanager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public class TagList extends ArrayList<Tag> {
      * Constructs a TagList from the given List of Strings
      * @param list List of all tags as Strings
      */
-    protected TagList(List<String> list) {
+    public TagList(List<String> list) {
         super();
         if (list == null) {
             // pass
@@ -29,6 +30,11 @@ public class TagList extends ArrayList<Tag> {
             }
         }
     }
+
+    public TagList(HashMap<String,String> list) {
+
+    }
+
 
     /**
      * Adds a tag to the list only if it doesn't already exist in the list.
@@ -41,9 +47,9 @@ public class TagList extends ArrayList<Tag> {
         boolean tagExists = this.stream().anyMatch(existingTag -> existingTag.getTag().equals(tag.getTag()));
 
         // Check if the exact same Tag object already exists
-        boolean sameTagExists = this.contains(tag);
+        //boolean sameTagExists = this.contains(tag);
 
-        if (tagExists || sameTagExists) {
+        if (tagExists) {
             return false; // Tag with the same name or the exact same Tag object already exists
         } else {
             return super.add(tag); // Add the tag

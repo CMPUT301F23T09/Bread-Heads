@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +32,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
-import com.google.type.DateTime;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -108,6 +106,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         //ListView and adapter setup
         database = new FirestoreInteract();
+
+        updateTags().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            }
+        });
+
+
         updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -194,11 +200,23 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
     }
 
+    /**
+     *
+     */
+
+    public TagList getGlobalTagList() {
+        // Implement this method to return the global tag list
+        // For example, if globalTagList is a field in MainActivity:
+        // return globalTagList;
+        return tagList;
+    }
+
     // ADD ITEM DIALOG HANDLING
     @Override
     protected void onResume() {
         super.onResume();
         updateList();
+        updateTags();
     }
 
     /**
@@ -261,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
 
-
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
 
     /**
@@ -277,14 +294,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     private void showAddMenu() {
-        PopupMenu popup = new PopupMenu(this, findViewById(R.id.add_item));
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.add_element));
         popup.setOnMenuItemClickListener(item -> {
             // Handle item clicks here using if-else statements
             if (item.getItemId() == R.id.add_new_item) {
                 showAddItem();
                 return true;
             } else if (item.getItemId() == R.id.add_new_tag) {
-                // Handle other menu item clicks if needed
                 showAddTag();
                 return true;
             } else {
@@ -310,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // create menu for filtering items
             showFilterMenu();
             return true;
-        } else if (id == R.id.add_item) {
+        } else if (id == R.id.add_element) {
             // show dialog for adding an item
             showAddMenu();
             //showAddItem();

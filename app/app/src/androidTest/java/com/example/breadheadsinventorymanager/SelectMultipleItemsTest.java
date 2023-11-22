@@ -2,45 +2,23 @@ package com.example.breadheadsinventorymanager;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
 //import static androidx.test.espresso.intent.Intents.intended;
 //import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
-import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isSelected;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
-import static org.hamcrest.Matchers.startsWith;
 
-import android.app.Activity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.CheckBox;
-
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.ViewActions;
 //import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +31,8 @@ public class SelectMultipleItemsTest {
     @Test
     public void testDeletingSingleItem(){
         // Add a item to the list
-        onView(withId(R.id.add_item)).perform(click());
+        //TODO: update tests, no longer add_item. Instead we click add_element followed by add_new_item
+        onView(withId(R.id.add_element)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel4"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
@@ -91,7 +70,7 @@ public class SelectMultipleItemsTest {
     public void testDeletingMultipleItems(){
         // Add a couple items to the list
         // Add a item to the list
-        onView(withId(R.id.add_item)).perform(click());
+        onView(withId(R.id.add_element)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel1234"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
@@ -100,7 +79,7 @@ public class SelectMultipleItemsTest {
         onView(withText("OK")).perform(click());
 
         // Add another item to the list
-        onView(withId(R.id.add_item)).perform(click());
+        onView(withId(R.id.add_element)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel2456"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make2"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model2"));
