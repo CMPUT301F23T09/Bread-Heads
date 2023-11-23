@@ -185,6 +185,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private void showEditItemFragment() {
         Log.d("ItemDetailsActivity", "showEditItemFragment called");
         Log.d("ItemDetailsActivity", "selectedItem is " + (selectedItem != null ? "not null" : "null"));
+        Log.d("Item has these Tags:",selectedItem.getTags().toString());
 
         if (selectedItem != null) {
             EditItemFragment editItemFragment = EditItemFragment.newInstance(selectedItem);
