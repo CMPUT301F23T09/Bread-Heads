@@ -13,7 +13,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +32,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
-import com.google.type.DateTime;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -48,7 +46,7 @@ import java.util.Objects;
  *
  * @version 2
  */
-public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener,AddTagFragment.OnFragmentInteractionListener{
     // id for search box to filter by description
     private SearchView searchBox;
     private EditText startDate;
@@ -108,6 +106,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         //ListView and adapter setup
         database = new FirestoreInteract();
+
+        updateTags().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            }
+        });
+
+
         updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -186,7 +192,23 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private Task<QuerySnapshot> updateTags() {
         tagList = new TagList();
-        return database.populateWithTags(tagList);
+        return database.populateWithTags(tagList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+            }
+        });
+    }
+
+    /**
+     *
+     */
+
+    public TagList getGlobalTagList() {
+        // Implement this method to return the global tag list
+        // For example, if globalTagList is a field in MainActivity:
+        // return globalTagList;
+        return tagList;
     }
 
     // ADD ITEM DIALOG HANDLING
@@ -194,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     protected void onResume() {
         super.onResume();
         updateList();
+        updateTags();
     }
 
     /**
@@ -218,6 +241,17 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         }
         database.uploadImages(imageMap, findViewById(android.R.id.content).getRootView());
     }
+    @Override
+    public void onOKPressed(Tag tag) {
+        database.putTag(tag).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                updateTags();
+            }
+        });
+    }
+
+
 
     /**
      * removes the filter from the recyclerView and refilters the list
@@ -238,6 +272,13 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         new AddItemFragment().show(getSupportFragmentManager(), "ADD_ITEM");
     }
 
+    private void showAddTag() {
+        AddTagFragment addTagFragment = new AddTagFragment();
+        addTagFragment.show(getSupportFragmentManager(), "ADD_TAG");
+
+    }
+
+
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
 
     /**
@@ -250,6 +291,24 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.topbar, menu);
         return true;
+    }
+
+    private void showAddMenu() {
+        PopupMenu popup = new PopupMenu(this, findViewById(R.id.add_element));
+        popup.setOnMenuItemClickListener(item -> {
+            // Handle item clicks here using if-else statements
+            if (item.getItemId() == R.id.add_new_item) {
+                showAddItem();
+                return true;
+            } else if (item.getItemId() == R.id.add_new_tag) {
+                showAddTag();
+                return true;
+            } else {
+                return false;
+            }
+        });
+        popup.getMenuInflater().inflate(R.menu.add_menu, popup.getMenu());
+        popup.show();
     }
 
     /**
@@ -267,9 +326,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // create menu for filtering items
             showFilterMenu();
             return true;
-        } else if (id == R.id.add_item) {
+        } else if (id == R.id.add_element) {
             // show dialog for adding an item
-            showAddItem();
+            showAddMenu();
+            //showAddItem();
             return true;
         } else if (id == R.id.delete_item) {
             // enter select mode to be able to delete one or more items

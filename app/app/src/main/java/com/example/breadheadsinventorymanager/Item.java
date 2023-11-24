@@ -4,7 +4,10 @@ import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.widget.CheckBox;
+
+import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -64,10 +67,12 @@ public class Item implements FirestorePuttable, Serializable {
     /**
      * Constructor with everything (no tags)
      */
-    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths) {
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths,List<String> tags) {
         this(date, description, make, model, comments, value);
         this.serialNum = serialNum;
         this.imagePaths = imagePaths;
+        this.tags = new TagList(tags);
+        Log.d(null,tags.toString());
     }
 
     /**
@@ -84,12 +89,26 @@ public class Item implements FirestorePuttable, Serializable {
         value = document.getLong("value");
         comment = document.getString("comment");
         imagePaths = (ArrayList<String>) document.get("imagePaths");
+        List<HashMap<String, Object>> tagsFromFirebase = (List<HashMap<String, Object>>) document.get("tags");
+        List<String> tagList = new ArrayList<>();
+
+        if (tagsFromFirebase != null) {
+            for (HashMap<String, Object> tagMap : tagsFromFirebase) {
+                String tag = (String) tagMap.get("tag");
+                if (tag != null) {
+                    tagList.add(tag);
+                }
+            }
+        }
+
+        tags = new TagList(tagList);
     }
 
     /**
      * Constructor given an Item document snapshot containing the parameters of the field.
      * @param document From the Firestore database; must be formatted correctly as an Item.
      */
+    // TODO: HANDLE TAGS THEY ARE MAPPED AS HASHMAP
     public Item(QueryDocumentSnapshot document) {
         id = document.getId();
         date = document.getString("date");
@@ -100,7 +119,21 @@ public class Item implements FirestorePuttable, Serializable {
         value = document.getLong("value");
         comment = document.getString("comment");
         imagePaths = (ArrayList<String>) document.get("imagePaths");
-        tags = new TagList((List<String>) document.get("tags"));
+        // Assuming 'tags' is a list of HashMaps
+        List<HashMap<String, Object>> tagsFromFirebase = (List<HashMap<String, Object>>) document.get("tags");
+        List<String> tagList = new ArrayList<>();
+
+        if (tagsFromFirebase != null) {
+            for (HashMap<String, Object> tagMap : tagsFromFirebase) {
+                String tag = (String) tagMap.get("tag");
+                if (tag != null) {
+                    tagList.add(tag);
+                }
+            }
+        }
+
+        tags = new TagList(tagList);
+
     }
 
     /**

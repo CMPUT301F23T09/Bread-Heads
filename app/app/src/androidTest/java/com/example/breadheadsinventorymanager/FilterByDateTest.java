@@ -1,7 +1,6 @@
 package com.example.breadheadsinventorymanager;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -9,9 +8,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-
-import android.view.View;
 
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -49,7 +45,8 @@ public class FilterByDateTest {
     @Test
     public void FilterByDate() {
         // add test data
-        onView(withId(R.id.add_item)).perform(click());
+        //TODO: update tests, no longer add_item. Instead we click add_element followed by add_new_item
+        onView(withId(R.id.add_element)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Valid date entry1"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
@@ -57,7 +54,7 @@ public class FilterByDateTest {
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("123")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withId(R.id.add_item)).perform(click());
+        onView(withId(R.id.add_element)).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Valid date entry2"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
