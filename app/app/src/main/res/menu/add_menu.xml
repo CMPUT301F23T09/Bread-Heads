@@ -5,8 +5,12 @@
         android:contentDescription="@string/add_item"
         android:title="@string/add_item"/>
 
+    <item android:id="@+id/add_via_barcode"
+        android:contentDescription="@string/add_from_barcode_description"
+        android:title="@string/add_from_barcode"/>
+
     <item android:id="@+id/add_new_tag"
         android:contentDescription="@string/add_tag"
-        android:title="@string/add_tag">
-    </item>
+        android:title="@string/add_tag"/>
+
 </menu>

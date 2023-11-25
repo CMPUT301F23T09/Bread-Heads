@@ -46,7 +46,7 @@ import java.util.Objects;
  *
  * @version 2
  */
-public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener,AddTagFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener, AddTagFragment.OnFragmentInteractionListener{
     // id for search box to filter by description
     private SearchView searchBox;
     private EditText startDate;
@@ -195,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         return database.populateWithTags(tagList).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
             }
         });
     }
@@ -203,7 +202,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      *
      */
-
     public TagList getGlobalTagList() {
         // Implement this method to return the global tag list
         // For example, if globalTagList is a field in MainActivity:
@@ -255,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
     /**
      * removes the filter from the recyclerView and refilters the list
-     * @param position
+     * @param position position of filter object that was clicked
      */
     @Override
     public void onRecyclerItemPressed(int position) {
@@ -299,6 +297,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // Handle item clicks here using if-else statements
             if (item.getItemId() == R.id.add_new_item) {
                 showAddItem();
+                return true;
+            }else if (item.getItemId() == R.id.add_via_barcode) {
+                // go to fragment to add an item via barcode
+                //TODO add barcode scanning
+                Intent intent = new Intent(MainActivity.this, BarcodeScannerActivity.class);
+                startActivity(intent);
                 return true;
             } else if (item.getItemId() == R.id.add_new_tag) {
                 showAddTag();

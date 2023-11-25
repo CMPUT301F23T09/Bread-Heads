@@ -14,4 +14,5 @@
     </style>
 
     <style name="Theme.BreadHeadsInventoryManager" parent="Base.Theme.BreadHeadsInventoryManager" />
+
 </resources>

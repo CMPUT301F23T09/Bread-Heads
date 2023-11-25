@@ -10,6 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/Theme.BreadHeadsInventoryManager"
         tools:targetApi="31">
 
@@ -26,6 +27,18 @@
         <activity
             android:name=".ItemDetailsActivity"
             android:exported="true">
+        </activity>
+        <!-- Declaration of Barcode Scanner Activity -->
+        <activity
+            android:name=".BarcodeScannerActivity"
+            android:exported="true">
+        </activity>
+        <!-- Declaration of the camera for the Barcode Scanner Activity -->
+        <activity
+            android:name=".CaptureAct"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme">
         </activity>
 
     </application>
