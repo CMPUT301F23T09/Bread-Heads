@@ -2,6 +2,10 @@ package com.example.breadheadsinventorymanager;
 
 import static java.lang.Long.parseLong;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.Log;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,6 +34,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
+
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -55,6 +69,7 @@ public class AddItemFragment extends DialogFragment {
     TextView errorBox;
     com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
     Button addTagBtn;
+    String imagePathGlobal;
     Button removeTagBtn;
 
     private ActivityResultLauncher<String> mGetContent;
@@ -85,6 +100,7 @@ public class AddItemFragment extends DialogFragment {
                     public void onActivityResult(Uri uri) {
                         // Handle the new image
                         String imagePath = "images/" + UUID.randomUUID().toString();
+                        imagePathGlobal = imagePath;
                         if (uri != null) {
                             imageMap.put(imagePath, uri); //fixme: use try catch in case key already exists, implement after edit is complete.
                         }
@@ -139,7 +155,9 @@ public class AddItemFragment extends DialogFragment {
         addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mGetContent.launch("image/*");
+                setSerialNumberFromImage(imagePathGlobal);
             }
         });
 
@@ -273,4 +291,76 @@ public class AddItemFragment extends DialogFragment {
         // Show the dialog
         builder.show();
     }
+
+    /**
+     *
+     * Function to read the serial number from an image and set the serial number based off the image
+     * @param imagePath
+     */
+    private void setSerialNumberFromImage(String imagePath){
+        InputImage image;
+//        image = InputImage.fromFilePath();
+        Text textFound;
+        File imgFile = new File(imagePath);
+        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+        image = InputImage.fromBitmap(bitmap, 0);
+
+        // initialize text recognizer
+        TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+        Task <Text> result =
+                recognizer.process(image)
+                        .addOnSuccessListener(new OnSuccessListener<Text>() {
+                            @Override
+                            public void onSuccess(Text texts) {
+                                // Task completed successfully
+//                                processTextRecognitionResult(texts)
+                                List<Text.TextBlock> blocks = texts.getTextBlocks();
+                                if (blocks.size() == 0) {
+                                    // no text found
+                                    return;
+                                }
+
+                                // all text found is in one block
+                                for (int i = 0; i < blocks.size(); i++) {
+                                    // within the block are each of the lines found
+                                    List<Text.Line> lines = blocks.get(i).getLines();
+                                    for (int j = 0; j < lines.size(); j++) {
+                                        itemSerialNumBox.setText(lines.get(j).getText());
+                                    }
+                                }
+
+                            }
+                        });
+
+//        String resultText = result.getText();
+//        for (Text.TextBlock block : result.getTextBlocks()) {
+//            String blockText = block.getText();
+//            Point[] blockCornerPoints = block.getCornerPoints();
+//            Rect blockFrame = block.getBoundingBox();
+//            for (Text.Line line : block.getLines()) {
+//                String lineText = line.getText();
+//                itemSerialNumBox.setText(lineText);
+//            }
+//        }
+    }
+    private void processTextRecognitionResult(Text texts) {
+        List<Text.TextBlock> blocks = texts.getTextBlocks();
+        if (blocks.size() == 0) {
+            // no text found
+            return;
+        }
+        // all text found is in one block
+        for (int i = 0; i < blocks.size(); i++) {
+            // within the block are each of the lines found
+            List<Text.Line> lines = blocks.get(i).getLines();
+            for (int j = 0; j < lines.size(); j++) {
+                List<Text.Element> elements = lines.get(j).getElements();
+
+            }
+        }
+    }
+
+
+
 }
