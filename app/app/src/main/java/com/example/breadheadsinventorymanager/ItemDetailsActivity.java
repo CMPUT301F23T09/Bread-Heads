@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,6 +38,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private FirestoreInteract database;
     private int currentImageIndex = 0;
 
+    private TagList globalTagList;
+
+
     /**
      * Loads item details, display related images (if any) and sets button functionality
      * @param savedInstanceState If the activity is being re-initialized after
@@ -51,6 +55,17 @@ public class ItemDetailsActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         selectedItem = (Item) getIntent().getSerializableExtra("item");
+        // Retrieve the serialized object from the intent
+        Serializable serializableObject = getIntent().getSerializableExtra("tagList");
+
+        // Cast to TagList
+        ArrayList<Tag> globalTagArray = (ArrayList<Tag>) serializableObject;
+        if (globalTagList != null) {
+            globalTagList.addAll(globalTagArray);
+        } else {
+            globalTagList = new TagList();
+            globalTagList.addAll(globalTagArray);
+        }
 
         database = new FirestoreInteract();
 
@@ -260,6 +275,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
                     }
                 });
         builder.create().show();
+    }
+
+    public TagList getGlobalTagList() {
+        // Implement this method to return the global tag list
+        // For example, if globalTagList is a field in MainActivity:
+        // return globalTagList;
+        return globalTagList;
     }
 
 }

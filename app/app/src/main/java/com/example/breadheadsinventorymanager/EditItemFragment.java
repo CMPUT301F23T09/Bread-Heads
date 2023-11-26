@@ -18,6 +18,8 @@ import androidx.fragment.app.DialogFragment;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -36,6 +38,9 @@ public class EditItemFragment extends DialogFragment {
     OnFragmentInteractionListener listener;
     private Item selectedItem; // The item to be edited
     private FirestoreInteract database;
+    Button editTagBtn;
+    private List<String> selectedTags = new ArrayList<>();
+
 
     public EditItemFragment() {
         // Required empty public constructor
@@ -71,6 +76,24 @@ public class EditItemFragment extends DialogFragment {
         itemValueBox = view.findViewById(R.id.edit_item_value_text);
         itemCommentsBox = view.findViewById(R.id.edit_item_comments_text);
         errorBox = view.findViewById(R.id.edit_error_text_message);
+        editTagBtn = view.findViewById(R.id.edit_tags);
+
+
+        editTagBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the tag selection dialog
+                TagList globalTagList = ((ItemDetailsActivity) getActivity()).getGlobalTagList();
+
+                selectedTags = selectedItem.getTags().toList();
+
+                TagSelectionDialog.show_selected(getContext(), selectedTags, globalTagList, (dialog, which) -> {
+                    // Handle Confirm button click if needed
+                    Log.d("TagSelection", "Selected Tags: " + selectedTags);
+                });
+
+            }
+        });
 
         if (selectedItem != null) {
             itemNameBox.setText(selectedItem.getDescription());
@@ -112,6 +135,8 @@ public class EditItemFragment extends DialogFragment {
                         selectedItem.setMake(itemMakeBox.getText().toString());
                         selectedItem.setModel(itemModelBox.getText().toString());
                         selectedItem.setDate(itemDateBox.getText().toString());
+                        TagList updatedTagList = new TagList(selectedTags);
+                        selectedItem.setTags(updatedTagList);
 
                         // Validate and parse the value When this was in the check function
                         // it was crashing the app but it works when it's here
