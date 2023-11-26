@@ -301,8 +301,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }else if (item.getItemId() == R.id.add_via_barcode) {
                 // go to fragment to add an item via barcode
                 //TODO add barcode scanning
-                Intent intent = new Intent(MainActivity.this, BarcodeScannerActivity.class);
-                startActivity(intent);
+
                 return true;
             } else if (item.getItemId() == R.id.add_new_tag) {
                 showAddTag();

@@ -1,9 +1,8 @@
 package com.example.breadheadsinventorymanager;
 
-import static java.lang.Long.parseLong;
+
 
 import android.util.Log;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,16 +10,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -29,6 +24,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -52,10 +50,17 @@ public class AddItemFragment extends DialogFragment {
     EditText itemDateBox;
     EditText itemCommentsBox;
     EditText itemValueBox;
+    EditText itemBarcodeBox;
+
     TextView errorBox;
+    // Buttons
     com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
+    Button scanBarcodeBtn;
     Button addTagBtn;
     Button removeTagBtn;
+
+    // stores the barcode
+    private String barcode;
 
     private ActivityResultLauncher<String> mGetContent;
     private Map<String, Uri> imageMap = new HashMap<String, Uri>();
@@ -115,7 +120,10 @@ public class AddItemFragment extends DialogFragment {
         itemDateBox = view.findViewById(R.id.item_acquisition_date_text);
         itemValueBox = view.findViewById(R.id.item_value_text);
         itemCommentsBox = view.findViewById(R.id.item_comments_text);
+        itemBarcodeBox = view.findViewById(R.id.item_barcode_text);
+
         errorBox = view.findViewById(R.id.error_text_message);
+        scanBarcodeBtn = view.findViewById(R.id.scan_barcode_button);
         addImageBtn = view.findViewById(R.id.add_image_button);
         addTagBtn = view.findViewById(R.id.add_tag);
         removeTagBtn = view.findViewById(R.id.remove_tag);
@@ -134,6 +142,30 @@ public class AddItemFragment extends DialogFragment {
                             //Do nothing here. Override onClick() so we can do things when OK is tapped
                         }
                     }).create();
+
+        ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+            if (result.getContents() != null) {
+                // setup intent to return to main activity with the scanned barcode
+                barcode = result.getContents();
+                itemBarcodeBox.setText(barcode);
+                // TODO pop up the edit item activity with the contents of barcode contents
+            }
+        });
+
+        // Scan a barcode and fill editText field with said barcode
+        scanBarcodeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // scan barcode
+                ScanOptions options = new ScanOptions();
+                options.setPrompt("Volume up to flash on");
+                options.setBeepEnabled(true);
+                options.setOrientationLocked(false);
+                options.setCaptureActivity(CaptureAct.class);
+                barLauncher.launch(options);
+            }
+        });
+
 
         // Open gallery to append photos to an item
         addImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +218,6 @@ public class AddItemFragment extends DialogFragment {
         String date = itemDateBox.getText().toString();
         String value = itemValueBox.getText().toString();
         String comments = itemCommentsBox.getText().toString();
-
         // check for empty fields
         if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
             errorBox.setText("Empty Fields");
@@ -218,7 +249,7 @@ public class AddItemFragment extends DialogFragment {
         }
         // create the item object
         ArrayList<String> imagePathsForUpload = new ArrayList<String>(imageMap.keySet());
-        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload,selectedTags), imageMap);
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload,selectedTags, barcode), imageMap);
         return true;
     }
 

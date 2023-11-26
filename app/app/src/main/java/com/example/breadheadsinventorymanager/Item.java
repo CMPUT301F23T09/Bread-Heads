@@ -34,6 +34,7 @@ public class Item implements FirestorePuttable, Serializable {
     private String model;
     private String serialNum;
     private String comment = ""; // comment is optional
+    private String barcode = ""; // barcode is optional
     private long value; // in cents
 
     private ArrayList<String> imagePaths = new ArrayList<>();
@@ -67,8 +68,9 @@ public class Item implements FirestorePuttable, Serializable {
     /**
      * Constructor with everything (no tags)
      */
-    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths,List<String> tags) {
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths,List<String> tags, String barcode) {
         this(date, description, make, model, comments, value);
+        this.barcode = barcode;
         this.serialNum = serialNum;
         this.imagePaths = imagePaths;
         this.tags = new TagList(tags);
@@ -89,6 +91,7 @@ public class Item implements FirestorePuttable, Serializable {
         value = document.getLong("value");
         comment = document.getString("comment");
         imagePaths = (ArrayList<String>) document.get("imagePaths");
+        barcode = document.getString("barcode");
         List<HashMap<String, Object>> tagsFromFirebase = (List<HashMap<String, Object>>) document.get("tags");
         List<String> tagList = new ArrayList<>();
 
@@ -119,6 +122,7 @@ public class Item implements FirestorePuttable, Serializable {
         value = document.getLong("value");
         comment = document.getString("comment");
         imagePaths = (ArrayList<String>) document.get("imagePaths");
+        barcode = document.getString("barcode");
         // Assuming 'tags' is a list of HashMaps
         List<HashMap<String, Object>> tagsFromFirebase = (List<HashMap<String, Object>>) document.get("tags");
         List<String> tagList = new ArrayList<>();
@@ -218,6 +222,7 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("comment", comment);
         map.put("imagePaths", imagePaths);
         map.put("tags", tags);
+        map.put("barcode", barcode);
 
         return map;
     }
@@ -350,6 +355,10 @@ public class Item implements FirestorePuttable, Serializable {
     public void setTags(TagList tags) {
         this.tags = tags;
     }
+
+    public String getBarcode() { return barcode; }
+
+    public void setBarcode(String barcode) { this.barcode = barcode; }
 
     /**
      * Sets CheckBox object associated with this Item.
