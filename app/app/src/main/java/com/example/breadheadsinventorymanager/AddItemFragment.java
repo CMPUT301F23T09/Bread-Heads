@@ -77,7 +77,9 @@ public class AddItemFragment extends DialogFragment {
                     public void onActivityResult(Uri uri) {
                         // Handle the new image
                         String imagePath = "images/" + UUID.randomUUID().toString();
-                        imageMap.put(imagePath, uri); //fixme: use try catch in case key already exists, implement after edit is complete.
+                        if (uri != null) {
+                            imageMap.put(imagePath, uri); //fixme: use try catch in case key already exists, implement after edit is complete.
+                        }
                     }
                 }
         );
@@ -201,7 +203,7 @@ public class AddItemFragment extends DialogFragment {
         // if this passes, then we know that our date string is in the right format to perform logic on later
         // does not except dates after current date or of invalid format (given in textView hint)
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
             LocalDate newDate = LocalDate.parse(date, formatter);
             LocalDate currentDate = LocalDate.now();
             if(newDate.isAfter(currentDate)) {
