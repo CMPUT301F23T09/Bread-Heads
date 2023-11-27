@@ -41,7 +41,8 @@
         android:ems="10"
         android:maxLength="10"
         android:hint="@string/dd_mm_yyyy"
-        android:inputType="datetime"
+        android:digits="1234567890/"
+        android:inputType="date"
         android:id="@+id/item_acquisition_date_text"/>
     <EditText
         android:id="@+id/item_value_text"
@@ -60,41 +61,6 @@
         android:hint="@string/comments"
         android:inputType="textPersonName" />
 
-    <!--Layout for buttons (add/delete tag and camera button) -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <Button
-            android:id="@+id/add_tag"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/add_tag" />
-
-        <Button
-            android:id="@+id/remove_tag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/remove_tag"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <!-- TODO add functionality -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_image_button"
-            android:layout_width="wrap_content"
-            android:layout_height="82dp"
-            android:layout_weight="0"
-            android:clickable="true"
-            android:focusable="true"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
-    </LinearLayout>
-
     <TextView
         android:id="@+id/error_text_message"
         android:layout_width="match_parent"
@@ -103,6 +69,81 @@
         android:gravity="center"
         android:visibility="gone"
         android:textColor="@color/tomato_red"/>
+    <!--Layout for buttons (add/delete tag and camera button) -->
+
+    <!-- layout for camera buttons/Text-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/take_photo_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/take_photo"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:visibility="visible"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/add_image_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_existing_photo"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:visibility="visible"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center">
+
+        <!-- TODO add functionality -->
+
+
+        <ImageButton
+            android:id="@+id/take_photo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_photo_camera_24" />
+
+        <ImageButton
+            android:id="@+id/add_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_photo_library_24" />
+    </LinearLayout>
+
+    <!-- layout for tag buttons-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/add_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_tag"/>
+
+        <Button
+            android:id="@+id/remove_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/remove_tag" />
+    </LinearLayout>
 
     <!--TODO make area for tags to show -->
 
