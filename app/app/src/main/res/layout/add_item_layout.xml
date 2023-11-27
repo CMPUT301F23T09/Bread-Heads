@@ -2,11 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingBottom="16dp">
+
+
+
+
 
     <EditText
         android:layout_width="match_parent"
@@ -65,14 +68,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <EditText
             android:id="@+id/item_barcode_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:digits="0123456789"
             android:ems="10"
-            android:layout_weight="1"
             android:hint="@string/barcode_optional"
             android:inputType="numberDecimal" />
 
@@ -83,6 +85,7 @@
             android:layout_weight="0"
             android:text="@string/scan_barcode_text" />
     </LinearLayout>
+
 
     <!--Layout for buttons (add/delete tag and camera button) -->
 

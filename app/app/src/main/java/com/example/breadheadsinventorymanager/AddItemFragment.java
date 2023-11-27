@@ -25,17 +25,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 /**
  * Fragment for adding new items to the inventory.
@@ -59,7 +70,6 @@ public class AddItemFragment extends DialogFragment {
     Button addTagBtn;
     Button removeTagBtn;
 
-    // stores the barcode
     private String barcode;
 
     private ActivityResultLauncher<String> mGetContent;
@@ -143,10 +153,11 @@ public class AddItemFragment extends DialogFragment {
                         }
                     }).create();
 
+        // get barcode if a valid barcode is scanned
         ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
             if (result.getContents() != null) {
-                // setup intent to return to main activity with the scanned barcode
                 barcode = result.getContents();
+                queryDbForBarcode(barcode);
                 itemBarcodeBox.setText(barcode);
                 // TODO pop up the edit item activity with the contents of barcode contents
             }
@@ -207,6 +218,93 @@ public class AddItemFragment extends DialogFragment {
     }
 
     /**
+     * Queries the Firestore database for existing barcodes, if one exists, get the Item data associated with it
+     * @param barcode the barcode to check
+     * @return true if the barcode exists, false otherwise
+     */
+    private void queryDbForBarcode(String barcode) {
+        CollectionReference collection = FirestoreInteract.getItemDB();
+
+        // query barcode against matching barcode within database
+        collection.whereEqualTo("barcode", barcode)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document: task.getResult()) {
+                                Map<String, Object> item = document.getData();
+                                populateFields(item);
+                            }
+                        } else {
+                            Log.d("FireStoreInteract.java", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Populates edittext fields with item data associated with matching barcode
+     */
+    private void populateFields(Map<String, Object> dbItem) {
+        itemNameBox.setText(dbItem.get("description").toString());
+        itemMakeBox.setText(dbItem.get("make").toString());
+        itemModelBox.setText(dbItem.get("model").toString());
+        itemSerialNumBox.setText(dbItem.get("serialNum").toString());
+        itemDateBox.setText(dbItem.get("date").toString());
+        itemValueBox.setText(dbItem.get("value").toString());
+        itemCommentsBox.setText(dbItem.get("comment").toString());
+
+        String dbUri = dbItem.get("imageUris").toString();
+        // prepare uri for string copying as the database item is driving me nuts and is not iterable
+        if (dbUri != null) {
+            dbUri = dbUri.substring(1, dbUri.length()-1);
+            Log.d("h2", dbUri);
+            int size = 1;
+            // get size as dbItem.get is not iterable
+            for (int i = 0; i < dbUri.length(); i++) {
+                if (dbUri.charAt(i)== ',') {
+                    size++;
+                }
+            }
+            imageMap.clear();
+            String[] uriArray = dbUri.split(", ", size);
+            for ( int i = 0; i < uriArray.length; i++) {
+                Log.d("h2", uriArray[i]);
+            }
+            for(int j = 0; j < uriArray.length; j++) {
+                // don't need database version of imagePath, just need to generate our own
+                String imagePath = "images/" + UUID.randomUUID().toString();
+                Uri uri = Uri.parse(uriArray[j]);
+                imageMap.put(imagePath, uri);
+
+            }
+
+        }
+
+        //imageMap.clear();
+        //imageMap.put(imagePath, imageUri);
+
+        //selectedTags.clear();
+       // String classString = dbItem.get("tags").getClass().toString();
+       // List<HashMap<String, Object>> tagsList = (List<HashMap<String, Object>>) dbItem.get("tags");
+
+        //TODO find a way to convert the tags in the hashmap into a string
+        /*for(int i = 0; i < tagsList.size(); i++) {
+            //Log.d("h2", tags.get(i).getClass().toString());
+            BiConsumer<? super String, ? super Object> k = null;
+            Object v = null;
+            //HashMap<String, Object> tag = tagsList.get(i);
+            //tag.forEach(key, value) ->
+        }*/
+
+
+        //Log.d("h2", tagStrings.toString());
+        //Log.d("h2", classString);
+
+    }
+
+    /**
      * Checks data entered in dialog
      * @return true if the data is valid, false otherwise
      */
@@ -218,6 +316,7 @@ public class AddItemFragment extends DialogFragment {
         String date = itemDateBox.getText().toString();
         String value = itemValueBox.getText().toString();
         String comments = itemCommentsBox.getText().toString();
+
         // check for empty fields
         if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
             errorBox.setText("Empty Fields");
@@ -249,7 +348,8 @@ public class AddItemFragment extends DialogFragment {
         }
         // create the item object
         ArrayList<String> imagePathsForUpload = new ArrayList<String>(imageMap.keySet());
-        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload,selectedTags, barcode), imageMap);
+        ArrayList<Uri> imageUrisForUpload = new ArrayList<Uri>(imageMap.values());
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload, imageUrisForUpload, selectedTags, barcode), imageMap);
         return true;
     }
 

@@ -298,11 +298,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             if (item.getItemId() == R.id.add_new_item) {
                 showAddItem();
                 return true;
-            }else if (item.getItemId() == R.id.add_via_barcode) {
-                // go to fragment to add an item via barcode
-                //TODO add barcode scanning
-
-                return true;
             } else if (item.getItemId() == R.id.add_new_tag) {
                 showAddTag();
                 return true;
