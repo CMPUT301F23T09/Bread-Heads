@@ -48,4 +48,6 @@
     <string name="descending">Descending</string>
     <string name="edit_tags">Edit Tags</string>
     <string name="add_element">Add Element</string>
+    <string name="choose_existing_photo">Choose Existing Photo</string>
+    <string name="take_photo">Take Photo</string>
 </resources>
