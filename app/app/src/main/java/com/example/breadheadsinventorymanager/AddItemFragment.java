@@ -42,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +99,12 @@ public class AddItemFragment extends DialogFragment {
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri uri) {
+
+                        // grants permission on the image uri intent so it can be copied via barcode 
+                        int takeFlags = 0;
+                        if (uri != null) {
+                            getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                        }
                         // Handle the new image
                         String imagePath = "images/" + UUID.randomUUID().toString();
                         if (uri != null) {
@@ -252,12 +259,13 @@ public class AddItemFragment extends DialogFragment {
         itemModelBox.setText(dbItem.get("model").toString());
         itemSerialNumBox.setText(dbItem.get("serialNum").toString());
         itemDateBox.setText(dbItem.get("date").toString());
-        itemValueBox.setText(dbItem.get("value").toString());
+        long copiedValue = Long.parseLong(dbItem.get("value").toString());
+        itemValueBox.setText(Item.toDollarString(copiedValue));
         itemCommentsBox.setText(dbItem.get("comment").toString());
 
         String dbUri = dbItem.get("imageUris").toString();
         // prepare uri for string copying as the database item is driving me nuts and is not iterable
-        if (dbUri != null) {
+        if (!dbUri.equals("")) {
             dbUri = dbUri.substring(1, dbUri.length()-1);
             Log.d("h2", dbUri);
             int size = 1;
@@ -269,38 +277,28 @@ public class AddItemFragment extends DialogFragment {
             }
             imageMap.clear();
             String[] uriArray = dbUri.split(", ", size);
-            for ( int i = 0; i < uriArray.length; i++) {
-                Log.d("h2", uriArray[i]);
+            for (String s : uriArray) {
+                Log.d("h2", s);
             }
+            // TODO FIGURE OUT WHY URI NEEDS PERMISSION
+            // copies imageMaps of copied item into new Item
             for(int j = 0; j < uriArray.length; j++) {
                 // don't need database version of imagePath, just need to generate our own
                 String imagePath = "images/" + UUID.randomUUID().toString();
                 Uri uri = Uri.parse(uriArray[j]);
                 imageMap.put(imagePath, uri);
-
             }
 
+            // parses tag data into selectedTags
+            List<HashMap<String, String>> dbTagArray = (List<HashMap<String, String>>) dbItem.get("tags");
+            ArrayList<String> extractedTags = new ArrayList<>();
+            for( int i = 0; i < dbTagArray.size(); i++) {
+                // get the values of whats in the hashmap
+                extractedTags.addAll(dbTagArray.get(i).values());
+                extractedTags.remove(null);
+            }
+            selectedTags.addAll(extractedTags);
         }
-
-        //imageMap.clear();
-        //imageMap.put(imagePath, imageUri);
-
-        //selectedTags.clear();
-       // String classString = dbItem.get("tags").getClass().toString();
-       // List<HashMap<String, Object>> tagsList = (List<HashMap<String, Object>>) dbItem.get("tags");
-
-        //TODO find a way to convert the tags in the hashmap into a string
-        /*for(int i = 0; i < tagsList.size(); i++) {
-            //Log.d("h2", tags.get(i).getClass().toString());
-            BiConsumer<? super String, ? super Object> k = null;
-            Object v = null;
-            //HashMap<String, Object> tag = tagsList.get(i);
-            //tag.forEach(key, value) ->
-        }*/
-
-
-        //Log.d("h2", tagStrings.toString());
-        //Log.d("h2", classString);
 
     }
 
