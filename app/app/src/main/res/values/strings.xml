@@ -47,4 +47,5 @@
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="edit_tags">Edit Tags</string>
+    <string name="add_element">Add Element</string>
 </resources>
