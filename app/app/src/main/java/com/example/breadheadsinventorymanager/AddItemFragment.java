@@ -1,35 +1,59 @@
 package com.example.breadheadsinventorymanager;
 
+
+import static android.app.Activity.RESULT_OK;
+import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
 import static java.lang.Long.parseLong;
 
 import android.util.Log;
 import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
+
 import android.net.Uri;
 import android.os.Bundle;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
+import android.widget.ImageButton;
+import android.widget.ImageView;
+
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -53,9 +77,14 @@ public class AddItemFragment extends DialogFragment {
     EditText itemCommentsBox;
     EditText itemValueBox;
     TextView errorBox;
-    com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
+    ImageButton addImageBtn;
+    ImageButton takePhotoBtn;
+
     Button addTagBtn;
     Button removeTagBtn;
+
+    // used for camera usage
+    private ActivityResultLauncher<Intent> activityResultLauncher;
 
     private ActivityResultLauncher<String> mGetContent;
     private Map<String, Uri> imageMap = new HashMap<String, Uri>();
@@ -91,6 +120,57 @@ public class AddItemFragment extends DialogFragment {
                     }
                 }
         );
+
+        // check if camera is available, if so, get image taken and add it to image hashmap
+        // converting the bitmap into a Uri is from user Uzzam Altaf's stackOverflow post which is modified to suit our needs
+        https://stackoverflow.com/questions/8295773/how-can-i-transform-a-bitmap-into-a-uri
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if(result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap bitmap = (Bitmap) bundle.get("data");
+
+                    // create a temporary file, populate it with bitmap data, flush it, close it and call it a day
+                    File tempFile = null;
+                    try {
+                        tempFile = File.createTempFile("temprentpk", ".png");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                    byte[] bitmapData = bytes.toByteArray();
+                    FileOutputStream fileOutPut = null;
+                    // obligatory try catch statements for file handling
+                    try {
+                        fileOutPut = new FileOutputStream(tempFile);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        fileOutPut.write(bitmapData);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        fileOutPut.flush();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        fileOutPut.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Uri uri =  Uri.fromFile(tempFile);
+
+                    // create key for map
+                    String imagePath = "images/" + UUID.randomUUID().toString();
+                    imageMap.put(imagePath, uri);
+                }
+            }
+        });
     }
 
     /**
@@ -116,7 +196,10 @@ public class AddItemFragment extends DialogFragment {
         itemValueBox = view.findViewById(R.id.item_value_text);
         itemCommentsBox = view.findViewById(R.id.item_comments_text);
         errorBox = view.findViewById(R.id.error_text_message);
+
+        takePhotoBtn = view.findViewById(R.id.take_photo_button);
         addImageBtn = view.findViewById(R.id.add_image_button);
+
         addTagBtn = view.findViewById(R.id.add_tag);
         removeTagBtn = view.findViewById(R.id.remove_tag);
 
@@ -135,6 +218,16 @@ public class AddItemFragment extends DialogFragment {
                         }
                     }).create();
 
+        // Take photo from system camera
+        takePhotoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // launch camera intent
+                activityResultLauncher.launch(intent);
+                }
+            });
+
         // Open gallery to append photos to an item
         addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +241,13 @@ public class AddItemFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 // Show the tag selection dialog
-                showTagSelectionDialog();
+                TagList globalTagList = ((MainActivity) getActivity()).getGlobalTagList();
+
+                TagSelectionDialog.show_selected(getContext(), selectedTags, globalTagList, (dialog, which) -> {
+                    // Handle Confirm button click if needed
+                    Log.d("TagSelection", "Selected Tags: " + selectedTags);
+                });
+
             }
         });
 
@@ -229,48 +328,5 @@ public class AddItemFragment extends DialogFragment {
         void onRecyclerItemPressed(int position);
         void onOKPressed(Item item, Map<String, Uri> imageMap);
     }
-    private void showTagSelectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
 
-        // Inflate the custom layout
-        View dialogView = inflater.inflate(R.layout.taglist_dialog, null);
-        builder.setView(dialogView);
-
-        // Get the container for checkboxes
-        LinearLayout tagListContainer = dialogView.findViewById(R.id.tagListContainer);
-
-        // Get the global tag list
-        TagList globalTagList = ((MainActivity) getActivity()).getGlobalTagList();
-
-        // Create checkboxes for each tag
-        for (Tag tag : globalTagList) {
-            CheckBox checkBox = new CheckBox(getContext());
-            checkBox.setText(tag.getTag());
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    // Add the tag to the selectedTags list
-                    selectedTags.add(tag.getTag());
-                } else {
-                    // Remove the tag from the selectedTags list
-                    selectedTags.remove(tag.getTag());
-                }
-            });
-
-            tagListContainer.addView(checkBox);
-        }
-
-        builder.setPositiveButton("Confirm", (dialog, which) -> {
-            // Handle Confirm button click if needed
-            Log.d("TagSelection", "Selected Tags: " + selectedTags);
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
-            // Clear the selectedTags list when "Cancel" is pressed
-            selectedTags.clear();
-        });
-
-        // Show the dialog
-        builder.show();
-    }
 }
