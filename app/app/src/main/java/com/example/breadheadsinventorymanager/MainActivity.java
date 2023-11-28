@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 Item selectedItem = itemArrayAdapter.getItem(position);
                 Intent intent = new Intent(MainActivity.this, ItemDetailsActivity.class);
                 intent.putExtra("item", selectedItem);
+                intent.putExtra("tagList", tagList);
                 startActivity(intent);
             }
         });

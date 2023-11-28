@@ -65,6 +65,23 @@
         tools:ignore="TouchTargetSizeCheck" />
 
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/edit_tags"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:text="@string/edit_tags" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/edit_error_text_message"
