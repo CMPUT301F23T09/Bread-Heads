@@ -15,9 +15,9 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/filter_popup"
-        android:icon="@android:drawable/ic_menu_view"
-        android:title="@string/filter"
+        android:icon="@drawable/filter"
         android:orderInCategory="2"
+        android:title="@string/filter"
         app:showAsAction="always" />
     <item
         android:id="@+id/delete_item"
