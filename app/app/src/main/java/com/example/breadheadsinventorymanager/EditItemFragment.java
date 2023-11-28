@@ -100,7 +100,9 @@ public class EditItemFragment extends DialogFragment {
             itemMakeBox.setText(selectedItem.getMake());
             itemModelBox.setText(selectedItem.getModel());
             itemDateBox.setText(selectedItem.getDate());
-            itemValueBox.setText(String.valueOf(selectedItem.getValue()));
+            // Display value in dollars
+            double valueInDollars = selectedItem.getValue() / 100.0;
+            itemValueBox.setText(String.valueOf(valueInDollars));
             itemCommentsBox.setText(selectedItem.getComment());
         }
 
@@ -138,12 +140,13 @@ public class EditItemFragment extends DialogFragment {
                         TagList updatedTagList = new TagList(selectedTags);
                         selectedItem.setTags(updatedTagList);
 
-                        // Validate and parse the value When this was in the check function
-                        // it was crashing the app but it works when it's here
+                        // Validate and parse the value
                         String valueText = itemValueBox.getText().toString();
                         try {
                             double parsedValue = Double.parseDouble(valueText);
-                            selectedItem.setValue((long) parsedValue);
+                            // Convert value to cents
+                            long valueInCents = (long) (parsedValue * 100);
+                            selectedItem.setValue(valueInCents);
                         } catch (NumberFormatException e) {
                             Log.e("EditItemFragment", "Error parsing value", e);
                             errorBox.setText("Invalid Value");
