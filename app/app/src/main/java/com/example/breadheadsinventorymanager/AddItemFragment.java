@@ -2,6 +2,8 @@ package com.example.breadheadsinventorymanager;
 
 
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -100,7 +103,7 @@ public class AddItemFragment extends DialogFragment {
                     @Override
                     public void onActivityResult(Uri uri) {
 
-                        // grants permission on the image uri intent so it can be copied via barcode 
+                        // grants permission on the image uri intent so it can be copied via barcode
                         int takeFlags = 0;
                         if (uri != null) {
                             getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
@@ -166,7 +169,6 @@ public class AddItemFragment extends DialogFragment {
                 barcode = result.getContents();
                 queryDbForBarcode(barcode);
                 itemBarcodeBox.setText(barcode);
-                // TODO pop up the edit item activity with the contents of barcode contents
             }
         });
 
@@ -202,6 +204,26 @@ public class AddItemFragment extends DialogFragment {
             }
         });
 
+        // check if the text in the itemBarcode box matches one in the database (alternative data entry filler than scanning a barcode)
+        itemBarcodeBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("h1", s.toString());
+                // query database for barcode
+                queryDbForBarcode(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         // set a listener for the OK button
         addItemDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
@@ -231,7 +253,7 @@ public class AddItemFragment extends DialogFragment {
      */
     private void queryDbForBarcode(String barcode) {
         CollectionReference collection = FirestoreInteract.getItemDB();
-
+        Log.d("h2", barcode);
         // query barcode against matching barcode within database
         collection.whereEqualTo("barcode", barcode)
                 .get()
@@ -280,7 +302,7 @@ public class AddItemFragment extends DialogFragment {
             for (String s : uriArray) {
                 Log.d("h2", s);
             }
-            // TODO FIGURE OUT WHY URI NEEDS PERMISSION
+
             // copies imageMaps of copied item into new Item
             for(int j = 0; j < uriArray.length; j++) {
                 // don't need database version of imagePath, just need to generate our own
@@ -314,6 +336,7 @@ public class AddItemFragment extends DialogFragment {
         String date = itemDateBox.getText().toString();
         String value = itemValueBox.getText().toString();
         String comments = itemCommentsBox.getText().toString();
+        String barcode = itemBarcodeBox.getText().toString();
 
         // check for empty fields
         if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {

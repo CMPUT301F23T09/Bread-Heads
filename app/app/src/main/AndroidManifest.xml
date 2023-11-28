@@ -28,11 +28,7 @@
             android:name=".ItemDetailsActivity"
             android:exported="true">
         </activity>
-        <!-- Declaration of Barcode Scanner Activity -->
-        <activity
-            android:name=".BarcodeScannerActivity"
-            android:exported="true">
-        </activity>
+
         <!-- Declaration of the camera for the Barcode Scanner Activity -->
         <activity
             android:name=".CaptureAct"
