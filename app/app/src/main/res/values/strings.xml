@@ -50,4 +50,8 @@
     <string name="add_from_barcode_description">Add From Barcode</string>
     <string name="barcode_optional">Barcode (Optional)</string>
     <string name="scan_barcode_text">Scan Barcode</string>
+    <string name="edit_tags">Edit Tags</string>
+    <string name="add_element">Add Element</string>
+    <string name="choose_existing_photo">Choose Existing Photo</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

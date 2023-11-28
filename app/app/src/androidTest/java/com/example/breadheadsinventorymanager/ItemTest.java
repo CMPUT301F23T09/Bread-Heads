@@ -18,6 +18,7 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class ItemTest {
@@ -61,12 +62,14 @@ public class ItemTest {
         assertNull(item.getSerialNum());
         assertEquals(0, item.getValue());
         assertEquals("", item.getComment());
+        assertNull(item.getTags());
     }
 
     // Test the constructor with all parameters
     @Test
     public void testConstructorWithAllParams() {
         ArrayList<String> imagePaths = new ArrayList<String>();
+        List<String> tags = new ArrayList<String>();
         imagePaths.add("image/" + UUID.randomUUID().toString());
         imagePaths.add("image/" + UUID.randomUUID().toString());
 
@@ -75,6 +78,7 @@ public class ItemTest {
         imageUris.add(Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000209"));
 
         Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "item comment", 1000,  imagePaths,imageUris);
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "item comment", 1000, "3943-d5", imagePaths,tags);
         assertEquals("2023-01-01", item.getDate());
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());

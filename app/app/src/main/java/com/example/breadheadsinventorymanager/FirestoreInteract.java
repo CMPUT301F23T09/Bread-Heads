@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -130,20 +131,39 @@ public class FirestoreInteract {
      * @return The update task
      */
     public Task<Void> putTag(Tag tag) {
-        tag.put(tagDB);
-        if (tag.getId() != null) {
-            return tagDB.document(tag.getId()).set(tag.formatForFirestore());
-        } else {
-            DocumentReference doc = tagDB.document(); // firestore will generate ID for us
-            Task<Void> task = doc.set(tag.formatForFirestore());
-            return task.addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    tag.setId(doc.getId());
+        // Check if a tag with the same string already exists
+        return tagDB.whereEqualTo("tag", tag.getTag()).get().continueWith(new Continuation<QuerySnapshot, Void>() {
+            @Override
+            public Void then(@NonNull Task<QuerySnapshot> task) throws Exception {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        // A tag with the same string already exists, don't add it again
+                        return null;
+                    }
+
+                    // If no existing tag is found, proceed to add the tag
+                    if (tag.getId() != null) {
+                        tagDB.document(tag.getId()).set(tag.formatForFirestore());
+                    } else {
+                        DocumentReference doc = tagDB.document(); // Firestore will generate ID for us
+                        Task<Void> addTask = doc.set(tag.formatForFirestore());
+                        addTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> addTask) {
+                                if (addTask.isSuccessful()) {
+                                    tag.setId(doc.getId());
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    // Handle the error
                 }
-            });
-        }
+                return null;
+            }
+        });
     }
+
 
     /**
      * Task to populate a given ArrayList with the contents of the Items collection.
