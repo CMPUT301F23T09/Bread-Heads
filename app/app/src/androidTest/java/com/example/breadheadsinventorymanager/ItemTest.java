@@ -78,7 +78,6 @@ public class ItemTest {
         imageUris.add(Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000209"));
 
         Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "item comment", 1000,  imagePaths,imageUris);
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "item comment", 1000, "3943-d5", imagePaths,tags);
         assertEquals("2023-01-01", item.getDate());
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());

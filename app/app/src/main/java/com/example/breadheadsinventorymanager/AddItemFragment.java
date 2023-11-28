@@ -2,14 +2,10 @@ package com.example.breadheadsinventorymanager;
 
 
 import static android.app.Activity.RESULT_OK;
-import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
-import static java.lang.Long.parseLong;
-
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.app.Activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,52 +17,34 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-
 import android.widget.ImageButton;
-import android.widget.ImageView;
-
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.File;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,13 +52,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
 /**
  * Fragment for adding new items to the inventory.
@@ -88,30 +63,31 @@ import java.util.function.BiConsumer;
 public class AddItemFragment extends DialogFragment {
 
     // editText ids
-    EditText itemNameBox;
-    EditText itemModelBox;
-    EditText itemMakeBox;
-    EditText itemSerialNumBox;
-    EditText itemDateBox;
-    EditText itemCommentsBox;
-    EditText itemValueBox;
-    EditText itemBarcodeBox;
+    private EditText itemNameBox;
+    private EditText itemModelBox;
+    private EditText itemMakeBox;
+    private EditText itemSerialNumBox;
+    private EditText itemDateBox;
+    private EditText itemCommentsBox;
+    private EditText itemValueBox;
+    private EditText itemBarcodeBox;
 
-    TextView errorBox;
+    private TextView errorBox;
+
     // Buttons
-    com.google.android.material.floatingactionbutton.FloatingActionButton addImageBtn;
-    Button scanBarcodeBtn;
-    ImageButton addImageBtn;
-    ImageButton takePhotoBtn;
+    private Button scanBarcodeBtn;
+    private ImageButton addImageBtn;
+    private ImageButton takePhotoBtn;
 
-    Button addTagBtn;
-    Button removeTagBtn;
+    private Button addTagBtn;
+    private Button removeTagBtn;
 
     private String barcode;
 
     // used for camera usage
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
+    // used for
     private ActivityResultLauncher<String> mGetContent;
     private Map<String, Uri> imageMap = new HashMap<String, Uri>();
     private OnFragmentInteractionListener listener;
@@ -217,8 +193,6 @@ public class AddItemFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.add_item_layout, null);
 
-        // TODO add functionality for adding tags and images, the buttons are there!
-
         // ids for edittext fields
         itemNameBox = view.findViewById(R.id.item_name_text);
         itemMakeBox = view.findViewById(R.id.item_make_text);
@@ -319,7 +293,6 @@ public class AddItemFragment extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("h1", s.toString());
                 // query database for barcode
                 queryDbForBarcode(s.toString());
             }
@@ -359,7 +332,6 @@ public class AddItemFragment extends DialogFragment {
      */
     private void queryDbForBarcode(String barcode) {
         CollectionReference collection = FirestoreInteract.getItemDB();
-        Log.d("h2", barcode);
         // query barcode against matching barcode within database
         collection.whereEqualTo("barcode", barcode)
                 .get()
@@ -395,7 +367,7 @@ public class AddItemFragment extends DialogFragment {
         // prepare uri for string copying as the database item is driving me nuts and is not iterable
         if (!dbUri.equals("")) {
             dbUri = dbUri.substring(1, dbUri.length()-1);
-            Log.d("h2", dbUri);
+            //Log.d("h2", dbUri);
             int size = 1;
             // get size as dbItem.get is not iterable
             for (int i = 0; i < dbUri.length(); i++) {
@@ -405,10 +377,6 @@ public class AddItemFragment extends DialogFragment {
             }
             imageMap.clear();
             String[] uriArray = dbUri.split(", ", size);
-            for (String s : uriArray) {
-                Log.d("h2", s);
-            }
-
             // copies imageMaps of copied item into new Item
             for(int j = 0; j < uriArray.length; j++) {
                 // don't need database version of imagePath, just need to generate our own

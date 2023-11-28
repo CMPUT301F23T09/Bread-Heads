@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.CheckBox;
 
-import androidx.annotation.Nullable;
-
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
