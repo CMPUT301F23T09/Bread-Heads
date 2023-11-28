@@ -1,5 +1,6 @@
 package com.example.breadheadsinventorymanager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.List;
 /**
  * Custom ArrayList for managing tags.
  */
-public class TagList extends ArrayList<Tag> {
+public class TagList extends ArrayList<Tag> implements Serializable {
     /**
      * No-arg constructor
      */
@@ -99,6 +100,19 @@ public class TagList extends ArrayList<Tag> {
      */
     public boolean remove(Tag tag) {
         return super.remove(tag);
+    }
+
+    /**
+     * Converts the TagList to a List of strings.
+     *
+     * @return A List<String> containing the string representation of each Tag.
+     */
+    public List<String> toList() {
+        List<String> stringList = new ArrayList<>();
+        for (Tag tag : this) {
+            stringList.add(tag.getTag());
+        }
+        return stringList;
     }
 
 }

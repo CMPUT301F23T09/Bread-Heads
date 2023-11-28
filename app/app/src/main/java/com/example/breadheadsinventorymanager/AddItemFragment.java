@@ -1,15 +1,21 @@
 package com.example.breadheadsinventorymanager;
 
+
 import static android.app.Activity.RESULT_OK;
 import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
 import static java.lang.Long.parseLong;
 
 import android.util.Log;
 import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+
+import android.net.Uri;
+import android.os.Bundle;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,17 +24,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -234,7 +241,13 @@ public class AddItemFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 // Show the tag selection dialog
-                showTagSelectionDialog();
+                TagList globalTagList = ((MainActivity) getActivity()).getGlobalTagList();
+
+                TagSelectionDialog.show_selected(getContext(), selectedTags, globalTagList, (dialog, which) -> {
+                    // Handle Confirm button click if needed
+                    Log.d("TagSelection", "Selected Tags: " + selectedTags);
+                });
+
             }
         });
 
@@ -315,48 +328,5 @@ public class AddItemFragment extends DialogFragment {
         void onRecyclerItemPressed(int position);
         void onOKPressed(Item item, Map<String, Uri> imageMap);
     }
-    private void showTagSelectionDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
 
-        // Inflate the custom layout
-        View dialogView = inflater.inflate(R.layout.taglist_dialog, null);
-        builder.setView(dialogView);
-
-        // Get the container for checkboxes
-        LinearLayout tagListContainer = dialogView.findViewById(R.id.tagListContainer);
-
-        // Get the global tag list
-        TagList globalTagList = ((MainActivity) getActivity()).getGlobalTagList();
-
-        // Create checkboxes for each tag
-        for (Tag tag : globalTagList) {
-            CheckBox checkBox = new CheckBox(getContext());
-            checkBox.setText(tag.getTag());
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    // Add the tag to the selectedTags list
-                    selectedTags.add(tag.getTag());
-                } else {
-                    // Remove the tag from the selectedTags list
-                    selectedTags.remove(tag.getTag());
-                }
-            });
-
-            tagListContainer.addView(checkBox);
-        }
-
-        builder.setPositiveButton("Confirm", (dialog, which) -> {
-            // Handle Confirm button click if needed
-            Log.d("TagSelection", "Selected Tags: " + selectedTags);
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
-            // Clear the selectedTags list when "Cancel" is pressed
-            selectedTags.clear();
-        });
-
-        // Show the dialog
-        builder.show();
-    }
 }
