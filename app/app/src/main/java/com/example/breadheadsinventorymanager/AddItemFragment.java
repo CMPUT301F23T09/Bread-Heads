@@ -128,7 +128,6 @@ public class AddItemFragment extends DialogFragment {
                     public void onActivityResult(Uri uri) {
                         // Handle the new image
                         String imagePath = "images/" + UUID.randomUUID().toString();
-                        imagePathGlobal = imagePath;
                         if (uri != null) {
                             imageMap.put(imagePath, uri); //fixme: use try catch in case key already exists, implement after edit is complete.
                         }
@@ -183,6 +182,9 @@ public class AddItemFragment extends DialogFragment {
                     // create key for map
                     String imagePath = "images/" + UUID.randomUUID().toString();
                     imageMap.put(imagePath, uri);
+
+                    // call function to check if it has a serialnumber
+                    setSerialNumberFromImage(bitmap);
                 }
             }
         });
@@ -240,6 +242,7 @@ public class AddItemFragment extends DialogFragment {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // launch camera intent
                 activityResultLauncher.launch(intent);
+//                setSerialNumberFromImage(imagePathGlobal);
                 }
             });
 
@@ -249,7 +252,7 @@ public class AddItemFragment extends DialogFragment {
             public void onClick(View v) {
 
                 mGetContent.launch("image/*");
-                setSerialNumberFromImage(imagePathGlobal);
+//                setSerialNumberFromImage(imagePathGlobal);
             }
         });
 
@@ -349,18 +352,17 @@ public class AddItemFragment extends DialogFragment {
     /**
      *
      * Function to read the serial number from an image and set the serial number based off the image
-     * @param imagePath
+     * @param bitmap
      */
-    private void setSerialNumberFromImage(String imagePath){
+    private void setSerialNumberFromImage(Bitmap bitmap){
         InputImage image;
-//        image = InputImage.fromFilePath();
-        Text textFound;
-        File imgFile = new File(imagePath);
-        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+        // turn the bitmap into an image
         image = InputImage.fromBitmap(bitmap, 0);
 
         // initialize text recognizer
         TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
 
         Task <Text> result =
                 recognizer.process(image)
@@ -368,22 +370,24 @@ public class AddItemFragment extends DialogFragment {
                             @Override
                             public void onSuccess(Text texts) {
                                 // Task completed successfully
+                                String textFound = "";
 //                                processTextRecognitionResult(texts)
                                 List<Text.TextBlock> blocks = texts.getTextBlocks();
                                 if (blocks.size() == 0) {
                                     // no text found
                                     return;
                                 }
-
+//                                itemSerialNumBox.setText("Success");
                                 // all text found is in one block
                                 for (int i = 0; i < blocks.size(); i++) {
                                     // within the block are each of the lines found
                                     List<Text.Line> lines = blocks.get(i).getLines();
                                     for (int j = 0; j < lines.size(); j++) {
-                                        itemSerialNumBox.setText(lines.get(j).getText());
+//                                        itemSerialNumBox.setText(lines.get(j).getText());
+                                        textFound = textFound + lines.get(j).getText();
                                     }
                                 }
-
+                                itemSerialNumBox.setText(textFound);
                             }
                         });
 
