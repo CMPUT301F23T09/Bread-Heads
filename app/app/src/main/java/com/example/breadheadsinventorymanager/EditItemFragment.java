@@ -8,22 +8,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 
 /**
  * Fragment for editing existing items in the inventory.
  */
-public class EditItemFragment extends DialogFragment {
+public class EditItemFragment extends DialogFragment implements ImageAdapter.ItemClickListener {
 
     // Define UI elements for editing
     private EditText itemNameBox;
@@ -32,9 +39,16 @@ public class EditItemFragment extends DialogFragment {
     private EditText itemDateBox;
     private EditText itemCommentsBox;
     private EditText itemValueBox;
+
+    private Button removeImagesBtn;
+    // private Button addImagesBtn; //implement later
+    private RecyclerView imageRecyclerView;
+    private ImageAdapter imageAdapter;
+    private ArrayList<String> imagesToDelete;
     private TextView errorBox;
     OnFragmentInteractionListener listener;
     private Item selectedItem; // The item to be edited
+    private boolean deleteImagesMode = false;
     private FirestoreInteract database;
 
     public EditItemFragment() {
@@ -56,7 +70,23 @@ public class EditItemFragment extends DialogFragment {
             selectedItem = (Item) getArguments().getSerializable("selectedItem");
         }
         database = new FirestoreInteract();
+        imagesToDelete = new ArrayList<>();
     }
+
+    @Override
+    public void onItemClick(String imagePath, int position) {
+        if (deleteImagesMode) {
+            if (imagesToDelete.contains(imagePath)) { // Removing from the selection
+                imagesToDelete.remove(imagePath);
+                String msg = "image " + imagePath.toString() + "removed from candidates";
+                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+            }
+            else { // Adding to the selection
+                imagesToDelete.add(imagePath);
+            }
+        }
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -70,6 +100,7 @@ public class EditItemFragment extends DialogFragment {
         itemDateBox = view.findViewById(R.id.edit_item_acquisition_date_text);
         itemValueBox = view.findViewById(R.id.edit_item_value_text);
         itemCommentsBox = view.findViewById(R.id.edit_item_comments_text);
+        removeImagesBtn = view.findViewById(R.id.select_images_to_delete_button);
         errorBox = view.findViewById(R.id.edit_error_text_message);
 
         if (selectedItem != null) {
@@ -79,7 +110,38 @@ public class EditItemFragment extends DialogFragment {
             itemDateBox.setText(selectedItem.getDate());
             itemValueBox.setText(String.valueOf(selectedItem.getValue()));
             itemCommentsBox.setText(selectedItem.getComment());
+
+            // For displaying image previews
+            imageRecyclerView = view.findViewById(R.id.image_recyclerView);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            imageRecyclerView.setLayoutManager(layoutManager);
+
+            // Obtain image references
+            imageAdapter = new ImageAdapter(getActivity(), selectedItem.getImagePaths(), this);
+            imageRecyclerView.setAdapter(imageAdapter);
         }
+
+        // Removing images
+        removeImagesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deleteImagesMode) { // Confirm deletion
+//                    imageAdapter.toggleCheckboxVisibility(); //fixme: this doesn't work??
+                    for (String imagePath : imagesToDelete) {
+                        selectedItem.removeImagePath(imagePath); // fixme: also communicate to the database, and check handle cases where items don't have images, also when the entire item is deleted
+                        database.deleteImage(imagePath);
+                    }
+                    imagesToDelete.clear();
+                    deleteImagesMode = false;
+                    imageAdapter.changeCheckboxVisibility(false);
+                    imageAdapter.notifyDataSetChanged();
+                }
+                else { // Start selection
+                    deleteImagesMode = true;
+                    imageAdapter.changeCheckboxVisibility(true);
+                }
+            }
+        });
 
         // Set up the dialog with Save and Cancel buttons
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -161,6 +223,14 @@ public class EditItemFragment extends DialogFragment {
         });
 
         return dialog;
+    }
+
+    private ArrayList<StorageReference> fetchImageReferencesFromStorage() {
+        ArrayList<StorageReference> imageRefs = new ArrayList<>();
+        for (String imagePath : selectedItem.getImagePaths()) {
+            imageRefs.add(database.getStorageReference().child(imagePath));
+        }
+        return imageRefs;
     }
 
     // Define the checkDataEntry() method to validate user input

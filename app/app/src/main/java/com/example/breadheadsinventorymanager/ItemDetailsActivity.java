@@ -73,7 +73,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
         valueText.setText(selectedItem.getValueDollarString());
 
         ImageView itemImage = findViewById(R.id.itemImage);
-        database = new FirestoreInteract();
 
         if (selectedItem.getImagePaths() != null) {
             if (!selectedItem.getImagePaths().isEmpty()) { // If the item's list of image paths is initialized and non-empty

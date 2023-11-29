@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageKt;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -39,7 +40,7 @@ import java.util.UUID;
 public class FirestoreInteract {
     private FirebaseFirestore database; // can't be static; would create memory leak (uses context)
     // For storing images
-    private FirebaseStorage storage;
+    private FirebaseStorage imageStorage;
 
     // static variables that point to collections in the Firebase database
     private static CollectionReference itemDB;
@@ -63,8 +64,8 @@ public class FirestoreInteract {
         testDB = database.collection("test");
         tagDB = database.collection("tags");
         // Images
-        storage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
-        storageReference = storage.getReference();
+        imageStorage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
+        storageReference = imageStorage.getReference();
     }
 
     /**
@@ -214,6 +215,34 @@ public class FirestoreInteract {
      */
     public Task<Void> deleteTag(FirestorePuttable tag) {
         return deleteTag(tag.getId());
+    }
+
+    /**
+     * Translates image paths to image references
+     * @param imagePaths
+     * @return
+     */
+    public StorageReference fetchImageReferenceFromStorage(String imagePath) {
+        return getStorageReference().child(imagePath);
+    }
+
+    /**
+     * Delete an image from firebase storage
+     * @param imageRef
+     * @return
+     */
+    public Task<Void> deleteImage(String imagePath) {
+        StorageReference imageRef = fetchImageReferenceFromStorage(imagePath);
+        return imageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d("FirebaseStoage: ", "Image deleted successfully");
+                } else {
+                    Log.e("FIrebaseStorage", "Error when deleting image", task.getException());
+                }
+            }
+        });
     }
 
     /**

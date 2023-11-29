@@ -339,6 +339,10 @@ public class Item implements FirestorePuttable, Serializable {
         imagePaths.add(imagePath);
     }
 
+    public void removeImagePath(String imagePath) {
+        imagePaths.remove(imagePath);
+    }
+
     public ArrayList<String> getImagePaths() {
         return imagePaths;
     }
