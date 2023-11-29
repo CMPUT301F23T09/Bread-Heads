@@ -45,6 +45,7 @@
         android:id="@+id/itemImage"
         android:layout_width="219dp"
         android:layout_height="208dp"
+        android:src="@drawable/default_image"
         android:layout_marginBottom="350dp"
         android:contentDescription="@string/imageContentDescription"
         app:layout_constraintBottom_toBottomOf="@+id/bottomBar"

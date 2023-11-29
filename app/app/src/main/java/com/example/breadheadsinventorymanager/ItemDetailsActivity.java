@@ -80,9 +80,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 String firstImagePath = selectedItem.getImagePaths().get(currentImageIndex);
                 updateImage(firstImagePath, itemImage);
             }
-//            else { // set itemImage to a default image if no images
-//                itemImage.set... //fixme:do this
-//            }
+            else { // Set itemImage to a default image if no images
+                itemImage.setImageResource(R.drawable.default_image); //fixme:do this
+            }
         }
 
         ImageButton prevBtn = findViewById(R.id.previousButton), nextBtn = findViewById(R.id.nextButton);
@@ -246,6 +246,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         }
         else { // No images left
             // set itemImage to default //fixme:do this
+            itemImage.setImageResource(R.drawable.default_image);
         }
 
     }
