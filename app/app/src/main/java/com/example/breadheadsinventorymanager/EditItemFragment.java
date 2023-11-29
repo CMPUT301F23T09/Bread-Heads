@@ -125,19 +125,13 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         removeImagesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (deleteImagesMode) { // Confirm deletion
-//                    imageAdapter.toggleCheckboxVisibility(); //fixme: this doesn't work??
-                    for (String imagePath : imagesToDelete) {
-                        selectedItem.removeImagePath(imagePath); // fixme: also communicate to the database, and check handle cases where items don't have images, also when the entire item is deleted
-                        database.deleteImage(imagePath);
-                    }
-                    imagesToDelete.clear();
-                    deleteImagesMode = false;
-                    imageAdapter.changeCheckboxVisibility(false);
-                    imageAdapter.notifyDataSetChanged();
+                if (deleteImagesMode) { // Cancel Deletion
+                    resetDeleteImages();
+                    removeImagesBtn.setText(R.string.select_images_to_delete);
                 }
                 else { // Start selection
                     deleteImagesMode = true;
+                    removeImagesBtn.setText(R.string.cancel_image_deletion_selection);
                     imageAdapter.changeCheckboxVisibility(true);
                 }
             }
@@ -195,6 +189,11 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
                             // Display an error message or handle the invalid date case
                             errorBox.setVisibility(View.VISIBLE);
                         } else {
+                            // Deleting selected images
+                            for (String imagePath : imagesToDelete) {
+                                selectedItem.removeImagePath(imagePath); // fixme: also communicate to the database, and check handle cases where items don't have images, also when the entire item is deleted
+                                database.deleteImage(imagePath);
+                            }
                             // Use the putItem method to update the item in Firestore
                             database.putItem(selectedItem).addOnSuccessListener(aVoid -> {
                                 Log.d("EditItemFragment", "Firestore update successful");
@@ -223,6 +222,13 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         });
 
         return dialog;
+    }
+
+    private void resetDeleteImages() {
+        imagesToDelete.clear();
+        deleteImagesMode = false;
+        imageAdapter.changeCheckboxVisibility(false);
+        imageAdapter.notifyDataSetChanged();
     }
 
     private ArrayList<StorageReference> fetchImageReferencesFromStorage() {

@@ -96,6 +96,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
                 imageCheckBox.setVisibility(View.VISIBLE);
             }
             else {
+                imageCheckBox.setChecked(false);
                 imageCheckBox.setVisibility(View.GONE);
             }
         }

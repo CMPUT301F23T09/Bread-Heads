@@ -35,6 +35,7 @@ import java.util.Objects;
 public class ItemDetailsActivity extends AppCompatActivity {
     private Item selectedItem;
     private FirestoreInteract database;
+    private ImageView itemImage;
     private int currentImageIndex = 0;
 
     /**
@@ -72,13 +73,16 @@ public class ItemDetailsActivity extends AppCompatActivity {
         TextView valueText = findViewById(R.id.valueText);
         valueText.setText(selectedItem.getValueDollarString());
 
-        ImageView itemImage = findViewById(R.id.itemImage);
+        itemImage = findViewById(R.id.itemImage);
 
         if (selectedItem.getImagePaths() != null) {
             if (!selectedItem.getImagePaths().isEmpty()) { // If the item's list of image paths is initialized and non-empty
                 String firstImagePath = selectedItem.getImagePaths().get(currentImageIndex);
                 updateImage(firstImagePath, itemImage);
             }
+//            else { // set itemImage to a default image if no images
+//                itemImage.set... //fixme:do this
+//            }
         }
 
         ImageButton prevBtn = findViewById(R.id.previousButton), nextBtn = findViewById(R.id.nextButton);
@@ -234,6 +238,16 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         TextView valueText = findViewById(R.id.valueText);
         valueText.setText(updatedItem.getValueDollarString());
+
+        if (!(updatedItem.getImagePaths().isEmpty() || updatedItem.getImagePaths() == null)) { // Guaranteed at least 1 image if not empty/null
+            currentImageIndex = 0;
+            String firstImagePath = updatedItem.getImagePaths().get(currentImageIndex);
+            updateImage(firstImagePath, itemImage);
+        }
+        else { // No images left
+            // set itemImage to default //fixme:do this
+        }
+
     }
     private void deleteSelectedItem() {
         if (selectedItem != null) {

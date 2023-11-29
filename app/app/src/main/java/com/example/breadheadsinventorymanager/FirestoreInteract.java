@@ -1,5 +1,7 @@
 package com.example.breadheadsinventorymanager;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -16,9 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageKt;
 import com.google.firebase.storage.StorageReference;
@@ -187,6 +191,7 @@ public class FirestoreInteract {
      * @return The task; use .addOnSuccessListener() to do something after deletion
      */
     public Task<Void> deleteItem(String id) {
+//        DocumentReference docRef = itemDB.document(id);
         return itemDB.document(id).delete();
     }
 

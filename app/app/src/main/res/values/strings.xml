@@ -46,4 +46,6 @@
     <string name="serial_number">Serial Number</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
+    <string name="cancel_image_deletion_selection">Cancel Selection</string>
+    <string name="select_images_to_delete">Select Images To Delete...</string>
 </resources>
