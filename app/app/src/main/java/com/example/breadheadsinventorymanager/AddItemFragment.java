@@ -110,6 +110,7 @@ public class AddItemFragment extends DialogFragment {
     /**
      * Called when the fragment is first attached to MainActivity
      * Checks if the fragment has implemented the required listener
+     *
      * @param context context of the dialog that pops up
      */
     @Override
@@ -137,11 +138,12 @@ public class AddItemFragment extends DialogFragment {
 
         // check if camera is available, if so, get image taken and add it to image hashmap
         // converting the bitmap into a Uri is from user Uzzam Altaf's stackOverflow post which is modified to suit our needs
-        https://stackoverflow.com/questions/8295773/how-can-i-transform-a-bitmap-into-a-uri
+        https:
+//stackoverflow.com/questions/8295773/how-can-i-transform-a-bitmap-into-a-uri
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                if(result.getResultCode() == RESULT_OK && result.getData() != null) {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Bundle bundle = result.getData().getExtras();
                     Bitmap bitmap = (Bitmap) bundle.get("data");
 
@@ -177,7 +179,7 @@ public class AddItemFragment extends DialogFragment {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    Uri uri =  Uri.fromFile(tempFile);
+                    Uri uri = Uri.fromFile(tempFile);
 
                     // create key for map
                     String imagePath = "images/" + UUID.randomUUID().toString();
@@ -192,9 +194,9 @@ public class AddItemFragment extends DialogFragment {
 
     /**
      * Handles dialog creation and input validation
-     * @param savedInstanceState The last saved instance state of the Fragment,
-     * or null if this is a freshly created Fragment.
      *
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     *                           or null if this is a freshly created Fragment.
      * @return the dialog
      */
     @NonNull
@@ -228,12 +230,12 @@ public class AddItemFragment extends DialogFragment {
                 .setTitle("Add Item")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("OK",
-                    new Dialog.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface d, int which) {
-                            //Do nothing here. Override onClick() so we can do things when OK is tapped
-                        }
-                    }).create();
+                        new Dialog.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface d, int which) {
+                                //Do nothing here. Override onClick() so we can do things when OK is tapped
+                            }
+                        }).create();
 
         // Take photo from system camera
         takePhotoBtn.setOnClickListener(new View.OnClickListener() {
@@ -243,8 +245,8 @@ public class AddItemFragment extends DialogFragment {
                 // launch camera intent
                 activityResultLauncher.launch(intent);
 //                setSerialNumberFromImage(imagePathGlobal);
-                }
-            });
+            }
+        });
 
         // Open gallery to append photos to an item
         addImageBtn.setOnClickListener(new View.OnClickListener() {
@@ -273,28 +275,29 @@ public class AddItemFragment extends DialogFragment {
 
         // set a listener for the OK button
         addItemDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    Button b1 = addItemDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    b1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (checkDataEntry()) {
-                                addItemDialog.dismiss();
-                                errorBox.setVisibility(View.GONE);
-                            } else {
-                                errorBox.setVisibility(View.VISIBLE);
-                            }
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button b1 = addItemDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                b1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (checkDataEntry()) {
+                            addItemDialog.dismiss();
+                            errorBox.setVisibility(View.GONE);
+                        } else {
+                            errorBox.setVisibility(View.VISIBLE);
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
+        });
 
         return addItemDialog;
     }
 
     /**
      * Checks data entered in dialog
+     *
      * @return true if the data is valid, false otherwise
      */
     public boolean checkDataEntry() {
@@ -307,7 +310,7 @@ public class AddItemFragment extends DialogFragment {
         String comments = itemCommentsBox.getText().toString();
 
         // check for empty fields
-        if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
+        if (name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
             errorBox.setText("Empty Fields");
             return false;
         }
@@ -327,7 +330,7 @@ public class AddItemFragment extends DialogFragment {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
             LocalDate newDate = LocalDate.parse(date, formatter);
             LocalDate currentDate = LocalDate.now();
-            if(newDate.isAfter(currentDate)) {
+            if (newDate.isAfter(currentDate)) {
                 errorBox.setText("Invalid Date");
                 return false;
             }
@@ -337,7 +340,7 @@ public class AddItemFragment extends DialogFragment {
         }
         // create the item object
         ArrayList<String> imagePathsForUpload = new ArrayList<String>(imageMap.keySet());
-        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload,selectedTags), imageMap);
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload, selectedTags), imageMap);
         return true;
     }
 
@@ -346,15 +349,19 @@ public class AddItemFragment extends DialogFragment {
      */
     public interface OnFragmentInteractionListener {
         void onRecyclerItemPressed(int position);
+
         void onOKPressed(Item item, Map<String, Uri> imageMap);
     }
 
     /**
-     *
      * Function to read the serial number from an image and set the serial number based off the image
+     *
      * @param bitmap
      */
-    private void setSerialNumberFromImage(Bitmap bitmap){
+    private void setSerialNumberFromImage(Bitmap bitmap) {
+        // was adapted from https://developers.google.com/ml-kit/vision/text-recognition/v2/android
+        // and https://codelabs.developers.google.com/codelabs/mlkit-android#4 to suit our needs
+
         InputImage image;
 
         // turn the bitmap into an image
@@ -364,20 +371,21 @@ public class AddItemFragment extends DialogFragment {
         TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
 
-        Task <Text> result =
+        Task<Text> result =
                 recognizer.process(image)
                         .addOnSuccessListener(new OnSuccessListener<Text>() {
                             @Override
                             public void onSuccess(Text texts) {
                                 // Task completed successfully
                                 String textFound = "";
-//                                processTextRecognitionResult(texts)
+
                                 List<Text.TextBlock> blocks = texts.getTextBlocks();
                                 if (blocks.size() == 0) {
                                     // no text found
                                     return;
                                 }
-//                                itemSerialNumBox.setText("Success");
+
+                                Boolean isSerialNumText = false;
                                 // all text found is in one block
                                 for (int i = 0; i < blocks.size(); i++) {
                                     // within the block are each of the lines found
@@ -385,38 +393,35 @@ public class AddItemFragment extends DialogFragment {
                                     for (int j = 0; j < lines.size(); j++) {
 //                                        itemSerialNumBox.setText(lines.get(j).getText());
                                         textFound = textFound + lines.get(j).getText();
+                                        String textLine = lines.get(j).getText();
+                                        String textLineLowercase = textLine.toLowerCase();
+
+                                        if (isSerialNumText == true){
+                                            // if true here, the current line is the serial number
+                                            itemSerialNumBox.setText(lines.get(j).getText());
+
+                                            // set it to false so any lines after do not overwrite the value
+                                            isSerialNumText = false;
+                                        }
+
+                                        // will be given the text "Serial Number" with the serial number below it
+                                        if (textLineLowercase.contains("serial")){
+                                            // if the line contains "serial" the next line must be the actual serial number
+                                            isSerialNumText = true;
+//                                            try {
+//                                                itemSerialNumBox.setText(lines.get(j+1).getText());
+//                                            } catch (Exception e) {
+//                                                itemSerialNumBox.setText("Fail");
+//                                            }
+
+                                        }
+
                                     }
                                 }
-                                itemSerialNumBox.setText(textFound);
+//                                itemSerialNumBox.setText(textFound);
                             }
                         });
 
-//        String resultText = result.getText();
-//        for (Text.TextBlock block : result.getTextBlocks()) {
-//            String blockText = block.getText();
-//            Point[] blockCornerPoints = block.getCornerPoints();
-//            Rect blockFrame = block.getBoundingBox();
-//            for (Text.Line line : block.getLines()) {
-//                String lineText = line.getText();
-//                itemSerialNumBox.setText(lineText);
-//            }
-//        }
     }
-    private void processTextRecognitionResult(Text texts) {
-        List<Text.TextBlock> blocks = texts.getTextBlocks();
-        if (blocks.size() == 0) {
-            // no text found
-            return;
-        }
-        // all text found is in one block
-        for (int i = 0; i < blocks.size(); i++) {
-            // within the block are each of the lines found
-            List<Text.Line> lines = blocks.get(i).getLines();
-            for (int j = 0; j < lines.size(); j++) {
-                List<Text.Element> elements = lines.get(j).getElements();
-
-            }
-        }
-    }
-
 }
+
