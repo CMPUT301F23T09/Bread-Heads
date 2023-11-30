@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private TextView totalValue;
     private ImageButton sortButton;
     private Button sortOrderButton;
+    private ImageButton filterButton;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         totalValue = findViewById(R.id.total_value);
         sortButton = findViewById(R.id.sort_button);
         sortOrderButton = findViewById(R.id.sort_order_button);
+        filterButton = findViewById(R.id.filter_popup);
 
         // filter recyclerView setup
         recyclerViewList = new ArrayList<>();
@@ -121,23 +123,16 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }
         });
 
-        sortButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSortMenu();
+        sortButton.setOnClickListener(v -> showSortMenu());
+        sortOrderButton.setOnClickListener(v -> {
+            boolean order = toggleSortOrder();
+            if (order) {
+                sortOrderButton.setText(R.string.ascending);
+            } else {
+                sortOrderButton.setText(R.string.descending);
             }
         });
-        sortOrderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean order = toggleSortOrder();
-                if (order) {
-                    sortOrderButton.setText(R.string.ascending);
-                } else {
-                    sortOrderButton.setText(R.string.descending);
-                }
-            }
-        });
+        filterButton.setOnClickListener(v -> showFilterMenu());
     }
 
     // ITEM LIST HANDLING
@@ -320,10 +315,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int id = item.getItemId();
         if (id == android.R.id.home) {
             // do profile selection
-            return true;
-        } else if (id == R.id.filter_popup) {
-            // create menu for filtering items
-            showFilterMenu();
             return true;
         } else if (id == R.id.add_element) {
             // show dialog for adding an item
