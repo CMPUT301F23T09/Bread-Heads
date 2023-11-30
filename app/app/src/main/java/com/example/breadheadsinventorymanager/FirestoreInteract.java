@@ -191,7 +191,6 @@ public class FirestoreInteract {
      * @return The task; use .addOnSuccessListener() to do something after deletion
      */
     public Task<Void> deleteItem(String id) {
-//        DocumentReference docRef = itemDB.document(id);
         return itemDB.document(id).delete();
     }
 
@@ -224,7 +223,7 @@ public class FirestoreInteract {
 
     /**
      * Translates image paths to image references
-     * @param imagePaths
+     * @param imagePath
      * @return
      */
     public StorageReference fetchImageReferenceFromStorage(String imagePath) {
@@ -232,8 +231,8 @@ public class FirestoreInteract {
     }
 
     /**
-     * Delete an image from firebase storage
-     * @param imageRef
+     * Attempts to delete an image from firebase storage
+     * @param imagePath
      * @return
      */
     public Task<Void> deleteImage(String imagePath) {
@@ -241,13 +240,20 @@ public class FirestoreInteract {
         return imageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d("FirebaseStoage: ", "Image deleted successfully");
-                } else {
-                    Log.e("FIrebaseStorage", "Error when deleting image", task.getException());
+                if (!task.isSuccessful()) {
+                    Log.e("FirebaseStorage", "Error when deleting image", task.getException());
                 }
             }
         });
+    }
+
+    /**
+     * Attempts to delete all images in an ArrayList from firebase storage
+     */
+    public void deleteImages(ArrayList<String> imagePaths) {
+        for (String path : imagePaths) {
+            deleteImage(path);
+        }
     }
 
     /**

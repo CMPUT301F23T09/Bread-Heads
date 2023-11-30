@@ -405,6 +405,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                     if (checkbox.isChecked()){
                         // Delete item in firebase database
                         itemList.remove(current_item);
+                        // Delete all associated images from firebase storage
+                        database.deleteImages(current_item.getImagePaths());
                         database.deleteItem(current_item).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {

@@ -252,6 +252,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     }
     private void deleteSelectedItem() {
         if (selectedItem != null) {
+            database.deleteImages(selectedItem.getImagePaths());
             database.deleteItem(selectedItem).addOnSuccessListener(aVoid -> {
                 Log.d("ItemDetailsActivity", "Firestore delete successful");
                 finish();

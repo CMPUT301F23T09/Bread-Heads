@@ -41,7 +41,6 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
     private EditText itemValueBox;
 
     private Button removeImagesBtn;
-    // private Button addImagesBtn; //implement later
     private RecyclerView imageRecyclerView;
     private ImageAdapter imageAdapter;
     private ArrayList<String> imagesToDelete;
@@ -78,8 +77,6 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         if (deleteImagesMode) {
             if (imagesToDelete.contains(imagePath)) { // Removing from the selection
                 imagesToDelete.remove(imagePath);
-                String msg = "image " + imagePath.toString() + "removed from candidates";
-                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
             }
             else { // Adding to the selection
                 imagesToDelete.add(imagePath);
@@ -190,10 +187,9 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
                             errorBox.setVisibility(View.VISIBLE);
                         } else {
                             // Deleting selected images
-                            for (String imagePath : imagesToDelete) {
-                                selectedItem.removeImagePath(imagePath); // fixme: also communicate to the database, and check handle cases where items don't have images, also when the entire item is deleted
-                                database.deleteImage(imagePath);
-                            }
+                            database.deleteImages(imagesToDelete);
+                            selectedItem.removeImagePaths(imagesToDelete);
+                            resetDeleteImages();
                             // Use the putItem method to update the item in Firestore
                             database.putItem(selectedItem).addOnSuccessListener(aVoid -> {
                                 Log.d("EditItemFragment", "Firestore update successful");
