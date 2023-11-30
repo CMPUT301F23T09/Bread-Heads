@@ -1,5 +1,7 @@
 package com.example.breadheadsinventorymanager;
 
+import static com.example.breadheadsinventorymanager.Item.formatter;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -136,7 +138,32 @@ public class EditItemFragment extends DialogFragment {
                         selectedItem.setDescription(itemNameBox.getText().toString());
                         selectedItem.setMake(itemMakeBox.getText().toString());
                         selectedItem.setModel(itemModelBox.getText().toString());
-                        selectedItem.setDate(itemDateBox.getText().toString());
+
+                        // Validate and parse the date
+                        String dateText = itemDateBox.getText().toString();
+                        try {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+                            LocalDate newDate = LocalDate.parse(dateText, formatter);
+
+                            // Your existing date validation code...
+                            LocalDate currentDate = LocalDate.now();
+                            if (newDate.isAfter(currentDate)) {
+                                Log.e("EditItemFragment", "Error entered date is after current date");
+                                errorBox.setText("Invalid Date");
+                                errorBox.setVisibility(View.VISIBLE);
+                                return;
+                            }
+
+                            // Set the parsed date to the selectedItem
+                            selectedItem.setDate(dateText);
+
+                        } catch (DateTimeParseException e) {
+                            Log.e("EditItemFragment", "Error parsing date", e);
+                            errorBox.setText("Invalid Date");
+                            errorBox.setVisibility(View.VISIBLE);
+                            return;
+                        }
+
                         TagList updatedTagList = new TagList(selectedTags);
                         selectedItem.setTags(updatedTagList);
 
@@ -157,7 +184,7 @@ public class EditItemFragment extends DialogFragment {
                         selectedItem.setComment(itemCommentsBox.getText().toString());
 
                         // Validate the date
-                        if (!checkDateEntry()) {
+                        if (!checkEmptyEntry()) {
                             // Display an error message or handle the invalid date case
                             errorBox.setVisibility(View.VISIBLE);
                         } else {
@@ -192,9 +219,7 @@ public class EditItemFragment extends DialogFragment {
     }
 
     // Define the checkDataEntry() method to validate user input
-    private boolean checkDateEntry() {
-        // If the data is valid, update the selected item and return true
-        // If the data is invalid, display an error message and return false
+    private boolean checkEmptyEntry() {
         String name = itemNameBox.getText().toString();
         String make = itemMakeBox.getText().toString();
         String model = itemModelBox.getText().toString();
@@ -208,32 +233,7 @@ public class EditItemFragment extends DialogFragment {
             return false;
         }
 
-//        // Check if value is parsable
-//        long newValue;
-//        try {
-//            newValue = Item.toValue(value);
-//        } catch (NumberFormatException e) {
-//            errorBox.setText("Invalid Value");
-//            return false;
-//        }
-
-        // Check the date format and validity
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-            LocalDate newDate = LocalDate.parse(date, formatter);
-            LocalDate currentDate = LocalDate.now();
-            if (newDate.isAfter(currentDate)) {
-                Log.e("EditItemFragment", "Error entered date is after current date");
-                errorBox.setText("Invalid Date");
-                return false;
-            }
-        } catch (DateTimeParseException e) {
-            Log.e("EditItemFragment", "Error parsing date", e);
-            errorBox.setText("Invalid Date");
-            return false;
-        }
-
-        // Data is valid
+        // no empty fields is valid
         return true;
     }
 
