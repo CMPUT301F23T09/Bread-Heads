@@ -5,6 +5,10 @@
         android:contentDescription="Sort by Description"
         android:title="Description"/>
     <item
+        android:id="@+id/sort_make"
+        android:contentDescription="Sort by Make"
+        android:title="Make"/>
+    <item
         android:id="@+id/sort_date"
         android:contentDescription="Sort by Date"
         android:title="Date"/>
@@ -12,10 +16,6 @@
         android:id="@+id/sort_value"
         android:contentDescription="Sort by Value"
         android:title="Value"/>
-    <item
-        android:id="@+id/sort_make"
-        android:contentDescription="Sort by Make"
-        android:title="Make"/>
     <item
         android:id="@+id/sort_comment"
         android:contentDescription="Sort by Comment"
