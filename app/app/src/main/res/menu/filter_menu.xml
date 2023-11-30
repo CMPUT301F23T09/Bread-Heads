@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/date"
-        android:contentDescription="@string/Date"
-        android:title="@string/Date"/>
     <item android:id="@+id/description"
         android:title="@string/description"
         android:contentDescription="@string/description"/>
@@ -14,8 +10,7 @@
         <menu></menu>
     </item>
     <item
-        android:id="@+id/remove_filter"
-        android:contentDescription="@string/remove_filter"
-        android:title="@string/remove_filter">
-    </item>
+        android:id="@+id/date"
+        android:contentDescription="@string/Date"
+        android:title="@string/Date"/>
 </menu>

@@ -37,14 +37,16 @@
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:visibility="gone"
+        android:enabled="true"
         app:actionViewClass="android:support.v7.widget.SearchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/active_filter_recycler_view"
         app:showAsAction="always|collapseActionView">
-
     </SearchView>
 
     <EditText
@@ -149,7 +151,7 @@
         android:id="@+id/total_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/totalValueTitle"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -162,12 +164,11 @@
         android:id="@+id/sort_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="16dp"
         android:backgroundTint="@color/light_green"
         android:contentDescription="@string/sort_readable"
         android:foregroundTint="@color/dark_green"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintStart_toEndOf="@+id/filter_popup"
         app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
         app:srcCompat="@android:drawable/ic_menu_sort_by_size"
         app:tint="@color/dark_green" />
@@ -181,7 +182,7 @@
         android:textAllCaps="false"
         android:textColor="@color/dark_green"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
         app:layout_constraintStart_toEndOf="@+id/sort_button"
         app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar" />
 
@@ -190,15 +191,45 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="fitCenter"
-        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/light_green"
+        android:contentDescription="@string/filter"
+        android:foregroundTint="@color/dark_green"
+        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintStart_toEndOf="@+id/quick_search"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
+        app:srcCompat="@drawable/filter"
+        app:tint="@color/dark_green" />
+
+    <ImageButton
+        android:id="@+id/quick_search"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="4dp"
         android:backgroundTint="@color/light_green"
         android:contentDescription="@string/filter"
         android:foregroundTint="@color/dark_green"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
+        app:srcCompat="@android:drawable/ic_menu_search"
+        app:tint="@color/dark_green" />
+
+    <ImageButton
+        android:id="@+id/clear_filter"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="4dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/light_red"
+        android:contentDescription="@string/filter"
+        android:foregroundTint="@color/tomato_red"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/main_activity_bottom_bar"
         app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
-        app:srcCompat="@drawable/filter"
-        app:tint="@color/dark_green" />
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+        app:tint="@color/tomato_red" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/active_filter_recycler_view"

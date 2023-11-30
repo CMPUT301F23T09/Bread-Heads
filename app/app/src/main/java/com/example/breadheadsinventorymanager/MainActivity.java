@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -39,6 +43,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
@@ -57,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private ImageButton sortButton;
     private Button sortOrderButton;
     private ImageButton filterButton;
+    private ImageButton searchButton;
+    private ImageButton clearButton;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
@@ -98,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         sortButton = findViewById(R.id.sort_button);
         sortOrderButton = findViewById(R.id.sort_order_button);
         filterButton = findViewById(R.id.filter_popup);
+        searchButton = findViewById(R.id.quick_search);
+        clearButton = findViewById(R.id.clear_filter);
 
         // filter recyclerView setup
         recyclerViewList = new ArrayList<>();
@@ -133,6 +142,30 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }
         });
         filterButton.setOnClickListener(v -> showFilterMenu());
+
+        searchButton.setOnClickListener(v -> {
+            // if the search bar was visible, we just want to close it!
+            boolean wasVisible = (searchBox.getVisibility() == View.VISIBLE);
+            resetAdapter();
+            if (!wasVisible) {
+                showDescriptionSearch();
+
+                // open the keyboard
+                searchBox.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // open the keyboard
+                        if (searchBox.requestFocusFromTouch()) {
+                            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                                    .showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT);
+                        }
+                    }
+                });
+            }
+            clearButton.setVisibility(VISIBLE);
+        });
+
+        clearButton.setOnClickListener(v -> resetAdapter());
     }
 
     // ITEM LIST HANDLING
@@ -510,6 +543,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      */
     private boolean onFilterMenuClick(MenuItem item) {
         int itemClick = item.getItemId();
+        clearButton.setVisibility(VISIBLE);
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
             showDateFilter();
@@ -521,10 +555,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
             showMakeSubMenu();
-            return true;
-        } else if (itemClick == R.id.remove_filter) {
-            // set searchView texts to nothing and reset adapter so no filters are present
-            resetAdapter();
             return true;
         } else {
             return false;
@@ -555,10 +585,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Resets the adapter to the original ItemList.
      * resets the adapter to the original ItemList and the recyclerview of active filters
      */
+    @SuppressLint("NotifyDataSetChanged")
     private void resetAdapter() {
         filters = new ArrayList<>();
         recyclerViewList.clear();
         toggleFilterVisibility();
+        clearButton.setVisibility(GONE);
         filterRecyclerAdapter.notifyDataSetChanged();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
@@ -593,6 +625,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Constructs filters from the filter set and applies them to the data.
      * @see CustomItemListAdapter custom filter
      */
+    @SuppressLint("NotifyDataSetChanged")
     private void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         recyclerViewList.clear();
@@ -634,7 +667,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles filtering itemList for make, creates a SearchView to search for a make.
+     * Handles filtering itemList for description, creates a SearchView to search for a description.
      */
     private void showDescriptionSearch() {
         toggleFilterVisibility();
@@ -699,6 +732,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }
 
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onClick(View v) {
                 try {
