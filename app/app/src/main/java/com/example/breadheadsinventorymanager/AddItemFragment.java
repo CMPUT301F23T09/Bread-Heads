@@ -2,11 +2,10 @@ package com.example.breadheadsinventorymanager;
 
 
 import static android.app.Activity.RESULT_OK;
-import static android.provider.MediaStore.ACTION_IMAGE_CAPTURE;
-import static java.lang.Long.parseLong;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.app.Activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -18,39 +17,34 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-
 import android.widget.ImageButton;
-import android.widget.ImageView;
-
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
-import java.io.ByteArrayOutputStream;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
+
 import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -69,23 +63,31 @@ import java.util.UUID;
 public class AddItemFragment extends DialogFragment {
 
     // editText ids
-    EditText itemNameBox;
-    EditText itemModelBox;
-    EditText itemMakeBox;
-    EditText itemSerialNumBox;
-    EditText itemDateBox;
-    EditText itemCommentsBox;
-    EditText itemValueBox;
-    TextView errorBox;
-    ImageButton addImageBtn;
-    ImageButton takePhotoBtn;
+    private EditText itemNameBox;
+    private EditText itemModelBox;
+    private EditText itemMakeBox;
+    private EditText itemSerialNumBox;
+    private EditText itemDateBox;
+    private EditText itemCommentsBox;
+    private EditText itemValueBox;
+    private EditText itemBarcodeBox;
 
-    Button addTagBtn;
-    Button removeTagBtn;
+    private TextView errorBox;
+
+    // Buttons
+    private Button scanBarcodeBtn;
+    private ImageButton addImageBtn;
+    private ImageButton takePhotoBtn;
+
+    private Button addTagBtn;
+    private Button removeTagBtn;
+
+    private String barcode;
 
     // used for camera usage
     private ActivityResultLauncher<Intent> activityResultLauncher;
 
+    // used for
     private ActivityResultLauncher<String> mGetContent;
     private Map<String, Uri> imageMap = new HashMap<String, Uri>();
     private OnFragmentInteractionListener listener;
@@ -112,6 +114,12 @@ public class AddItemFragment extends DialogFragment {
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri uri) {
+
+                        // grants permission on the image uri intent so it can be copied via barcode
+                        int takeFlags = 0;
+                        if (uri != null) {
+                            getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                        }
                         // Handle the new image
                         String imagePath = "images/" + UUID.randomUUID().toString();
                         if (uri != null) {
@@ -185,8 +193,6 @@ public class AddItemFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.add_item_layout, null);
 
-        // TODO add functionality for adding tags and images, the buttons are there!
-
         // ids for edittext fields
         itemNameBox = view.findViewById(R.id.item_name_text);
         itemMakeBox = view.findViewById(R.id.item_make_text);
@@ -195,9 +201,12 @@ public class AddItemFragment extends DialogFragment {
         itemDateBox = view.findViewById(R.id.item_acquisition_date_text);
         itemValueBox = view.findViewById(R.id.item_value_text);
         itemCommentsBox = view.findViewById(R.id.item_comments_text);
+        itemBarcodeBox = view.findViewById(R.id.item_barcode_text);
+
         errorBox = view.findViewById(R.id.error_text_message);
 
         takePhotoBtn = view.findViewById(R.id.take_photo_button);
+        scanBarcodeBtn = view.findViewById(R.id.scan_barcode_button);
         addImageBtn = view.findViewById(R.id.add_image_button);
 
         addTagBtn = view.findViewById(R.id.add_tag);
@@ -228,6 +237,30 @@ public class AddItemFragment extends DialogFragment {
                 }
             });
 
+        // get barcode if a valid barcode is scanned
+        ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
+            if (result.getContents() != null) {
+                barcode = result.getContents();
+                queryDbForBarcode(barcode);
+                itemBarcodeBox.setText(barcode);
+            }
+        });
+
+        // Scan a barcode and fill editText field with said barcode
+        scanBarcodeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // scan barcode
+                ScanOptions options = new ScanOptions();
+                options.setPrompt("Volume up to flash on");
+                options.setBeepEnabled(true);
+                options.setOrientationLocked(false);
+                options.setCaptureActivity(CaptureAct.class);
+                barLauncher.launch(options);
+            }
+        });
+
+
         // Open gallery to append photos to an item
         addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,6 +280,25 @@ public class AddItemFragment extends DialogFragment {
                     // Handle Confirm button click if needed
                     Log.d("TagSelection", "Selected Tags: " + selectedTags);
                 });
+
+            }
+        });
+
+        // check if the text in the itemBarcode box matches one in the database (alternative data entry filler than scanning a barcode)
+        itemBarcodeBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // query database for barcode
+                queryDbForBarcode(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
@@ -274,6 +326,79 @@ public class AddItemFragment extends DialogFragment {
     }
 
     /**
+     * Queries the Firestore database for existing barcodes, if one exists, get the Item data associated with it
+     * @param barcode the barcode to check
+     * @return true if the barcode exists, false otherwise
+     */
+    private void queryDbForBarcode(String barcode) {
+        CollectionReference collection = FirestoreInteract.getItemDB();
+        // query barcode against matching barcode within database
+        collection.whereEqualTo("barcode", barcode)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document: task.getResult()) {
+                                Map<String, Object> item = document.getData();
+                                populateFields(item);
+                            }
+                        } else {
+                            Log.d("FireStoreInteract.java", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Populates edittext fields with item data associated with matching barcode
+     */
+    private void populateFields(Map<String, Object> dbItem) {
+        itemNameBox.setText(dbItem.get("description").toString());
+        itemMakeBox.setText(dbItem.get("make").toString());
+        itemModelBox.setText(dbItem.get("model").toString());
+        itemSerialNumBox.setText(dbItem.get("serialNum").toString());
+        itemDateBox.setText(dbItem.get("date").toString());
+        long copiedValue = Long.parseLong(dbItem.get("value").toString());
+        itemValueBox.setText(Item.toDollarString(copiedValue));
+        itemCommentsBox.setText(dbItem.get("comment").toString());
+
+        String dbUri = dbItem.get("imageUris").toString();
+        // prepare uri for string copying as the database item is driving me nuts and is not iterable
+        if (!dbUri.equals("")) {
+            dbUri = dbUri.substring(1, dbUri.length()-1);
+            //Log.d("h2", dbUri);
+            int size = 1;
+            // get size as dbItem.get is not iterable
+            for (int i = 0; i < dbUri.length(); i++) {
+                if (dbUri.charAt(i)== ',') {
+                    size++;
+                }
+            }
+            imageMap.clear();
+            String[] uriArray = dbUri.split(", ", size);
+            // copies imageMaps of copied item into new Item
+            for(int j = 0; j < uriArray.length; j++) {
+                // don't need database version of imagePath, just need to generate our own
+                String imagePath = "images/" + UUID.randomUUID().toString();
+                Uri uri = Uri.parse(uriArray[j]);
+                imageMap.put(imagePath, uri);
+            }
+
+            // parses tag data into selectedTags
+            List<HashMap<String, String>> dbTagArray = (List<HashMap<String, String>>) dbItem.get("tags");
+            ArrayList<String> extractedTags = new ArrayList<>();
+            for( int i = 0; i < dbTagArray.size(); i++) {
+                // get the values of whats in the hashmap
+                extractedTags.addAll(dbTagArray.get(i).values());
+                extractedTags.remove(null);
+            }
+            selectedTags.addAll(extractedTags);
+        }
+
+    }
+
+    /**
      * Checks data entered in dialog
      * @return true if the data is valid, false otherwise
      */
@@ -285,6 +410,7 @@ public class AddItemFragment extends DialogFragment {
         String date = itemDateBox.getText().toString();
         String value = itemValueBox.getText().toString();
         String comments = itemCommentsBox.getText().toString();
+        String barcode = itemBarcodeBox.getText().toString();
 
         // check for empty fields
         if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
@@ -317,7 +443,8 @@ public class AddItemFragment extends DialogFragment {
         }
         // create the item object
         ArrayList<String> imagePathsForUpload = new ArrayList<String>(imageMap.keySet());
-        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload,selectedTags), imageMap);
+        ArrayList<Uri> imageUrisForUpload = new ArrayList<Uri>(imageMap.values());
+        listener.onOKPressed(new Item(date, name, make, model, comments, newValue, serialNumber, imagePathsForUpload, imageUrisForUpload, selectedTags, barcode), imageMap);
         return true;
     }
 

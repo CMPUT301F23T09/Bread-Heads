@@ -79,6 +79,7 @@ public class FirestoreInteract {
             Map.Entry<String, Uri> image = (Map.Entry<String, Uri>) it.next();
             StorageReference imageRef = storageReference.child(image.getKey());
 
+            
             imageRef.putFile(image.getValue())
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
