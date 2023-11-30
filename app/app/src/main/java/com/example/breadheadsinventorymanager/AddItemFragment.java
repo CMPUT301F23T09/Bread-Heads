@@ -92,6 +92,8 @@ public class AddItemFragment extends DialogFragment {
 
     // Buttons
     private Button scanBarcodeBtn;
+    private Button scanSerialBtn;
+    private Bitmap globalBitmap;
     private ImageButton addImageBtn;
     private ImageButton takePhotoBtn;
 
@@ -196,8 +198,8 @@ public class AddItemFragment extends DialogFragment {
                     String imagePath = "images/" + UUID.randomUUID().toString();
                     imageMap.put(imagePath, uri);
 
-                    // call function to check if it has a serialnumber
-                    setSerialNumberFromImage(bitmap);
+                    // puts the bitmap to globalBitmap so it can be used elsewhere for the serial number scan function
+                    globalBitmap = bitmap;
                 }
             }
         });
@@ -233,6 +235,7 @@ public class AddItemFragment extends DialogFragment {
 
         addTagBtn = view.findViewById(R.id.add_tag);
         removeTagBtn = view.findViewById(R.id.remove_tag);
+        scanSerialBtn = view.findViewById(R.id.scan_serial_button);
 
 
         // addItemDialog builder code modified from this stackOverflow post
@@ -256,7 +259,6 @@ public class AddItemFragment extends DialogFragment {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // launch camera intent
                 activityResultLauncher.launch(intent);
-//                setSerialNumberFromImage(imagePathGlobal);
             }
         });
 
@@ -290,7 +292,6 @@ public class AddItemFragment extends DialogFragment {
             public void onClick(View v) {
 
                 mGetContent.launch("image/*");
-//                setSerialNumberFromImage(imagePathGlobal);
             }
         });
 
@@ -306,6 +307,20 @@ public class AddItemFragment extends DialogFragment {
                     Log.d("TagSelection", "Selected Tags: " + selectedTags);
                 });
 
+            }
+        });
+
+        // user presses on the Scan Serial Number button
+        scanSerialBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // launch camera intent
+
+                activityResultLauncher.launch(intent);
+
+                // call function to scan serial number
+                setSerialNumberFromImage(globalBitmap);
             }
         });
 

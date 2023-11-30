@@ -67,4 +67,5 @@
     <string name="sort_by_comment">Sort by Comment</string>
     <string name="comment_t">Comment</string>
     <string name="confirm">Confirm</string>
+    <string name="scan_serial_text">Scan Serial Nr</string>
 </resources>
