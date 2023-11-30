@@ -25,7 +25,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import android.app.AlertDialog;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -122,6 +125,18 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+        // Get the list of tag strings from the globalTagList
+        List<String> tagStrings = globalTagList.getTagStrings();
+
+        // Find the RecyclerView in your layout
+        RecyclerView tagsRecyclerView = findViewById(R.id.tagsRecyclerView);
+
+        // Create an adapter for the RecyclerView
+        TagsAdapter tagsAdapter = new TagsAdapter(tagStrings);
+
+        // Set the layout manager and adapter for the RecyclerView
+        tagsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        tagsRecyclerView.setAdapter(tagsAdapter);
     }
 
     /**

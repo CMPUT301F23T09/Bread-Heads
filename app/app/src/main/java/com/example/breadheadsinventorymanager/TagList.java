@@ -114,5 +114,19 @@ public class TagList extends ArrayList<Tag> implements Serializable {
         }
         return stringList;
     }
+    // TODO: fill out function description
+    /**
+     *
+     *
+     * @return
+     */
+    public List<String> getTagStrings() {
+        List<String> tagStrings = new ArrayList<>();
+        for (Tag tag : this) {
+            tagStrings.add(tag.getTag());
+        }
+        return tagStrings;
+    }
+
 
 }
