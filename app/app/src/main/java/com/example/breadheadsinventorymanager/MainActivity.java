@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -39,6 +43,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
@@ -56,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private TextView totalValue;
     private ImageButton sortButton;
     private Button sortOrderButton;
+    private ImageButton filterButton;
+    private ImageButton searchButton;
+    private ImageButton clearButton;
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
@@ -96,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         totalValue = findViewById(R.id.total_value);
         sortButton = findViewById(R.id.sort_button);
         sortOrderButton = findViewById(R.id.sort_order_button);
+        filterButton = findViewById(R.id.filter_popup);
+        searchButton = findViewById(R.id.quick_search);
+        clearButton = findViewById(R.id.clear_filter);
 
         // filter recyclerView setup
         recyclerViewList = new ArrayList<>();
@@ -121,23 +132,11 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }
         });
 
-        sortButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSortMenu();
-            }
-        });
-        sortOrderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean order = toggleSortOrder();
-                if (order) {
-                    sortOrderButton.setText(R.string.ascending);
-                } else {
-                    sortOrderButton.setText(R.string.descending);
-                }
-            }
-        });
+        sortButton.setOnClickListener(v -> showSortMenu());
+        sortOrderButton.setOnClickListener(v -> onSortOrderButtonClick());
+        filterButton.setOnClickListener(v -> showFilterMenu());
+        searchButton.setOnClickListener(v -> onSearchButtonClick());
+        clearButton.setOnClickListener(v -> onClearFilterClick());
     }
 
     // ITEM LIST HANDLING
@@ -211,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     // ADD ITEM DIALOG HANDLING
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -320,10 +320,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         int id = item.getItemId();
         if (id == android.R.id.home) {
             // do profile selection
-            return true;
-        } else if (id == R.id.filter_popup) {
-            // create menu for filtering items
-            showFilterMenu();
             return true;
         } else if (id == R.id.add_element) {
             // show dialog for adding an item
@@ -453,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * Handles sort menu creation.
      */
-    private void showSortMenu() {
+    public void showSortMenu() {
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.sort_button));
         popup.setOnMenuItemClickListener(this::onSortMenuClick);
         popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
@@ -461,11 +457,23 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
+     * Handles clicking of sort button
+     */
+    public void onSortOrderButtonClick() {
+        boolean order = toggleSortOrder();
+        if (order) {
+            sortOrderButton.setText(R.string.ascending);
+        } else {
+            sortOrderButton.setText(R.string.descending);
+        }
+    }
+
+    /**
      * Handles clicking of sort menu items.
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
-    private boolean onSortMenuClick(MenuItem item) {
+    public boolean onSortMenuClick(MenuItem item) {
         int itemClick = item.getItemId();
         if (itemClick == R.id.sort_date) {
             sortMode = "date";
@@ -491,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Changes the order items are sorted in.
      * @return True if the new sort order is ascending, otherwise false
      */
-    private boolean toggleSortOrder() {
+    public boolean toggleSortOrder() {
         sortAscending = !sortAscending;
         itemList.sort(sortMode, sortAscending);
         itemArrayAdapter.notifyDataSetChanged();
@@ -504,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * Handles the menu creation after the "filter button" is tapped.
      */
-    private void showFilterMenu() {
+    public void showFilterMenu() {
         // shows the menu of filterable objects
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.filter_popup));
         popup.setOnMenuItemClickListener(this::onFilterMenuClick);
@@ -517,8 +525,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
-    private boolean onFilterMenuClick(MenuItem item) {
+    public boolean onFilterMenuClick(MenuItem item) {
         int itemClick = item.getItemId();
+        clearButton.setVisibility(VISIBLE);
         // Switch cases do not work with android ID's idk why
         if (itemClick == R.id.date) {
             showDateFilter();
@@ -531,10 +540,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // create "make" submenu
             showMakeSubMenu();
             return true;
-        } else if (itemClick == R.id.remove_filter) {
-            // set searchView texts to nothing and reset adapter so no filters are present
-            resetAdapter();
-            return true;
         } else {
             return false;
         }
@@ -543,7 +548,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * Shows and populates submenu for filtering by make.
      */
-    private void showMakeSubMenu() {
+    public void showMakeSubMenu() {
         // show submenu of all available makes
         ArrayList<String> makeList;
         makeList = itemList.getMakeList();
@@ -558,16 +563,50 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         popup.show();
     }
 
+    /**
+     * Handles clicking of search button
+     */
+    public void onSearchButtonClick() {
+        // if the search bar was visible, we just want to close it!
+        boolean wasVisible = (searchBox.getVisibility() == View.VISIBLE);
+        resetAdapter();
+        if (!wasVisible) {
+            showDescriptionSearch();
+
+            // open the keyboard
+            searchBox.post(new Runnable() {
+                @Override
+                public void run() {
+                    // open the keyboard
+                    if (searchBox.requestFocusFromTouch()) {
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                                .showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }
+            });
+        }
+        clearButton.setVisibility(VISIBLE);
+    }
+
+    /**
+     * Handles clicking of clear filter button
+     */
+    public void onClearFilterClick() {
+        resetAdapter();
+    }
+
     // FILTERING UTILITY FUNCTIONS
 
     /**
      * Resets the adapter to the original ItemList.
      * resets the adapter to the original ItemList and the recyclerview of active filters
      */
-    private void resetAdapter() {
+    @SuppressLint("NotifyDataSetChanged")
+    public void resetAdapter() {
         filters = new ArrayList<>();
         recyclerViewList.clear();
         toggleFilterVisibility();
+        clearButton.setVisibility(GONE);
         filterRecyclerAdapter.notifyDataSetChanged();
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         itemListView.setAdapter(itemArrayAdapter);
@@ -578,7 +617,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Toggles visibility of the date range and description search fields.
      * Sets entered text to nothing.
      */
-    private void toggleFilterVisibility() {
+    public void toggleFilterVisibility() {
         // toggle visibility of fields that should be invisible
         if (startDate.getVisibility() == VISIBLE) {
             filterDateButton.setVisibility(GONE);
@@ -602,7 +641,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Constructs filters from the filter set and applies them to the data.
      * @see CustomItemListAdapter custom filter
      */
-    private void activateFilters() {
+    @SuppressLint("NotifyDataSetChanged")
+    public void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         recyclerViewList.clear();
         Gson gson = new Gson();
@@ -630,7 +670,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
      */
-    private boolean onMakeClick(MenuItem menuItem) {
+    public boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
         // update adapter to show filtered results
         String makeCheck = "M" + menuItem.toString();
@@ -643,9 +683,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
-     * Handles filtering itemList for make, creates a SearchView to search for a make.
+     * Handles filtering itemList for description, creates a SearchView to search for a description.
      */
-    private void showDescriptionSearch() {
+    public void showDescriptionSearch() {
         toggleFilterVisibility();
         searchBox.setVisibility(VISIBLE);
 
@@ -686,7 +726,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Handles filtering by date, checks for valid date then creates a new list
      * for the adapter to latch on to.
      */
-    private void showDateFilter() {
+    public void showDateFilter() {
         toggleFilterVisibility();
         startDate.setVisibility(VISIBLE);
         endDate.setVisibility(VISIBLE);
@@ -708,6 +748,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             }
 
 
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onClick(View v) {
                 try {
