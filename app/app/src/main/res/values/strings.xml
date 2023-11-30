@@ -68,4 +68,6 @@
     <string name="comment_t">Comment</string>
     <string name="confirm">Confirm</string>
     <string name="scan_serial_text">Scan Serial Nr</string>
+    <string name="select_mode_add_tags">Add Tags</string>
+    <string name="delete">Delete</string>
 </resources>

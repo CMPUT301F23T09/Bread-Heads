@@ -97,32 +97,38 @@
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_view" />
-
+    <Button
+        android:id="@+id/select_mode_add_tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orderInCategory="1"
+        android:title="@string/select_mode_add_tags"
+        android:text="@string/select_mode_add_tags"
+        android:visibility="invisible"
+        android:clickable="false"
+        app:layout_constraintEnd_toStartOf="@+id/select_mode_confirm"
+        app:layout_constraintBottom_toTopOf="@id/main_activity_value_bar" />
     <Button
         android:id="@+id/select_mode_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orderInCategory="1"
-        android:text="Confirm"
+        android:text="@string/delete"
         android:visibility="invisible"
         android:clickable="false"
         app:layout_constraintEnd_toStartOf="@+id/select_mode_cancel"
-        app:layout_constraintBottom_toTopOf="@id/main_activity_value_bar"
-        tools:layout_editor_absoluteX="219dp"
-        tools:layout_editor_absoluteY="667dp" />
+        app:layout_constraintBottom_toTopOf="@id/main_activity_value_bar" />
 
     <Button
         android:id="@+id/select_mode_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orderInCategory="2"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:visibility="invisible"
         android:clickable="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/main_activity_value_bar"
-        tools:layout_editor_absoluteX="307dp"
-        tools:layout_editor_absoluteY="667dp" />
+        app:layout_constraintBottom_toTopOf="@id/main_activity_value_bar" />
 
     <TextView
         android:id="@+id/invalid_date_message"

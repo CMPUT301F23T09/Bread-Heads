@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -345,17 +346,20 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private void selectMode() {
         Button confirm_button = findViewById(R.id.select_mode_confirm);
         Button cancel_button = findViewById(R.id.select_mode_cancel);
+        Button add_tags_button = findViewById(R.id.select_mode_add_tags);
 
         // bring ups popup with text to let the user know to select items now
         PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
         select_text_popup.getMenuInflater().inflate(R.menu.select_item_text, select_text_popup.getMenu());
         select_text_popup.show();
 
-        // make the confirm and cancel button visible and clickable
+        // make all the buttons visible and clickable
         confirm_button.setVisibility(View.VISIBLE);
         confirm_button.setClickable(true);
         cancel_button.setVisibility(View.VISIBLE);
         cancel_button.setClickable(true);
+        add_tags_button.setVisibility(View.VISIBLE);
+        add_tags_button.setClickable(true);
 
         // make the checkbox visible for each item
         for (int i = 0; i < itemList.size(); i++) {
@@ -382,6 +386,38 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
             }
         });
+
+        // when the add tags button is pressed
+        add_tags_button.setOnClickListener(v -> {
+            defaultItemClickListener();
+
+            // hide the buttons and make them not clickable so they aren not accidentally pressed
+            confirm_button.setVisibility(View.INVISIBLE);
+            confirm_button.setClickable(false);
+            cancel_button.setVisibility(View.INVISIBLE);
+            cancel_button.setClickable(false);
+            add_tags_button.setVisibility(VISIBLE);
+            add_tags_button.setClickable(false);
+
+            for (int i = itemList.size()-1; i > -1; i--) {
+                // get the item at position i
+                Item current_item = itemList.get(i);
+                CheckBox checkbox = current_item.getCheckBox();
+                if (checkbox != null){
+                    if (checkbox.isChecked()){
+                        // make the add tags screen appear
+
+                    }
+                    // uncheck and hide the checkbox
+                    checkbox.setChecked(false);
+                    checkbox.setVisibility(View.INVISIBLE);
+                }
+
+            }
+
+            updateList();
+        });
+
         // when the confirm button is pressed
         confirm_button.setOnClickListener(v -> {
             defaultItemClickListener();
@@ -391,6 +427,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
+            add_tags_button.setVisibility(VISIBLE);
+            add_tags_button.setClickable(false);
 
             for (int i = itemList.size()-1; i > -1; i--) {
                 // get the item at position i
@@ -429,6 +467,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
+            add_tags_button.setVisibility(VISIBLE);
+            add_tags_button.setClickable(false);
+
             for (int i = 0; i < itemList.size(); i++) {
                 // get the item at position i
                 Item current_item = itemList.get(i);
