@@ -56,4 +56,15 @@
     <string name="add_element">Add Element</string>
     <string name="choose_existing_photo">Choose Existing Photo</string>
     <string name="take_photo">Take Photo</string>
+    <string name="sort_by_description">Sort by Description</string>
+    <string name="description_t">Description</string>
+    <string name="sort_by_make">Sort by Make</string>
+    <string name="make_t">Make</string>
+    <string name="sort_by_date">Sort by Date</string>
+    <string name="date_t">Date</string>
+    <string name="sort_by_value">Sort by Value</string>
+    <string name="value_t">Value</string>
+    <string name="sort_by_comment">Sort by Comment</string>
+    <string name="comment_t">Comment</string>
+    <string name="confirm">Confirm</string>
 </resources>
