@@ -133,39 +133,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
 
         sortButton.setOnClickListener(v -> showSortMenu());
-        sortOrderButton.setOnClickListener(v -> {
-            boolean order = toggleSortOrder();
-            if (order) {
-                sortOrderButton.setText(R.string.ascending);
-            } else {
-                sortOrderButton.setText(R.string.descending);
-            }
-        });
+        sortOrderButton.setOnClickListener(v -> onSortOrderButtonClick());
         filterButton.setOnClickListener(v -> showFilterMenu());
-
-        searchButton.setOnClickListener(v -> {
-            // if the search bar was visible, we just want to close it!
-            boolean wasVisible = (searchBox.getVisibility() == View.VISIBLE);
-            resetAdapter();
-            if (!wasVisible) {
-                showDescriptionSearch();
-
-                // open the keyboard
-                searchBox.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // open the keyboard
-                        if (searchBox.requestFocusFromTouch()) {
-                            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
-                                    .showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    }
-                });
-            }
-            clearButton.setVisibility(VISIBLE);
-        });
-
-        clearButton.setOnClickListener(v -> resetAdapter());
+        searchButton.setOnClickListener(v -> onSearchButtonClick());
+        clearButton.setOnClickListener(v -> onClearFilterClick());
     }
 
     // ITEM LIST HANDLING
@@ -239,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     // ADD ITEM DIALOG HANDLING
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -477,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * Handles sort menu creation.
      */
-    private void showSortMenu() {
+    public void showSortMenu() {
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.sort_button));
         popup.setOnMenuItemClickListener(this::onSortMenuClick);
         popup.getMenuInflater().inflate(R.menu.sort_menu, popup.getMenu());
@@ -485,11 +457,23 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
+     * Handles clicking of sort button
+     */
+    public void onSortOrderButtonClick() {
+        boolean order = toggleSortOrder();
+        if (order) {
+            sortOrderButton.setText(R.string.ascending);
+        } else {
+            sortOrderButton.setText(R.string.descending);
+        }
+    }
+
+    /**
      * Handles clicking of sort menu items.
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
-    private boolean onSortMenuClick(MenuItem item) {
+    public boolean onSortMenuClick(MenuItem item) {
         int itemClick = item.getItemId();
         if (itemClick == R.id.sort_date) {
             sortMode = "date";
@@ -515,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Changes the order items are sorted in.
      * @return True if the new sort order is ascending, otherwise false
      */
-    private boolean toggleSortOrder() {
+    public boolean toggleSortOrder() {
         sortAscending = !sortAscending;
         itemList.sort(sortMode, sortAscending);
         itemArrayAdapter.notifyDataSetChanged();
@@ -528,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * Handles the menu creation after the "filter button" is tapped.
      */
-    private void showFilterMenu() {
+    public void showFilterMenu() {
         // shows the menu of filterable objects
         PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.filter_popup));
         popup.setOnMenuItemClickListener(this::onFilterMenuClick);
@@ -541,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @param item the menu item that was clicked
      * @return true if an item is clicked, false otherwise
      */
-    private boolean onFilterMenuClick(MenuItem item) {
+    public boolean onFilterMenuClick(MenuItem item) {
         int itemClick = item.getItemId();
         clearButton.setVisibility(VISIBLE);
         // Switch cases do not work with android ID's idk why
@@ -564,7 +548,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * Shows and populates submenu for filtering by make.
      */
-    private void showMakeSubMenu() {
+    public void showMakeSubMenu() {
         // show submenu of all available makes
         ArrayList<String> makeList;
         makeList = itemList.getMakeList();
@@ -579,6 +563,38 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         popup.show();
     }
 
+    /**
+     * Handles clicking of search button
+     */
+    public void onSearchButtonClick() {
+        // if the search bar was visible, we just want to close it!
+        boolean wasVisible = (searchBox.getVisibility() == View.VISIBLE);
+        resetAdapter();
+        if (!wasVisible) {
+            showDescriptionSearch();
+
+            // open the keyboard
+            searchBox.post(new Runnable() {
+                @Override
+                public void run() {
+                    // open the keyboard
+                    if (searchBox.requestFocusFromTouch()) {
+                        ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE))
+                                .showSoftInput(searchBox, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }
+            });
+        }
+        clearButton.setVisibility(VISIBLE);
+    }
+
+    /**
+     * Handles clicking of clear filter button
+     */
+    public void onClearFilterClick() {
+        resetAdapter();
+    }
+
     // FILTERING UTILITY FUNCTIONS
 
     /**
@@ -586,7 +602,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * resets the adapter to the original ItemList and the recyclerview of active filters
      */
     @SuppressLint("NotifyDataSetChanged")
-    private void resetAdapter() {
+    public void resetAdapter() {
         filters = new ArrayList<>();
         recyclerViewList.clear();
         toggleFilterVisibility();
@@ -601,7 +617,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Toggles visibility of the date range and description search fields.
      * Sets entered text to nothing.
      */
-    private void toggleFilterVisibility() {
+    public void toggleFilterVisibility() {
         // toggle visibility of fields that should be invisible
         if (startDate.getVisibility() == VISIBLE) {
             filterDateButton.setVisibility(GONE);
@@ -626,7 +642,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @see CustomItemListAdapter custom filter
      */
     @SuppressLint("NotifyDataSetChanged")
-    private void activateFilters() {
+    public void activateFilters() {
         itemArrayAdapter = new CustomItemListAdapter(getApplicationContext(), itemList);
         recyclerViewList.clear();
         Gson gson = new Gson();
@@ -654,7 +670,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
      */
-    private boolean onMakeClick(MenuItem menuItem) {
+    public boolean onMakeClick(MenuItem menuItem) {
         toggleFilterVisibility();
         // update adapter to show filtered results
         String makeCheck = "M" + menuItem.toString();
@@ -669,7 +685,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     /**
      * Handles filtering itemList for description, creates a SearchView to search for a description.
      */
-    private void showDescriptionSearch() {
+    public void showDescriptionSearch() {
         toggleFilterVisibility();
         searchBox.setVisibility(VISIBLE);
 
@@ -710,7 +726,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Handles filtering by date, checks for valid date then creates a new list
      * for the adapter to latch on to.
      */
-    private void showDateFilter() {
+    public void showDateFilter() {
         toggleFilterVisibility();
         startDate.setVisibility(VISIBLE);
         endDate.setVisibility(VISIBLE);
