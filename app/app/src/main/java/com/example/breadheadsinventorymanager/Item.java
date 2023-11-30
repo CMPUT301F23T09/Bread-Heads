@@ -41,7 +41,7 @@ public class Item implements FirestorePuttable, Serializable {
     private TagList tags = new TagList();
 
     // valid format for date setting
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Empty constructor.
