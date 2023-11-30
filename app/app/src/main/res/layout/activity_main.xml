@@ -125,7 +125,6 @@
         android:id="@+id/date_filter_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:background="@color/background_grey"
         android:text="@string/filter_date_button_text"
         android:visibility="gone"

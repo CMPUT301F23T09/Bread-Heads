@@ -1,5 +1,7 @@
 package com.example.breadheadsinventorymanager;
 
+import static com.example.breadheadsinventorymanager.Item.formatter;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -25,6 +27,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -49,6 +52,9 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
     private Item selectedItem; // The item to be edited
     private boolean deleteImagesMode = false;
     private FirestoreInteract database;
+    Button editTagBtn;
+    private List<String> selectedTags = new ArrayList<>();
+
 
     public EditItemFragment() {
         // Required empty public constructor
@@ -99,13 +105,33 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         itemCommentsBox = view.findViewById(R.id.edit_item_comments_text);
         removeImagesBtn = view.findViewById(R.id.select_images_to_delete_button);
         errorBox = view.findViewById(R.id.edit_error_text_message);
+        editTagBtn = view.findViewById(R.id.edit_tags);
+
+
+        editTagBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the tag selection dialog
+                TagList globalTagList = ((ItemDetailsActivity) getActivity()).getGlobalTagList();
+
+                selectedTags = selectedItem.getTags().toList();
+
+                TagSelectionDialog.show_selected(getContext(), selectedTags, globalTagList, (dialog, which) -> {
+                    // Handle Confirm button click if needed
+                    Log.d("TagSelection", "Selected Tags: " + selectedTags);
+                });
+
+            }
+        });
 
         if (selectedItem != null) {
             itemNameBox.setText(selectedItem.getDescription());
             itemMakeBox.setText(selectedItem.getMake());
             itemModelBox.setText(selectedItem.getModel());
             itemDateBox.setText(selectedItem.getDate());
-            itemValueBox.setText(String.valueOf(selectedItem.getValue()));
+            // Display value in dollars
+            double valueInDollars = selectedItem.getValue() / 100.0;
+            itemValueBox.setText(String.valueOf(valueInDollars));
             itemCommentsBox.setText(selectedItem.getComment());
 
             // For displaying image previews
@@ -164,14 +190,42 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
                         selectedItem.setDescription(itemNameBox.getText().toString());
                         selectedItem.setMake(itemMakeBox.getText().toString());
                         selectedItem.setModel(itemModelBox.getText().toString());
-                        selectedItem.setDate(itemDateBox.getText().toString());
 
-                        // Validate and parse the value When this was in the check function
-                        // it was crashing the app but it works when it's here
+                        // Validate and parse the date
+                        String dateText = itemDateBox.getText().toString();
+                        try {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+                            LocalDate newDate = LocalDate.parse(dateText, formatter);
+
+                            // Your existing date validation code...
+                            LocalDate currentDate = LocalDate.now();
+                            if (newDate.isAfter(currentDate)) {
+                                Log.e("EditItemFragment", "Error entered date is after current date");
+                                errorBox.setText("Invalid Date");
+                                errorBox.setVisibility(View.VISIBLE);
+                                return;
+                            }
+
+                            // Set the parsed date to the selectedItem
+                            selectedItem.setDate(dateText);
+
+                        } catch (DateTimeParseException e) {
+                            Log.e("EditItemFragment", "Error parsing date", e);
+                            errorBox.setText("Invalid Date");
+                            errorBox.setVisibility(View.VISIBLE);
+                            return;
+                        }
+
+                        TagList updatedTagList = new TagList(selectedTags);
+                        selectedItem.setTags(updatedTagList);
+
+                        // Validate and parse the value
                         String valueText = itemValueBox.getText().toString();
                         try {
                             double parsedValue = Double.parseDouble(valueText);
-                            selectedItem.setValue((long) parsedValue);
+                            // Convert value to cents
+                            long valueInCents = (long) (parsedValue * 100);
+                            selectedItem.setValue(valueInCents);
                         } catch (NumberFormatException e) {
                             Log.e("EditItemFragment", "Error parsing value", e);
                             errorBox.setText("Invalid Value");
@@ -182,7 +236,7 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
                         selectedItem.setComment(itemCommentsBox.getText().toString());
 
                         // Validate the date
-                        if (!checkDateEntry()) {
+                        if (!checkEmptyEntry()) {
                             // Display an error message or handle the invalid date case
                             errorBox.setVisibility(View.VISIBLE);
                         } else {
@@ -236,9 +290,7 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
     }
 
     // Define the checkDataEntry() method to validate user input
-    private boolean checkDateEntry() {
-        // If the data is valid, update the selected item and return true
-        // If the data is invalid, display an error message and return false
+    private boolean checkEmptyEntry() {
         String name = itemNameBox.getText().toString();
         String make = itemMakeBox.getText().toString();
         String model = itemModelBox.getText().toString();
@@ -252,32 +304,7 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
             return false;
         }
 
-//        // Check if value is parsable
-//        long newValue;
-//        try {
-//            newValue = Item.toValue(value);
-//        } catch (NumberFormatException e) {
-//            errorBox.setText("Invalid Value");
-//            return false;
-//        }
-
-        // Check the date format and validity
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-            LocalDate newDate = LocalDate.parse(date, formatter);
-            LocalDate currentDate = LocalDate.now();
-            if (newDate.isAfter(currentDate)) {
-                Log.e("EditItemFragment", "Error entered date is after current date");
-                errorBox.setText("Invalid Date");
-                return false;
-            }
-        } catch (DateTimeParseException e) {
-            Log.e("EditItemFragment", "Error parsing date", e);
-            errorBox.setText("Invalid Date");
-            return false;
-        }
-
-        // Data is valid
+        // no empty fields is valid
         return true;
     }
 

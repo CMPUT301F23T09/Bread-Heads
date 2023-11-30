@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,10 +21,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+
 
 import java.util.Objects;
 
@@ -37,6 +36,9 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private FirestoreInteract database;
     private ImageView itemImage;
     private int currentImageIndex = 0;
+
+    private TagList globalTagList;
+
 
     /**
      * Loads item details, display related images (if any) and sets button functionality
@@ -52,6 +54,17 @@ public class ItemDetailsActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         selectedItem = (Item) getIntent().getSerializableExtra("item");
+        // Retrieve the serialized object from the intent
+        Serializable serializableObject = getIntent().getSerializableExtra("tagList");
+
+        // Cast to TagList
+        ArrayList<Tag> globalTagArray = (ArrayList<Tag>) serializableObject;
+        if (globalTagList != null) {
+            globalTagList.addAll(globalTagArray);
+        } else {
+            globalTagList = new TagList();
+            globalTagList.addAll(globalTagArray);
+        }
 
         database = new FirestoreInteract();
 
@@ -275,6 +288,13 @@ public class ItemDetailsActivity extends AppCompatActivity {
                     }
                 });
         builder.create().show();
+    }
+
+    public TagList getGlobalTagList() {
+        // Implement this method to return the global tag list
+        // For example, if globalTagList is a field in MainActivity:
+        // return globalTagList;
+        return globalTagList;
     }
 
 }

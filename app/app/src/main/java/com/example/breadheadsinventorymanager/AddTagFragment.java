@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -55,8 +56,16 @@ public class AddTagFragment extends DialogFragment {
                             // Create a Tag object
                             Tag tag = new Tag(tagName);
                             listener.onOKPressed(tag);
-
                         }
+                        else{
+                            // Show an error message or prevent adding an empty tag
+                            Toast.makeText(getContext(), "Tag name cannot be empty", Toast.LENGTH_SHORT).show();
+                            // Optionally, you can dismiss the dialog to prevent adding an empty tag
+                            dialog.dismiss();
+
+                            }
+
+
                     }
                 })
                 .create();

@@ -2,11 +2,11 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingBottom="16dp">
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,40 +60,28 @@
         android:hint="@string/comments"
         android:inputType="textPersonName" />
 
-    <!--Layout for buttons (add/delete tag and camera button) -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <Button
-            android:id="@+id/add_tag"
-            style="?android:attr/buttonBarButtonStyle"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/item_barcode_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/add_tag" />
+            android:digits="0123456789"
+            android:ems="10"
+            android:hint="@string/barcode_optional"
+            android:inputType="numberDecimal" />
 
         <Button
-            android:id="@+id/remove_tag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/remove_tag"
-            style="?android:attr/buttonBarButtonStyle" />
-
-        <!-- TODO add functionality -->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_image_button"
+            android:id="@+id/scan_barcode_button"
             android:layout_width="wrap_content"
-            android:layout_height="82dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:clickable="true"
-            android:focusable="true"
-            app:srcCompat="@android:drawable/ic_menu_camera" />
+            android:text="@string/scan_barcode_text" />
     </LinearLayout>
+
 
     <TextView
         android:id="@+id/error_text_message"
@@ -103,6 +91,79 @@
         android:gravity="center"
         android:visibility="gone"
         android:textColor="@color/tomato_red"/>
+    <!--Layout for buttons (add/delete tag and camera button) -->
+
+    <!-- layout for camera buttons/Text-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/take_photo_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/take_photo"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:visibility="visible"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/add_image_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_existing_photo"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:visibility="visible"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center">
+
+        <!-- TODO add functionality -->
+        <ImageButton
+            android:id="@+id/take_photo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_photo_camera_24" />
+
+        <ImageButton
+            android:id="@+id/add_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/baseline_photo_library_24" />
+    </LinearLayout>
+
+    <!-- layout for tag buttons-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/add_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_tag"/>
+
+        <Button
+            android:id="@+id/remove_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/remove_tag" />
+    </LinearLayout>
 
     <!--TODO make area for tags to show -->
 
