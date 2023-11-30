@@ -39,12 +39,14 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.code.gson:gson:2.9.0")
     implementation("com.google.mlkit:text-recognition:16.0.0")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     coreLibraryDesugaring("com.android.tools.desugar_jdk:2.0.3")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.12.4")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation( "org.mockito:mockito-android:3.12.4")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
 
 

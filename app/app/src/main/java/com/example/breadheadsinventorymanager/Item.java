@@ -4,10 +4,9 @@ import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
 import android.content.res.Resources;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.CheckBox;
-
-import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,14 +33,16 @@ public class Item implements FirestorePuttable, Serializable {
     private String model;
     private String serialNum;
     private String comment = ""; // comment is optional
+    private String barcode = ""; // barcode is optional
     private long value; // in cents
 
     private ArrayList<String> imagePaths = new ArrayList<>();
+    private ArrayList<Uri> imageUris = new ArrayList<>();
     private transient CheckBox checkBox; // must be transient so the class can be serialized
     private TagList tags = new TagList();
 
     // valid format for date setting
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Empty constructor.
@@ -59,18 +60,22 @@ public class Item implements FirestorePuttable, Serializable {
     /**
      * Constructor with imagePaths but not serial number
      */
-    public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths) {
+    public Item(String date, String description, String make, String model, String comments, long value, ArrayList<String> imagePaths, ArrayList<Uri> imageUris) {
         this(date, description, make, model, comments, value);
         this.imagePaths = imagePaths;
+        this.imageUris = imageUris;
+
     }
 
     /**
      * Constructor with everything (no tags)
      */
-    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths,List<String> tags) {
+    public Item(String date, String description, String make, String model, String comments, long value, String serialNum, ArrayList<String> imagePaths, ArrayList<Uri> imageUris, List<String> tags, String barcode) {
         this(date, description, make, model, comments, value);
+        this.barcode = barcode;
         this.serialNum = serialNum;
         this.imagePaths = imagePaths;
+        this.imageUris = imageUris;
         this.tags = new TagList(tags);
         Log.d(null,tags.toString());
     }
@@ -89,6 +94,8 @@ public class Item implements FirestorePuttable, Serializable {
         value = document.getLong("value");
         comment = document.getString("comment");
         imagePaths = (ArrayList<String>) document.get("imagePaths");
+        imageUris = (ArrayList<Uri>) document.get("imageUris");
+        barcode = document.getString("barcode");
         List<HashMap<String, Object>> tagsFromFirebase = (List<HashMap<String, Object>>) document.get("tags");
         List<String> tagList = new ArrayList<>();
 
@@ -119,6 +126,8 @@ public class Item implements FirestorePuttable, Serializable {
         value = document.getLong("value");
         comment = document.getString("comment");
         imagePaths = (ArrayList<String>) document.get("imagePaths");
+        imageUris = (ArrayList<Uri>) document.get("imageUris");
+        barcode = document.getString("barcode");
         // Assuming 'tags' is a list of HashMaps
         List<HashMap<String, Object>> tagsFromFirebase = (List<HashMap<String, Object>>) document.get("tags");
         List<String> tagList = new ArrayList<>();
@@ -217,7 +226,9 @@ public class Item implements FirestorePuttable, Serializable {
         map.put("value", value);
         map.put("comment", comment);
         map.put("imagePaths", imagePaths);
+        map.put("imageUris", imageUris);
         map.put("tags", tags);
+        map.put("barcode", barcode);
 
         return map;
     }
@@ -339,9 +350,23 @@ public class Item implements FirestorePuttable, Serializable {
         imagePaths.add(imagePath);
     }
 
+    public void removeImagePath(String imagePath) {
+        imagePaths.remove(imagePath);
+    }
+
+    public void removeImagePaths(ArrayList<String> imagePaths) {
+        for (String path : imagePaths) {
+            removeImagePath(path);
+        }
+    }
+
     public ArrayList<String> getImagePaths() {
         return imagePaths;
     }
+
+    public void addImageUri(Uri uri) { imageUris.add(uri);}
+
+    public ArrayList<Uri> getImageUris() { return imageUris;}
 
     public TagList getTags() {
         return tags;
@@ -350,6 +375,10 @@ public class Item implements FirestorePuttable, Serializable {
     public void setTags(TagList tags) {
         this.tags = tags;
     }
+
+    public String getBarcode() { return barcode; }
+
+    public void setBarcode(String barcode) { this.barcode = barcode; }
 
     /**
      * Sets CheckBox object associated with this Item.

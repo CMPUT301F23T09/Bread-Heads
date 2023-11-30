@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -25,8 +24,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+
 
 import java.util.Objects;
 
@@ -36,6 +34,7 @@ import java.util.Objects;
 public class ItemDetailsActivity extends AppCompatActivity {
     private Item selectedItem;
     private FirestoreInteract database;
+    private ImageView itemImage;
     private int currentImageIndex = 0;
 
     private TagList globalTagList;
@@ -87,13 +86,15 @@ public class ItemDetailsActivity extends AppCompatActivity {
         TextView valueText = findViewById(R.id.valueText);
         valueText.setText(selectedItem.getValueDollarString());
 
-        ImageView itemImage = findViewById(R.id.itemImage);
-        database = new FirestoreInteract();
+        itemImage = findViewById(R.id.itemImage);
 
         if (selectedItem.getImagePaths() != null) {
             if (!selectedItem.getImagePaths().isEmpty()) { // If the item's list of image paths is initialized and non-empty
                 String firstImagePath = selectedItem.getImagePaths().get(currentImageIndex);
                 updateImage(firstImagePath, itemImage);
+            }
+            else { // Set itemImage to a default image if no images
+                itemImage.setImageResource(R.drawable.default_image); //fixme:do this
             }
         }
 
@@ -250,9 +251,21 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         TextView valueText = findViewById(R.id.valueText);
         valueText.setText(updatedItem.getValueDollarString());
+
+        if (!(updatedItem.getImagePaths().isEmpty() || updatedItem.getImagePaths() == null)) { // Guaranteed at least 1 image if not empty/null
+            currentImageIndex = 0;
+            String firstImagePath = updatedItem.getImagePaths().get(currentImageIndex);
+            updateImage(firstImagePath, itemImage);
+        }
+        else { // No images left
+            // set itemImage to default //fixme:do this
+            itemImage.setImageResource(R.drawable.default_image);
+        }
+
     }
     private void deleteSelectedItem() {
         if (selectedItem != null) {
+            database.deleteImages(selectedItem.getImagePaths());
             database.deleteItem(selectedItem).addOnSuccessListener(aVoid -> {
                 Log.d("ItemDetailsActivity", "Firestore delete successful");
                 finish();

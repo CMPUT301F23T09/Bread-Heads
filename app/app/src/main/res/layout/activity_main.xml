@@ -10,11 +10,23 @@
     <TextView
         android:id="@+id/main_activity_bottom_bar"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="60dp"
         android:background="@color/dark_green"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_activity_value_bar" />
+
+    <TextView
+        android:id="@+id/main_activity_value_bar"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:background="@color/background_grey_light"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/main_activity_bottom_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/items_main_list" />
@@ -25,14 +37,16 @@
         android:layout_height="42dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:visibility="gone"
+        android:enabled="true"
         app:actionViewClass="android:support.v7.widget.SearchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/active_filter_recycler_view"
         app:showAsAction="always|collapseActionView">
-
     </SearchView>
 
     <EditText
@@ -47,7 +61,7 @@
         android:digits="1234567890/"
         android:maxLength="10"
         android:textSize="16sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:importantForAutofill="no" />
@@ -62,7 +76,7 @@
         android:inputType="date"
         android:maxLength="10"
         android:textSize="16sp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:digits="1234567890/"
         app:layout_constraintBottom_toTopOf="@+id/invalid_date_message"
         app:layout_constraintEnd_toStartOf="@+id/date_filter_button"
@@ -78,7 +92,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintBottom_toTopOf="@+id/main_activity_value_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +107,7 @@
         android:visibility="invisible"
         android:clickable="false"
         app:layout_constraintEnd_toStartOf="@+id/select_mode_cancel"
-        app:layout_constraintBottom_toTopOf="@id/main_activity_bottom_bar"
+        app:layout_constraintBottom_toTopOf="@id/main_activity_value_bar"
         tools:layout_editor_absoluteX="219dp"
         tools:layout_editor_absoluteY="667dp" />
 
@@ -106,7 +120,7 @@
         android:visibility="invisible"
         android:clickable="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/main_activity_bottom_bar"
+        app:layout_constraintBottom_toTopOf="@id/main_activity_value_bar"
         tools:layout_editor_absoluteX="307dp"
         tools:layout_editor_absoluteY="667dp" />
 
@@ -127,7 +141,7 @@
         android:layout_height="wrap_content"
         android:background="@color/background_grey"
         android:text="@string/filter_date_button_text"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/invalid_date_message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -137,25 +151,24 @@
         android:id="@+id/total_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/totalValueTitle"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintBottom_toBottomOf="@+id/main_activity_value_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar" />
+        app:layout_constraintTop_toTopOf="@+id/main_activity_value_bar" />
 
     <ImageButton
         android:id="@+id/sort_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/light_green"
         android:contentDescription="@string/sort_readable"
         android:foregroundTint="@color/dark_green"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintStart_toEndOf="@+id/filter_popup"
         app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
         app:srcCompat="@android:drawable/ic_menu_sort_by_size"
         app:tint="@color/dark_green" />
@@ -163,15 +176,60 @@
     <Button
         android:id="@+id/sort_order_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:backgroundTint="@color/light_green"
         android:text="Ascending"
         android:textAllCaps="false"
         android:textColor="@color/dark_green"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
         app:layout_constraintStart_toEndOf="@+id/sort_button"
         app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar" />
+
+    <ImageButton
+        android:id="@+id/filter_popup"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        android:backgroundTint="@color/light_green"
+        android:contentDescription="@string/filter"
+        android:foregroundTint="@color/dark_green"
+        app:layout_constraintBottom_toBottomOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintStart_toEndOf="@+id/quick_search"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
+        app:srcCompat="@drawable/filter"
+        app:tint="@color/dark_green" />
+
+    <ImageButton
+        android:id="@+id/quick_search"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="4dp"
+        android:backgroundTint="@color/light_green"
+        android:contentDescription="@string/filter"
+        android:foregroundTint="@color/dark_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
+        app:srcCompat="@android:drawable/ic_menu_search"
+        app:tint="@color/dark_green" />
+
+    <ImageButton
+        android:id="@+id/clear_filter"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="4dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/light_red"
+        android:contentDescription="@string/filter"
+        android:foregroundTint="@color/tomato_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/main_activity_bottom_bar"
+        app:layout_constraintTop_toTopOf="@+id/main_activity_bottom_bar"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+        app:tint="@color/tomato_red" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/active_filter_recycler_view"

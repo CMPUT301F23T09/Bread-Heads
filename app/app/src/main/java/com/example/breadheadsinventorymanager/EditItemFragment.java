@@ -1,5 +1,7 @@
 package com.example.breadheadsinventorymanager;
 
+import static com.example.breadheadsinventorymanager.Item.formatter;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -8,12 +10,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +33,7 @@ import java.util.List;
 /**
  * Fragment for editing existing items in the inventory.
  */
-public class EditItemFragment extends DialogFragment {
+public class EditItemFragment extends DialogFragment implements ImageAdapter.ItemClickListener {
 
     // Define UI elements for editing
     private EditText itemNameBox;
@@ -34,9 +42,15 @@ public class EditItemFragment extends DialogFragment {
     private EditText itemDateBox;
     private EditText itemCommentsBox;
     private EditText itemValueBox;
+
+    private Button removeImagesBtn;
+    private RecyclerView imageRecyclerView;
+    private ImageAdapter imageAdapter;
+    private ArrayList<String> imagesToDelete;
     private TextView errorBox;
     OnFragmentInteractionListener listener;
     private Item selectedItem; // The item to be edited
+    private boolean deleteImagesMode = false;
     private FirestoreInteract database;
     Button editTagBtn;
     private List<String> selectedTags = new ArrayList<>();
@@ -61,7 +75,21 @@ public class EditItemFragment extends DialogFragment {
             selectedItem = (Item) getArguments().getSerializable("selectedItem");
         }
         database = new FirestoreInteract();
+        imagesToDelete = new ArrayList<>();
     }
+
+    @Override
+    public void onItemClick(String imagePath, int position) {
+        if (deleteImagesMode) {
+            if (imagesToDelete.contains(imagePath)) { // Removing from the selection
+                imagesToDelete.remove(imagePath);
+            }
+            else { // Adding to the selection
+                imagesToDelete.add(imagePath);
+            }
+        }
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -75,6 +103,7 @@ public class EditItemFragment extends DialogFragment {
         itemDateBox = view.findViewById(R.id.edit_item_acquisition_date_text);
         itemValueBox = view.findViewById(R.id.edit_item_value_text);
         itemCommentsBox = view.findViewById(R.id.edit_item_comments_text);
+        removeImagesBtn = view.findViewById(R.id.select_images_to_delete_button);
         errorBox = view.findViewById(R.id.edit_error_text_message);
         editTagBtn = view.findViewById(R.id.edit_tags);
 
@@ -100,9 +129,36 @@ public class EditItemFragment extends DialogFragment {
             itemMakeBox.setText(selectedItem.getMake());
             itemModelBox.setText(selectedItem.getModel());
             itemDateBox.setText(selectedItem.getDate());
-            itemValueBox.setText(String.valueOf(selectedItem.getValue()));
+            // Display value in dollars
+            double valueInDollars = selectedItem.getValue() / 100.0;
+            itemValueBox.setText(String.valueOf(valueInDollars));
             itemCommentsBox.setText(selectedItem.getComment());
+
+            // For displaying image previews
+            imageRecyclerView = view.findViewById(R.id.image_recyclerView);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            imageRecyclerView.setLayoutManager(layoutManager);
+
+            // Obtain image references
+            imageAdapter = new ImageAdapter(getActivity(), selectedItem.getImagePaths(), this);
+            imageRecyclerView.setAdapter(imageAdapter);
         }
+
+        // Removing images
+        removeImagesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (deleteImagesMode) { // Cancel Deletion
+                    resetDeleteImages();
+                    removeImagesBtn.setText(R.string.select_images_to_delete);
+                }
+                else { // Start selection
+                    deleteImagesMode = true;
+                    removeImagesBtn.setText(R.string.cancel_image_deletion_selection);
+                    imageAdapter.changeCheckboxVisibility(true);
+                }
+            }
+        });
 
         // Set up the dialog with Save and Cancel buttons
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -134,16 +190,42 @@ public class EditItemFragment extends DialogFragment {
                         selectedItem.setDescription(itemNameBox.getText().toString());
                         selectedItem.setMake(itemMakeBox.getText().toString());
                         selectedItem.setModel(itemModelBox.getText().toString());
-                        selectedItem.setDate(itemDateBox.getText().toString());
+
+                        // Validate and parse the date
+                        String dateText = itemDateBox.getText().toString();
+                        try {
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
+                            LocalDate newDate = LocalDate.parse(dateText, formatter);
+
+                            // Your existing date validation code...
+                            LocalDate currentDate = LocalDate.now();
+                            if (newDate.isAfter(currentDate)) {
+                                Log.e("EditItemFragment", "Error entered date is after current date");
+                                errorBox.setText("Invalid Date");
+                                errorBox.setVisibility(View.VISIBLE);
+                                return;
+                            }
+
+                            // Set the parsed date to the selectedItem
+                            selectedItem.setDate(dateText);
+
+                        } catch (DateTimeParseException e) {
+                            Log.e("EditItemFragment", "Error parsing date", e);
+                            errorBox.setText("Invalid Date");
+                            errorBox.setVisibility(View.VISIBLE);
+                            return;
+                        }
+
                         TagList updatedTagList = new TagList(selectedTags);
                         selectedItem.setTags(updatedTagList);
 
-                        // Validate and parse the value When this was in the check function
-                        // it was crashing the app but it works when it's here
+                        // Validate and parse the value
                         String valueText = itemValueBox.getText().toString();
                         try {
                             double parsedValue = Double.parseDouble(valueText);
-                            selectedItem.setValue((long) parsedValue);
+                            // Convert value to cents
+                            long valueInCents = (long) (parsedValue * 100);
+                            selectedItem.setValue(valueInCents);
                         } catch (NumberFormatException e) {
                             Log.e("EditItemFragment", "Error parsing value", e);
                             errorBox.setText("Invalid Value");
@@ -154,10 +236,14 @@ public class EditItemFragment extends DialogFragment {
                         selectedItem.setComment(itemCommentsBox.getText().toString());
 
                         // Validate the date
-                        if (!checkDateEntry()) {
+                        if (!checkEmptyEntry()) {
                             // Display an error message or handle the invalid date case
                             errorBox.setVisibility(View.VISIBLE);
                         } else {
+                            // Deleting selected images
+                            database.deleteImages(imagesToDelete);
+                            selectedItem.removeImagePaths(imagesToDelete);
+                            resetDeleteImages();
                             // Use the putItem method to update the item in Firestore
                             database.putItem(selectedItem).addOnSuccessListener(aVoid -> {
                                 Log.d("EditItemFragment", "Firestore update successful");
@@ -188,10 +274,23 @@ public class EditItemFragment extends DialogFragment {
         return dialog;
     }
 
+    private void resetDeleteImages() {
+        imagesToDelete.clear();
+        deleteImagesMode = false;
+        imageAdapter.changeCheckboxVisibility(false);
+        imageAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<StorageReference> fetchImageReferencesFromStorage() {
+        ArrayList<StorageReference> imageRefs = new ArrayList<>();
+        for (String imagePath : selectedItem.getImagePaths()) {
+            imageRefs.add(database.getStorageReference().child(imagePath));
+        }
+        return imageRefs;
+    }
+
     // Define the checkDataEntry() method to validate user input
-    private boolean checkDateEntry() {
-        // If the data is valid, update the selected item and return true
-        // If the data is invalid, display an error message and return false
+    private boolean checkEmptyEntry() {
         String name = itemNameBox.getText().toString();
         String make = itemMakeBox.getText().toString();
         String model = itemModelBox.getText().toString();
@@ -205,32 +304,7 @@ public class EditItemFragment extends DialogFragment {
             return false;
         }
 
-//        // Check if value is parsable
-//        long newValue;
-//        try {
-//            newValue = Item.toValue(value);
-//        } catch (NumberFormatException e) {
-//            errorBox.setText("Invalid Value");
-//            return false;
-//        }
-
-        // Check the date format and validity
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
-            LocalDate newDate = LocalDate.parse(date, formatter);
-            LocalDate currentDate = LocalDate.now();
-            if (newDate.isAfter(currentDate)) {
-                Log.e("EditItemFragment", "Error entered date is after current date");
-                errorBox.setText("Invalid Date");
-                return false;
-            }
-        } catch (DateTimeParseException e) {
-            Log.e("EditItemFragment", "Error parsing date", e);
-            errorBox.setText("Invalid Date");
-            return false;
-        }
-
-        // Data is valid
+        // no empty fields is valid
         return true;
     }
 

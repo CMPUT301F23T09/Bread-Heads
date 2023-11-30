@@ -1,5 +1,7 @@
 package com.example.breadheadsinventorymanager;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -17,10 +19,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageKt;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -40,7 +45,7 @@ import java.util.UUID;
 public class FirestoreInteract {
     private FirebaseFirestore database; // can't be static; would create memory leak (uses context)
     // For storing images
-    private FirebaseStorage storage;
+    private FirebaseStorage imageStorage;
 
     // static variables that point to collections in the Firebase database
     private static CollectionReference itemDB;
@@ -64,8 +69,8 @@ public class FirestoreInteract {
         testDB = database.collection("test");
         tagDB = database.collection("tags");
         // Images
-        storage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
-        storageReference = storage.getReference();
+        imageStorage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
+        storageReference = imageStorage.getReference();
     }
 
     /**
@@ -79,6 +84,7 @@ public class FirestoreInteract {
             Map.Entry<String, Uri> image = (Map.Entry<String, Uri>) it.next();
             StorageReference imageRef = storageReference.child(image.getKey());
 
+            
             imageRef.putFile(image.getValue())
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -234,6 +240,41 @@ public class FirestoreInteract {
      */
     public Task<Void> deleteTag(FirestorePuttable tag) {
         return deleteTag(tag.getId());
+    }
+
+    /**
+     * Translates image paths to image references
+     * @param imagePath
+     * @return
+     */
+    public StorageReference fetchImageReferenceFromStorage(String imagePath) {
+        return getStorageReference().child(imagePath);
+    }
+
+    /**
+     * Attempts to delete an image from firebase storage
+     * @param imagePath
+     * @return
+     */
+    public Task<Void> deleteImage(String imagePath) {
+        StorageReference imageRef = fetchImageReferenceFromStorage(imagePath);
+        return imageRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("FirebaseStorage", "Error when deleting image", task.getException());
+                }
+            }
+        });
+    }
+
+    /**
+     * Attempts to delete all images in an ArrayList from firebase storage
+     */
+    public void deleteImages(ArrayList<String> imagePaths) {
+        for (String path : imagePaths) {
+            deleteImage(path);
+        }
     }
 
     /**

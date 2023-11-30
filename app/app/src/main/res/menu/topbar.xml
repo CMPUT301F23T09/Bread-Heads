@@ -6,25 +6,20 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/add_element"
         android:orderInCategory="4"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/search_list"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/search"
-        android:orderInCategory="3"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/filter_popup"
-        android:icon="@android:drawable/ic_menu_view"
-        android:title="@string/filter"
-        android:orderInCategory="2"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+<!--    <item-->
+<!--        android:id="@+id/filter_popup"-->
+<!--        android:icon="@drawable/filter"-->
+<!--        android:orderInCategory="2"-->
+<!--        android:title="@string/filter"-->
+<!--        app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/delete_item"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/delete_item"
         android:orderInCategory="1"
-        app:showAsAction="always" />
+        android:contentDescription="@string/delete_item"
+        app:showAsAction="ifRoom" />
     <!--Changing the showAsAction attribute to "ifRoom" will smush the buttons down
     and condense them into a hamburger dropdown menu, neat-->
 

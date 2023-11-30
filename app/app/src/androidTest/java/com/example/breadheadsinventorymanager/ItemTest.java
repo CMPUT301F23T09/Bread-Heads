@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import android.net.Uri;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -71,7 +73,11 @@ public class ItemTest {
         imagePaths.add("image/" + UUID.randomUUID().toString());
         imagePaths.add("image/" + UUID.randomUUID().toString());
 
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "item comment", 1000, "3943-d5", imagePaths,tags);
+        ArrayList<Uri> imageUris = new ArrayList<>();
+        imageUris.add(Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000070"));
+        imageUris.add(Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000209"));
+
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "item comment", 1000,  imagePaths,imageUris);
         assertEquals("2023-01-01", item.getDate());
         assertEquals("Sample Item", item.getDescription());
         assertEquals("Sample Make", item.getMake());
@@ -89,7 +95,11 @@ public class ItemTest {
         imagePaths.add("image/" + UUID.randomUUID().toString());
         imagePaths.add("image/" + UUID.randomUUID().toString());
 
-        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000, imagePaths);
+        ArrayList<Uri> imageUris = new ArrayList<>();
+        imageUris.add(Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000070"));
+        imageUris.add(Uri.parse("content://media/picker/0/com.android.providers.media.photopicker/media/1000000209"));
+
+        Item item = new Item("2023-01-01", "Sample Item", "Sample Make", "Sample Model", "Sample comment", 1000, imagePaths, imageUris);
         assertNull(item.getSerialNum());
     }
 

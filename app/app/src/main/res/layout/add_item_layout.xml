@@ -2,11 +2,11 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingBottom="16dp">
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,8 +41,7 @@
         android:ems="10"
         android:maxLength="10"
         android:hint="@string/dd_mm_yyyy"
-        android:digits="1234567890/"
-        android:inputType="date"
+        android:inputType="datetime"
         android:id="@+id/item_acquisition_date_text"/>
     <EditText
         android:id="@+id/item_value_text"
@@ -60,6 +59,29 @@
         android:ems="10"
         android:hint="@string/comments"
         android:inputType="textPersonName" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/item_barcode_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:ems="10"
+            android:hint="@string/barcode_optional"
+            android:inputType="numberDecimal" />
+
+        <Button
+            android:id="@+id/scan_barcode_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="@string/scan_barcode_text" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/error_text_message"
@@ -107,8 +129,6 @@
         android:gravity="center">
 
         <!-- TODO add functionality -->
-
-
         <ImageButton
             android:id="@+id/take_photo_button"
             android:layout_width="wrap_content"
