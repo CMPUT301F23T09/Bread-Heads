@@ -563,7 +563,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             sortMode = "make";
         } else if (itemClick == R.id.sort_value) {
             sortMode = "value";
-        } else {
+        } else if (itemClick == R.id.sort_tags){
+            sortMode = "tag";
+        }
+        else {
             return false;
         }
 
@@ -614,6 +617,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             // show description search field
             showDescriptionSearch();
             return true;
+        } else if (itemClick == R.id.tag_menu){
+            showTagSubMenu();
+            return true;
+
         } else if (itemClick == R.id.make_menu) {
             // create "make" submenu
             showMakeSubMenu();
@@ -641,7 +648,21 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         popup.show();
     }
 
-    /**
+    private void showTagSubMenu() {
+        // show submenu of all available tags
+        ArrayList<String> tagList;
+        tagList = getGlobalTagList().toArrayList();
+        PopupMenu popup = new PopupMenu(this, this.findViewById(R.id.filter_popup));
+
+        // populate the submenu with makeList strings
+        for(int i = 0; i < tagList.size(); i++) {
+            popup.getMenu().add(tagList.get(i));
+        }
+        popup.setOnMenuItemClickListener(this::onTagClick);
+        popup.getMenuInflater().inflate(R.menu.filter_tag_submenu, popup.getMenu());
+        popup.show();
+    }
+      /**
      * Handles clicking of search button
      */
     public void onSearchButtonClick() {
@@ -754,6 +775,23 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         String makeCheck = "M" + menuItem.toString();
         if (!(filters.contains(makeCheck))) {
             filters.add('M' + menuItem.toString());
+        }
+
+        activateFilters();
+        return true;
+    }
+
+
+     * Handles click events for Tag submenu.
+     * @param menuItem the item clicked
+     * @return true to avoid unintended calls to other functions
+     */
+    private boolean onTagClick(MenuItem menuItem) {
+        toggleFilterVisibility();
+        // update adapter to show filtered results
+        String makeCheck = "T" + menuItem.toString();
+        if (!(filters.contains(makeCheck))) {
+            filters.add('T' + menuItem.toString());
         }
 
         activateFilters();

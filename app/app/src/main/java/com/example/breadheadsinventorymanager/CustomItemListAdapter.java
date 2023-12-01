@@ -136,6 +136,7 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
             LocalDate initDate = null;
             LocalDate finalDate = null;
             ArrayList<String> makes = new ArrayList<>();
+            ArrayList<String> tags = new ArrayList<>();
             DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             for (String filter : filters) {
                 switch (filter.charAt(0)) {
@@ -151,6 +152,10 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
                     case 'M': // make
                         makes.add(filter.substring(1));
                         break;
+                    case 'T':
+                        tags.add(filter.substring(1));
+                        break;
+
                 }
             }
 
@@ -173,6 +178,9 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
                     if (!makes.isEmpty()) {
                         keepFlag = makes.contains(item.getMake()) && keepFlag;
                     }
+                    if (!tags.isEmpty()){
+                        keepFlag = itemContainsAllTags(item, tags) && keepFlag;
+                    }
 
                     if (keepFlag) { // passed all applicable tests
                         output.add(item);
@@ -189,6 +197,25 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
             return results;
         }
 
+        // Helper method to check if an item contains all provided tags
+        private boolean itemContainsAllTags(Item item, ArrayList<String> tags) {
+            TagList itemTags = item.getTags();
+
+            for (String tag : tags) {
+                boolean tagFound = false;
+                for (Tag itemTag : itemTags) {
+                    if (tag.equals(itemTag.getTag())) {
+                        tagFound = true;
+                        break;
+                    }
+                }
+                if (!tagFound) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             items = (ItemList) results.values;
@@ -202,3 +229,5 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         return items.get(position);
     }
 }
+
+
