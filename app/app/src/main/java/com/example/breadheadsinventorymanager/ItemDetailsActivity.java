@@ -125,14 +125,14 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-        // Get the list of tag strings from the globalTagList
-        List<String> tagStrings = globalTagList.getTagStrings();
+        // Get the list of tags associated with the current item
+        List<String> itemTagStrings = selectedItem.getTags().getTagStrings();
 
         // Find the RecyclerView in your layout
         RecyclerView tagsRecyclerView = findViewById(R.id.tagsRecyclerView);
 
         // Create an adapter for the RecyclerView
-        TagsAdapter tagsAdapter = new TagsAdapter(tagStrings);
+        TagsAdapter tagsAdapter = new TagsAdapter(itemTagStrings);
 
         // Set the layout manager and adapter for the RecyclerView
         tagsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -267,6 +267,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
         TextView valueText = findViewById(R.id.valueText);
         valueText.setText(updatedItem.getValueDollarString());
 
+        updateTags(updatedItem.getTags());
+
         if (!(updatedItem.getImagePaths().isEmpty() || updatedItem.getImagePaths() == null)) { // Guaranteed at least 1 image if not empty/null
             currentImageIndex = 0;
             String firstImagePath = updatedItem.getImagePaths().get(currentImageIndex);
@@ -278,6 +280,23 @@ public class ItemDetailsActivity extends AppCompatActivity {
         }
 
     }
+
+    // Helper method to update tags in UI
+    private void updateTags(TagList tags) {
+        // Get the list of tags associated with the current item
+        List<String> itemTagStrings = tags.getTagStrings();
+
+        // Find the RecyclerView in your layout
+        RecyclerView tagsRecyclerView = findViewById(R.id.tagsRecyclerView);
+
+        // Create an adapter for the RecyclerView
+        TagsAdapter tagsAdapter = new TagsAdapter(itemTagStrings);
+
+        // Set the layout manager and adapter for the RecyclerView
+        tagsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        tagsRecyclerView.setAdapter(tagsAdapter);
+    }
+
     private void deleteSelectedItem() {
         if (selectedItem != null) {
             database.deleteImages(selectedItem.getImagePaths());
