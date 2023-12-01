@@ -206,7 +206,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tagsTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/CommentsTitle" />
+        app:layout_constraintBottom_toTopOf="@+id/CommentsTitle"
+        tools:listitem="@layout/tag_item" />
 
     <TextView
         android:id="@+id/commentText"

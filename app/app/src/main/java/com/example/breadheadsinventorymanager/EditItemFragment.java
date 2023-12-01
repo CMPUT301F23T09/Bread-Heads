@@ -209,6 +209,9 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
                             // Set the parsed date to the selectedItem
                             selectedItem.setDate(dateText);
 
+                            TagList updatedTagList = new TagList(selectedTags);
+                            selectedItem.setTags(updatedTagList);
+
                         } catch (DateTimeParseException e) {
                             Log.e("EditItemFragment", "Error parsing date", e);
                             errorBox.setText("Invalid Date");
