@@ -703,7 +703,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         return true;
     }
 
-
+    /**
      * Handles click events for Tag submenu.
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
