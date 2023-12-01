@@ -42,8 +42,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -391,12 +395,28 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         add_tags_button.setOnClickListener(v -> {
             defaultItemClickListener();
 
+            // make the add tags screen appear
+            List<String> selectedTags = new ArrayList<>();
+            List<String> currentTagsStrList = new ArrayList<>();
+            TagList currentTags;
+            Set<String> allTagsSet = new HashSet<>();
+            List<String> allTagsList = new ArrayList<>();
+            TagList allTags;
+
+            // Show the tag selection dialog
+            TagList globalTagList = getGlobalTagList();
+            TagSelectionDialog.show_selected(this, selectedTags, globalTagList, (dialog, which) -> {
+                // Handle Confirm button click if needed
+                Log.d("TagSelection", "Selected Tags: " + selectedTags);
+            });
+
+
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
-            add_tags_button.setVisibility(VISIBLE);
+            add_tags_button.setVisibility(View.INVISIBLE);
             add_tags_button.setClickable(false);
 
             for (int i = itemList.size()-1; i > -1; i--) {
@@ -405,7 +425,22 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 CheckBox checkbox = current_item.getCheckBox();
                 if (checkbox != null){
                     if (checkbox.isChecked()){
-                        // make the add tags screen appear
+                        // add the the selected tags to the item
+                        currentTags = current_item.getTags(); // get the list of tags already present for the item
+                        currentTagsStrList = currentTags.toList(); // convert it to a string list
+
+                        // use a set to prevent duplicates from being added
+                        allTagsSet.addAll(currentTagsStrList);
+                        allTagsSet.addAll(selectedTags);
+
+                        // convert the set to a list
+                        allTagsList = new ArrayList<>(allTagsSet);
+
+                        // convert the list to a tag list
+                        allTags = new TagList(allTagsList);
+
+                        // set the tags for the item to the list of all the tags
+                        current_item.setTags(allTags);
 
                     }
                     // uncheck and hide the checkbox
@@ -427,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
-            add_tags_button.setVisibility(VISIBLE);
+            add_tags_button.setVisibility(View.INVISIBLE);
             add_tags_button.setClickable(false);
 
             for (int i = itemList.size()-1; i > -1; i--) {
@@ -461,13 +496,12 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // when the cancel button is pressed
         cancel_button.setOnClickListener(v -> {
             defaultItemClickListener();
-
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
-            add_tags_button.setVisibility(VISIBLE);
+            add_tags_button.setVisibility(View.INVISIBLE);
             add_tags_button.setClickable(false);
 
             for (int i = 0; i < itemList.size(); i++) {

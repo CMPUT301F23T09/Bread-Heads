@@ -316,7 +316,6 @@ public class AddItemFragment extends DialogFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // launch camera intent
-
                 activityResultLauncher.launch(intent);
 
                 // call function to scan serial number
