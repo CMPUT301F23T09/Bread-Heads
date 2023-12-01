@@ -479,8 +479,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             sortMode = "date";
         } else if (itemClick == R.id.sort_desc) {
             sortMode = "description";
-        } else if (itemClick == R.id.sort_comment) {
-            sortMode = "comment";
+//        } else if (itemClick == R.id.sort_comment) {
+//            sortMode = "comment";
         } else if (itemClick == R.id.sort_make) {
             sortMode = "make";
         } else if (itemClick == R.id.sort_value) {
