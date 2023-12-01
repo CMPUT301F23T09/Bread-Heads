@@ -2,28 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sort_desc"
-        android:contentDescription="Sort by Description"
-        android:title="Description"/>
-    <item
-        android:id="@+id/sort_date"
-        android:contentDescription="Sort by Date"
-        android:title="Date"/>
-    <item
-        android:id="@+id/sort_value"
-        android:contentDescription="Sort by Value"
-        android:title="Value"/>
+        android:contentDescription="@string/sort_by_description"
+        android:title="@string/description_t"/>
     <item
         android:id="@+id/sort_make"
-        android:contentDescription="Sort by Make"
-        android:title="Make"/>
+        android:contentDescription="@string/sort_by_make"
+        android:title="@string/make_t"/>
     <item
-        android:id="@+id/sort_comment"
+        android:id="@+id/sort_date"
+        android:contentDescription="@string/sort_by_date"
+        android:title="@string/date_t"/>
+    <item
+        android:id="@+id/sort_value"
+        android:contentDescription="@string/sort_by_value"
+        android:title="@string/value_t"/>
+    <item
         android:contentDescription="Sort by Comment"
         android:title="Comment"/>
+        android:id="@+id/sort_comment"
+        android:contentDescription="@string/sort_by_comment"
+        android:title="@string/comment_t"/>
+
     <item
         android:id="@+id/sort_tags"
         android:contentDescription="Sort by Tags"
         android:title="Tag"/>
+
+
+
 
 
 </menu>
