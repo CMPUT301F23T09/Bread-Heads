@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Custom ArrayList for managing tags.
@@ -109,6 +110,36 @@ public class TagList extends ArrayList<Tag> implements Serializable {
      */
     public List<String> toList() {
         List<String> stringList = new ArrayList<>();
+        for (Tag tag : this) {
+            stringList.add(tag.getTag());
+        }
+        return stringList;
+    }
+    /**
+     * Retrieves a list of tag strings from the current TagList.
+     *
+     * This method iterates through the TagList, extracts the tag strings from each Tag object,
+     * and adds them to a new List<String>. The resulting list contains the string representation
+     * of each tag in the TagList.
+     *
+     * @return A List<String> containing the string representation of each Tag in the TagList.
+     */
+    public List<String> getTagStrings() {
+        List<String> tagStrings = new ArrayList<>();
+        for (Tag tag : this) {
+            tagStrings.add(tag.getTag());
+        }
+        return tagStrings;
+    }
+
+
+    /**
+     * Converts the TagList to an ArrayList of strings.
+     *
+     * @return A List<String> containing the string representation of each Tag.
+     */
+    public ArrayList<String> toArrayList() {
+        ArrayList<String> stringList = new ArrayList<>();
         for (Tag tag : this) {
             stringList.add(tag.getTag());
         }
