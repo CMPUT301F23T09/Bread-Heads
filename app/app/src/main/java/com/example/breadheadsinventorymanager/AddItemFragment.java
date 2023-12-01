@@ -94,6 +94,7 @@ public class AddItemFragment extends DialogFragment {
     private Button scanBarcodeBtn;
     private Button scanSerialBtn;
     private Bitmap globalBitmap;
+    private Boolean scanSerial = false;
     private ImageButton addImageBtn;
     private ImageButton takePhotoBtn;
 
@@ -159,7 +160,6 @@ public class AddItemFragment extends DialogFragment {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Bundle bundle = result.getData().getExtras();
                     Bitmap bitmap = (Bitmap) bundle.get("data");
-
                     // create a temporary file, populate it with bitmap data, flush it, close it and call it a day
                     File tempFile = null;
                     try {
@@ -199,7 +199,12 @@ public class AddItemFragment extends DialogFragment {
                     imageMap.put(imagePath, uri);
 
                     // puts the bitmap to globalBitmap so it can be used elsewhere for the serial number scan function
-                    globalBitmap = bitmap;
+//                    globalBitmap = bitmap;
+                    if (scanSerial == true){
+                        setSerialNumberFromImage(bitmap);
+                        scanSerial = false;
+                    }
+
                 }
             }
         });
@@ -314,12 +319,13 @@ public class AddItemFragment extends DialogFragment {
         scanSerialBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                scanSerial = true;
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // launch camera intent
                 activityResultLauncher.launch(intent);
 
                 // call function to scan serial number
-                setSerialNumberFromImage(globalBitmap);
+//                setSerialNumberFromImage(globalBitmap);
             }
         });
 
@@ -509,7 +515,14 @@ public class AddItemFragment extends DialogFragment {
         InputImage image;
 
         // turn the bitmap into an image
-        image = InputImage.fromBitmap(bitmap, 0);
+//        image = InputImage.fromBitmap(bitmap, 0);
+        if (bitmap != null){
+            image = InputImage.fromBitmap(bitmap, 0);
+        }
+        else {
+            itemSerialNumBox.setText("Null");
+            return;
+        }
 
         // initialize text recognizer
         TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
@@ -522,7 +535,6 @@ public class AddItemFragment extends DialogFragment {
                             public void onSuccess(Text texts) {
                                 // Task completed successfully
                                 String textFound = "";
-
                                 List<Text.TextBlock> blocks = texts.getTextBlocks();
                                 if (blocks.size() == 0) {
                                     // no text found
@@ -530,39 +542,48 @@ public class AddItemFragment extends DialogFragment {
                                 }
 
                                 Boolean isSerialNumText = false;
-                                // all text found is in one block
+                                Boolean hasText = false;
+
+                                itemSerialNumBox.setText(texts.getText());
+                                // all text found is in blocks
                                 for (int i = 0; i < blocks.size(); i++) {
-                                    // within the block are each of the lines found
+
+                                    // within the blocks are each of the lines found
                                     List<Text.Line> lines = blocks.get(i).getLines();
                                     for (int j = 0; j < lines.size(); j++) {
-//                                        itemSerialNumBox.setText(lines.get(j).getText());
-                                        textFound = textFound + lines.get(j).getText();
-                                        String textLine = lines.get(j).getText();
-                                        String textLineLowercase = textLine.toLowerCase();
 
-                                        if (isSerialNumText == true){
-                                            // if true here, the current line is the serial number
-                                            itemSerialNumBox.setText(lines.get(j).getText());
-
-                                            // set it to false so any lines after do not overwrite the value
-                                            isSerialNumText = false;
-                                        }
-
-                                        // will be given the text "Serial Number" with the serial number below it
-                                        if (textLineLowercase.contains("serial")){
-                                            // if the line contains "serial" the next line must be the actual serial number
-                                            isSerialNumText = true;
-//                                            try {
-//                                                itemSerialNumBox.setText(lines.get(j+1).getText());
-//                                            } catch (Exception e) {
-//                                                itemSerialNumBox.setText("Fail");
-//                                            }
+                                        // if there is only one line of text found in the picture, it will set serial number to that text
+                                        if (blocks.size() == 1){
+                                            if(hasText == false){
+                                                itemSerialNumBox.setText(lines.get(j).getText());
+                                                hasText = true;
+                                            }
 
                                         }
+                                        else {
+                                            // there is more than one line found and it will look for the word serial number and give the line underneath it
+                                            textFound = textFound + lines.get(j).getText();
+                                            String textLine = lines.get(j).getText();
+                                            String textLineLowercase = textLine.toLowerCase();
 
+                                            if (isSerialNumText == true) {
+                                                // if true here, the current line is the serial number
+                                                itemSerialNumBox.setText(lines.get(j).getText());
+                                                hasText = true;
+                                                // set it to false so any lines after do not overwrite the value
+                                                isSerialNumText = false;
+                                            }
+
+                                            // will be given the text "Serial Number" with the serial number below it
+                                            if (textLineLowercase.contains("serial")) {
+                                                // if the line contains "serial" the next line must be the actual serial number
+                                                isSerialNumText = true;
+                                            }
+
+                                        }
                                     }
                                 }
-//                                itemSerialNumBox.setText(textFound);
+//                                itemSerialNumBox.setText(texts.getText());
                             }
                         });
 

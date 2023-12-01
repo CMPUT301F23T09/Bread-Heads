@@ -426,19 +426,22 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 if (checkbox != null){
                     if (checkbox.isChecked()){
                         // add the the selected tags to the item
-                        currentTags = current_item.getTags(); // get the list of tags already present for the item
-                        currentTagsStrList = currentTags.toList(); // convert it to a string list
-
-                        // use a set to prevent duplicates from being added
-                        allTagsSet.addAll(currentTagsStrList);
-                        allTagsSet.addAll(selectedTags);
-
-                        // convert the set to a list
-                        allTagsList = new ArrayList<>(allTagsSet);
-
+//                        currentTags = current_item.getTags(); // get the list of tags already present for the item
+//                        currentTagsStrList = currentTags.toList(); // convert it to a string list
+//
+//                        // use a set to prevent duplicates from being added
+//                        allTagsSet = new HashSet<>();
+//                        allTagsSet.addAll(currentTagsStrList);
+//                        allTagsSet.addAll(selectedTags);
+//
+//                        // convert the set to a list
+//                        allTagsList = new ArrayList<>(allTagsSet);
+//
+                        allTagsList.add("Boop");
                         // convert the list to a tag list
                         allTags = new TagList(allTagsList);
 
+//                        allTags = new TagList(selectedTags);
                         // set the tags for the item to the list of all the tags
                         current_item.setTags(allTags);
 
