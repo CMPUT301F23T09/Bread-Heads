@@ -8,9 +8,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -28,27 +30,25 @@ import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.google.common.base.Predicates.instanceOf;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.AdditionalMatchers.not;
 
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ItemDetailsActivityTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
-    @Before
- //runs before each test, it creates a sample item
-    public void createSampleItem() {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        onView(allOf(withId(R.id.add_element), withContentDescription("Add Element"), isDisplayed())).perform(click());
-        onView(allOf(withId(android.R.id.title), withText("Add Item"), isDisplayed())).perform(click());
+    @Test
+ //creates a sample item
+    public void a_createSampleItem() {
+        onView(withId(R.id.add_element)).check(matches(isDisplayed())).perform(click());
+        onView(allOf(withId(android.R.id.title), withText("Add Item"))).check(matches(isDisplayed())).perform(click());
 
         onView(withId(R.id.item_name_text)).perform(typeText("00 Sample Item"), closeSoftKeyboard());
         onView(withId(R.id.item_make_text)).perform(typeText("Sample Make"), closeSoftKeyboard());
@@ -56,12 +56,8 @@ public class ItemDetailsActivityTest {
         onView(withId(R.id.serial_number_text)).perform(typeText("123456789"), closeSoftKeyboard());
         onView(withId(R.id.item_acquisition_date_text)).perform(typeText("12/12/2012"), closeSoftKeyboard());
         onView(withId(R.id.item_value_text)).perform(typeText("100"), closeSoftKeyboard());
+
         onView(withId(android.R.id.button1)).perform(scrollTo(), click());
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
@@ -107,6 +103,12 @@ public class ItemDetailsActivityTest {
         closeSoftKeyboard();
 
         onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         onView(withId(R.id.itemDescription)).check(matches(withText("01 Sample Item")));
         onView(withId(R.id.makeText)).check(matches(withText("Sample Make 2")));
@@ -246,9 +248,9 @@ public class ItemDetailsActivityTest {
         onView(withContentDescription("Navigate up")).perform(click());
     }
 
-    @After
+    @Test
     // Deletes Item
-    public void checkDelete() {
+    public void z_checkDelete() {
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
@@ -258,11 +260,13 @@ public class ItemDetailsActivityTest {
         onView(withId(R.id.delete_item)).perform(click());
 
         onView(allOf(withId(android.R.id.message), withText("Are you sure you want to delete this item?"))).check(matches(isDisplayed()));
-
-        // Click the confirmation button to delete the item
         onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        // Check that the item is no longer present in the list
-        //onView(withText("00 Sample Item")).check(doesNotExist());
+        onView(allOf(withText("00 Sample Item"), isDisplayed())).check(doesNotExist());
     }
 }
