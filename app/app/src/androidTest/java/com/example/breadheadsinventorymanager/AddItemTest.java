@@ -113,7 +113,6 @@ public class AddItemTest {
         onView(withId(android.R.id.button1)).perform(click());
         onView(withText("Invalid Date")).check(matches(isDisplayed()));
         onView(withId(android.R.id.button2)).perform(click());
-
     }
 
     @Test
