@@ -13,6 +13,13 @@
         <!-- make submenu -->
         <menu></menu>
     </item>
+    <item android:id="@+id/tag_menu"
+        android:contentDescription="@string/tagsTitle"
+        android:title="@string/tagsTitle">
+        <!-- make submenu -->
+        <menu></menu>
+    </item>
+
     <item
         android:id="@+id/remove_filter"
         android:contentDescription="@string/remove_filter"

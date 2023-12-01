@@ -115,4 +115,17 @@ public class TagList extends ArrayList<Tag> implements Serializable {
         return stringList;
     }
 
+    /**
+     * Converts the TagList to an ArrayList of strings.
+     *
+     * @return A List<String> containing the string representation of each Tag.
+     */
+    public ArrayList<String> toArrayList() {
+        ArrayList<String> stringList = new ArrayList<>();
+        for (Tag tag : this) {
+            stringList.add(tag.getTag());
+        }
+        return stringList;
+    }
+
 }

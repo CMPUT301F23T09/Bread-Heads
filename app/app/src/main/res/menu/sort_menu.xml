@@ -20,6 +20,10 @@
         android:id="@+id/sort_comment"
         android:contentDescription="Sort by Comment"
         android:title="Comment"/>
+    <item
+        android:id="@+id/sort_tags"
+        android:contentDescription="Sort by Tags"
+        android:title="Tag"/>
 
 
 </menu>
