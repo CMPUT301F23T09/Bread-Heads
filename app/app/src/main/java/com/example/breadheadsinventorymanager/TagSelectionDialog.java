@@ -46,8 +46,15 @@ public class TagSelectionDialog {
             tagListContainer.addView(checkBox);
         }
 
-        builder.setPositiveButton("Confirm", confirmListener);
+//        builder.setPositiveButton("Confirm", confirmListener);
 
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MainActivity.applyTagsToMultipleItems(selectedTags); // Call method using MainActivity reference
+
+            }
+        });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             // Clear the selectedTags list when "Cancel" is pressed
             selectedTags.clear();

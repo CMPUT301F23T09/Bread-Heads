@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private ListView itemListView;
     private FirestoreInteract database;
     private TagList tagList;
+    private static Boolean tagsForMultipleItems = false;
+    private static ItemList itemListStat;
 
     // stores information about how the list is currently sorted
     private String sortMode = "description"; // which field to sort by
@@ -403,6 +406,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             List<String> allTagsList = new ArrayList<>();
             TagList allTags;
 
+            tagsForMultipleItems = true;
+            itemListStat = itemList;
             // Show the tag selection dialog
             TagList globalTagList = getGlobalTagList();
             TagSelectionDialog.show_selected(this, selectedTags, globalTagList, (dialog, which) -> {
@@ -419,39 +424,43 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             add_tags_button.setVisibility(View.INVISIBLE);
             add_tags_button.setClickable(false);
 
-            for (int i = itemList.size()-1; i > -1; i--) {
-                // get the item at position i
-                Item current_item = itemList.get(i);
-                CheckBox checkbox = current_item.getCheckBox();
-                if (checkbox != null){
-                    if (checkbox.isChecked()){
-                        // add the the selected tags to the item
+
+
+
+//            for (int i = itemList.size()-1; i > -1; i--) {
+//                // get the item at position i
+//                Item current_item = itemList.get(i);
+//                CheckBox checkbox = current_item.getCheckBox();
+//                if (checkbox != null){
+//                    if (checkbox.isChecked()){
+//                        Log.d("AddTagsToMultipleItems", "Item Name: " + current_item.getDescription());
+//                        // add the the selected tags to the item
 //                        currentTags = current_item.getTags(); // get the list of tags already present for the item
 //                        currentTagsStrList = currentTags.toList(); // convert it to a string list
-//
+//                        Log.d("AddTagsToMultipleItems", "Current Tags: " + currentTagsStrList);
 //                        // use a set to prevent duplicates from being added
 //                        allTagsSet = new HashSet<>();
 //                        allTagsSet.addAll(currentTagsStrList);
 //                        allTagsSet.addAll(selectedTags);
-//
+//                        Log.d("AddTagsToMultipleItems", "AllTagsSet: " + allTagsSet);
 //                        // convert the set to a list
 //                        allTagsList = new ArrayList<>(allTagsSet);
+//                        Log.d("AddTagsToMultipleItems", "AllTagsList: " + allTagsList);
+////                        allTagsList.add("Boop");
+//                        // convert the list to a tag list
+//                        allTags = new TagList(allTagsList);
 //
-                        allTagsList.add("Boop");
-                        // convert the list to a tag list
-                        allTags = new TagList(allTagsList);
-
-//                        allTags = new TagList(selectedTags);
-                        // set the tags for the item to the list of all the tags
-                        current_item.setTags(allTags);
-
-                    }
-                    // uncheck and hide the checkbox
-                    checkbox.setChecked(false);
-                    checkbox.setVisibility(View.INVISIBLE);
-                }
-
-            }
+////                        allTags = new TagList(selectedTags);
+//                        // set the tags for the item to the list of all the tags
+//                        current_item.setTags(allTags);
+//
+//                    }
+//                    // uncheck and hide the checkbox
+//                    checkbox.setChecked(false);
+//                    checkbox.setVisibility(View.INVISIBLE);
+//                }
+//
+//            }
 
             updateList();
         });
@@ -522,6 +531,54 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         });
     }
 
+    public static void applyTagsToMultipleItems(List<String> selectedTags){
+        // ensures it only does something when trigger from selectMode()
+        if (tagsForMultipleItems) {
+            List<String> currentTagsStrList = new ArrayList<>();
+            TagList currentTags;
+            Set<String> allTagsSet = new HashSet<>();
+            List<String> allTagsList = new ArrayList<>();
+            TagList allTags;
+
+            for (int i = itemListStat.size()-1; i > -1; i--) {
+                // get the item at position i
+                Item current_item = itemListStat.get(i);
+                CheckBox checkbox = current_item.getCheckBox();
+                if (checkbox != null){
+                    if (checkbox.isChecked()){
+                        Log.d("AddTagsToMultipleItems", "Item Name: " + current_item.getDescription());
+                        // add the the selected tags to the item
+                        currentTags = current_item.getTags(); // get the list of tags already present for the item
+                        currentTagsStrList = currentTags.toList(); // convert it to a string list
+                        Log.d("AddTagsToMultipleItems", "Current Tags: " + currentTagsStrList);
+                        // use a set to prevent duplicates from being added
+                        allTagsSet = new HashSet<>();
+                        allTagsSet.addAll(currentTagsStrList);
+                        allTagsSet.addAll(selectedTags);
+                        Log.d("AddTagsToMultipleItems", "AllTagsSet: " + allTagsSet);
+                        // convert the set to a list
+                        allTagsList = new ArrayList<>(allTagsSet);
+                        Log.d("AddTagsToMultipleItems", "AllTagsList: " + allTagsList);
+//                        allTagsList.add("Boop");
+                        // convert the list to a tag list
+                        allTags = new TagList(allTagsList);
+                        Log.d("AddTagsToMultipleItems", "AllTags: " + allTags);
+//                        allTags = new TagList(selectedTags);
+                        // set the tags for the item to the list of all the tags
+                        current_item.setTags(allTags);
+                        Log.d("AddTagsToMultipleItems", "End TagList: " + current_item.getTags());
+                    }
+                    // uncheck and hide the checkbox
+                    checkbox.setChecked(false);
+                    checkbox.setVisibility(View.INVISIBLE);
+                }
+
+            }
+            tagsForMultipleItems = false;
+
+//            updateList();
+        }
+    }
     // SORT MENU HANDLING
 
     /**
@@ -781,7 +838,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         return true;
     }
 
-
+    /**
      * Handles click events for Tag submenu.
      * @param menuItem the item clicked
      * @return true to avoid unintended calls to other functions
