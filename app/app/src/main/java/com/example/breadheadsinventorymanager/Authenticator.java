@@ -43,6 +43,8 @@ public class Authenticator {
         this.firebaseAuth = firebaseAuth;
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(activity.getString(R.string.default_web_client_id))
+                .requestEmail()
+                .requestProfile()
                 .build();
         signInClient = GoogleSignIn.getClient(activity, gso);
     }

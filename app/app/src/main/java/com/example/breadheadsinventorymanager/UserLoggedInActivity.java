@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -35,6 +38,8 @@ public class UserLoggedInActivity extends AppCompatActivity implements View.OnCl
         // enable the back button
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+        populateProfileInfo();
+
         auth = new Authenticator(FirebaseAuth.getInstance(), this);
     }
 
@@ -42,6 +47,19 @@ public class UserLoggedInActivity extends AppCompatActivity implements View.OnCl
     protected void onResume() {
         super.onResume();
         findViewById(R.id.sign_out_button).setOnClickListener(this);
+    }
+
+    /**
+     * Fills the screen with info retrieved from the user's account
+     */
+    protected void populateProfileInfo() {
+        TextView nameView = findViewById(R.id.profile_name);
+        TextView emailView = findViewById(R.id.profile_email);
+        ImageView imageView = findViewById(R.id.profile_picture);
+
+        nameView.setText(account.getDisplayName());
+        emailView.setText(account.getEmail());
+        Picasso.get().load(account.getPhotoUrl()).into(imageView);
     }
 
     /**
