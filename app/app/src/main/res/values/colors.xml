@@ -8,6 +8,7 @@
     <color name="light_green">#B2D5A9</color>
     <color name="background_grey">#D8D8D8</color>
     <color name="background_grey_light">#E7E7E7</color>
+    <color name="light_red">#EDA5A5</color>
     <color name="tomato_red">#F13A3A</color>
     <color name="yellow">#FFF300</color>
 </resources>
