@@ -52,7 +52,7 @@ import java.util.Objects;
  * @version 3
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener, AddTagFragment.OnFragmentInteractionListener{
-    GoogleSignInAccount account; // the signed in Google account
+    GoogleSignInAccount account = null; // the signed in Google account
 
     // id for search box to filter by description
     private SearchView searchBox;
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
-        learnAccount();
+        learnAccount(getIntent().getBooleanExtra("skip_auth", false));
 
         filterView = findViewById(R.id.active_filter_recycler_view);
         searchBox = findViewById(R.id.search_view);
@@ -121,25 +121,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterView.setLayoutManager(linearLayoutManager);
         filterView.setAdapter(filterRecyclerAdapter);
 
-        //ListView and adapter setup
+        // Firestore, ListView, and adapter setup
         database = new FirestoreInteract();
-        database.alignToAccount(account).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                updateTags().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                    }
-                });
-                updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        defaultItemClickListener();
-                        doneInitial = true;
-                    }
-                });
-            }
-        });
+        Task<Void> alignTask = database.alignToAccount(account);
+
+        // we don't always need to wait on a task
+        if (alignTask != null) {
+            alignTask.addOnCompleteListener(task -> initialRead());
+        } else { initialRead(); }
 
         sortButton.setOnClickListener(v -> showSortMenu());
         sortOrderButton.setOnClickListener(v -> onSortOrderButtonClick());
@@ -149,10 +138,30 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     }
 
     /**
+     * Reads the tags and list from Firestore database.
+     */
+    private void initialRead() {
+        updateTags();
+        updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                defaultItemClickListener();
+                doneInitial = true;
+            }
+        });
+    }
+
+    /**
      * Attempts to set the current GoogleSignInAccount account, or if unable, opens the UserActivity
      * so that users can authenticate.
+     * @param skipAuth True if authentification should be skipped
      */
-    private void learnAccount() {
+    private void learnAccount(boolean skipAuth) {
+        if (skipAuth) {
+            account = null;
+            return;
+        }
+
         GoogleSignInAccount lastSignIn = GoogleSignIn.getLastSignedInAccount(this);
         GoogleSignInAccount passedAccount = getIntent().getParcelableExtra("account");
         if (passedAccount != null) {

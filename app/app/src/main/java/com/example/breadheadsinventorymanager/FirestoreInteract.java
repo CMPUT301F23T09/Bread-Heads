@@ -66,9 +66,6 @@ public class FirestoreInteract {
     public FirestoreInteract() {
         database = FirebaseFirestore.getInstance();
         userDB = database.collection("users");
-//        itemDB = database.collection("items");
-//        testDB = database.collection("test");
-//        tagDB = database.collection("tags");
         // Images
         imageStorage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
         storageReference = imageStorage.getReference();
@@ -78,7 +75,16 @@ public class FirestoreInteract {
      * Initialize firestore database from a provided Google account.
      */
     public Task<Void> alignToAccount(GoogleSignInAccount account) {
+        if (account == null) {
+            itemDB = database.collection("testItems");
+            testDB = database.collection("test");
+            tagDB = database.collection("testTags");
+
+            return null;
+        }
+
         User user = new User(account);
+
 
         // our databases are subcollections of the user's document, if it exists
         return putUser(user).addOnCompleteListener(new OnCompleteListener<Void>() {

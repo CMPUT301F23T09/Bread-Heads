@@ -10,11 +10,18 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +30,17 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 public class AddItemTest {
+    // code to test activity with intent adapted from https://stackoverflow.com/a/57777912
+    public static Intent intent;
+    static {
+        intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("skip_auth", true);
+        intent.putExtras(bundle);
+    }
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
-            ActivityScenarioRule<MainActivity>(MainActivity.class);
+            ActivityScenarioRule<MainActivity>(intent);
 
     @Test
     public void TestAddItem() {
