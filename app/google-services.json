@@ -12,7 +12,20 @@
           "package_name": "com.example.breadheadsinventorymanager"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "934777894439-qp3ihqbnnse9j0t0e3lfn6po7506bqsr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.breadheadsinventorymanager",
+            "certificate_hash": "eacb257d557baf28b9e561cd69fdaa9a7266e187"
+          }
+        },
+        {
+          "client_id": "934777894439-akkij981rl0rvsehm3623j45s1e7rruq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCJU_M_vhgLhCcJUbDt_SyRH6MVzgbJjwc"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934777894439-akkij981rl0rvsehm3623j45s1e7rruq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
