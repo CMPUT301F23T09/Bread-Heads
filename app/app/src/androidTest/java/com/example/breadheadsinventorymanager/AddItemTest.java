@@ -39,8 +39,7 @@ public class AddItemTest {
         intent.putExtras(bundle);
     }
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new
-            ActivityScenarioRule<MainActivity>(intent);
+    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(intent);
 
     @Test
     public void TestAddItem() {
