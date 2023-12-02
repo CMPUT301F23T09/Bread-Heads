@@ -499,7 +499,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             cancel_button.setClickable(false);
             add_tags_button.setVisibility(View.INVISIBLE);
             add_tags_button.setClickable(false);
-            updateTags();
             updateList();
         });
 
