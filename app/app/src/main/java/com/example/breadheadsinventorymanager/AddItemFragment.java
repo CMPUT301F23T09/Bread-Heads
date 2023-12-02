@@ -85,15 +85,11 @@ public class AddItemFragment extends DialogFragment {
     private EditText itemValueBox;
     private EditText itemBarcodeBox;
 
-
-    String imagePathGlobal;
-
     private TextView errorBox;
 
     // Buttons
     private Button scanBarcodeBtn;
     private Button scanSerialBtn;
-    private Bitmap globalBitmap;
     private Boolean scanSerial = false;
     private ImageButton addImageBtn;
     private ImageButton takePhotoBtn;
@@ -199,7 +195,6 @@ public class AddItemFragment extends DialogFragment {
                     imageMap.put(imagePath, uri);
 
                     // puts the bitmap to globalBitmap so it can be used elsewhere for the serial number scan function
-//                    globalBitmap = bitmap;
                     if (scanSerial == true){
                         setSerialNumberFromImage(bitmap);
                         scanSerial = false;
@@ -324,8 +319,6 @@ public class AddItemFragment extends DialogFragment {
                 // launch camera intent
                 activityResultLauncher.launch(intent);
 
-                // call function to scan serial number
-//                setSerialNumberFromImage(globalBitmap);
             }
         });
 

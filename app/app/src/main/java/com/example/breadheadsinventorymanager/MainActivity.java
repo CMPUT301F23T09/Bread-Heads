@@ -37,6 +37,8 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
@@ -415,44 +417,19 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             TagSelectionDialog.show_selected(this, selectedTags, globalTagList, (dialog, which) -> {
                 // Handle Confirm button click if needed
                 Log.d("TagSelection", "Selected Tags: " + selectedTags);
-//                Log.d("Checkbox", "Checkboxes:" + checkBoxes.get(1).isChecked());
 
-                List<String> currentTagsStrList = new ArrayList<>();
                 TagList currentTags;
-                Set<String> allTagsSet = new HashSet<>();
-                List<String> allTagsList = new ArrayList<>();
-                TagList allTags;
 
                 for (int i = itemList.size()-1; i > -1; i--) {
                     // get the item at position i
                     Item current_item = itemList.get(i);
                     CheckBox checkbox = current_item.getCheckBox();
-                    Log.d("Checkbox", "Item:" + current_item.getDescription() + " Checkbox:" + checkBoxes.get(i));
+
                     if (checkbox != null){
-//                        if (checkbox.isChecked()){
                         if(checkBoxes.get(i).isChecked()){
                             Log.d("AddTagsToMultipleItems", "Item Name: " + current_item.getDescription());
-//                            // add the the selected tags to the item
-//                            currentTags = current_item.getTags(); // get the list of tags already present for the item
-//                            currentTagsStrList = currentTags.toList(); // convert it to a string list
-//                            Log.d("AddTagsToMultipleItems", "Current Tags: " + currentTagsStrList);
-//                            // use a set to prevent duplicates from being added
-//                            allTagsSet = new HashSet<>();
-//                            allTagsSet.addAll(currentTagsStrList);
-//                            allTagsSet.addAll(selectedTags);
-////                            Log.d("AddTagsToMultipleItems", "AllTagsSet: " + allTagsSet);
-//                            // convert the set to a list
-//                            allTagsList = new ArrayList<>(allTagsSet);
-////                            Log.d("AddTagsToMultipleItems", "AllTagsList: " + allTagsList);
-////                        allTagsList.add("Boop");
-//                            // convert the list to a tag list
-//                            allTags = new TagList(allTagsList);
-////                            Log.d("AddTagsToMultipleItems", "AllTags: " + allTags);
-////                        allTags = new TagList(selectedTags);
-//                            // set the tags for the item to the list of all the tags
-//                            current_item.setTags(allTags);
-//                            Log.d("AddTagsToMultipleItems", "End TagList: " + current_item.getTags());
 
+                            // add the the selected tags to the item
                             Log.d("AddTagsToMultipleItems", "Starting TagList: " + current_item.getTags());
                             currentTags = current_item.getTags();
                             TagList selectedTagList = new TagList(selectedTags);
@@ -460,8 +437,20 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                                 currentTags.addTag(aTag);
 
                             }
-//                            current_item.setTags(selectedTagList);
+
                             Log.d("AddTagsToMultipleItems", "End TagList: " + current_item.getTags());
+
+                            // update the tag list for the item in firebase
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference docRef = db.collection("items").document(current_item.getId());
+                            docRef.update("tags",current_item.getTags())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Tags updated successfully!");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error updating tags", e);
+                                    });
+
                         }
                         // uncheck and hide the checkbox
                         checkbox.setChecked(false);
@@ -472,8 +461,6 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
                 updateList();
             });
 
-//            Log.d("AddTagsToMultipleItems", "Length of SelectedTags: " + selectedTags.size());
-
             // hide the buttons and make them not clickable so they are not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
@@ -481,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             cancel_button.setClickable(false);
             add_tags_button.setVisibility(View.INVISIBLE);
             add_tags_button.setClickable(false);
-
+            updateTags();
             updateList();
         });
 
