@@ -19,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -33,13 +32,9 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
@@ -49,7 +44,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
@@ -72,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private ImageButton filterButton;
     private ImageButton searchButton;
     private ImageButton clearButton;
+
+    private boolean doneInitial = false; // tracks whether we've retrieved initial Firestore info
 
     // obligatory id's for lists/adapter
     private ItemList itemList;
@@ -103,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
-        getAccount();
+        learnAccount();
 
         filterView = findViewById(R.id.active_filter_recycler_view);
         searchBox = findViewById(R.id.search_view);
@@ -127,18 +123,21 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
         //ListView and adapter setup
         database = new FirestoreInteract();
-
-        updateTags().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        database.alignToAccount(account).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-            }
-        });
-
-
-        updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                defaultItemClickListener();
+            public void onComplete(@NonNull Task<Void> task) {
+                updateTags().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    }
+                });
+                updateList().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        defaultItemClickListener();
+                        doneInitial = true;
+                    }
+                });
             }
         });
 
@@ -153,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
      * Attempts to set the current GoogleSignInAccount account, or if unable, opens the UserActivity
      * so that users can authenticate.
      */
-    private void getAccount() {
+    private void learnAccount() {
         GoogleSignInAccount lastSignIn = GoogleSignIn.getLastSignedInAccount(this);
         GoogleSignInAccount passedAccount = getIntent().getParcelableExtra("account");
         if (passedAccount != null) {
@@ -243,8 +242,10 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     @Override
     protected void onResume() {
         super.onResume();
-        updateList();
-        updateTags();
+        if (doneInitial) {
+            updateList();
+            updateTags();
+        }
     }
 
     /**
