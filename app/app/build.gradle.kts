@@ -35,11 +35,14 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth") // for firebase authentication
+    implementation("com.google.android.gms:play-services-auth:20.7.0") // for google authentication
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.firebase:firebase-storage:20.3.0")
-    implementation("com.google.code.gson:gson:2.9.0")
     implementation("com.google.mlkit:text-recognition:16.0.0")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.picasso:picasso:2.8")
     coreLibraryDesugaring("com.android.tools.desugar_jdk:2.0.3")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.12.4")

@@ -34,11 +34,17 @@ import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
@@ -59,9 +65,11 @@ import java.util.concurrent.TimeUnit;
  * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
  * the ability to add new items or delete existing ones, and related functionality.
  *
- * @version 2
+ * @version 3
  */
 public class MainActivity extends AppCompatActivity implements AddItemFragment.OnFragmentInteractionListener, AddTagFragment.OnFragmentInteractionListener{
+    GoogleSignInAccount account; // the signed in Google account
+
     // id for search box to filter by description
     private SearchView searchBox;
     private EditText startDate;
@@ -105,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.user_icon);
 
+        getAccount();
+
         filterView = findViewById(R.id.active_filter_recycler_view);
         searchBox = findViewById(R.id.search_view);
         startDate = findViewById(R.id.filter_date_start);
@@ -147,6 +157,25 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         filterButton.setOnClickListener(v -> showFilterMenu());
         searchButton.setOnClickListener(v -> onSearchButtonClick());
         clearButton.setOnClickListener(v -> onClearFilterClick());
+    }
+
+    /**
+     * Attempts to set the current GoogleSignInAccount account, or if unable, opens the UserActivity
+     * so that users can authenticate.
+     */
+    private void getAccount() {
+        GoogleSignInAccount lastSignIn = GoogleSignIn.getLastSignedInAccount(this);
+        GoogleSignInAccount passedAccount = getIntent().getParcelableExtra("account");
+        if (passedAccount != null) {
+            // account passed from UserActivity
+            account = passedAccount;
+        } else if (lastSignIn != null) {
+            // account previously signed in
+            account = lastSignIn;
+        } else {
+            // no account found; open UserActivity
+            this.startActivity(new Intent(this, UserActivity.class));
+        }
     }
 
     // ITEM LIST HANDLING
@@ -329,7 +358,9 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // do profile selection
+            Intent intent = new Intent(this, UserLoggedInActivity.class);
+            intent.putExtra("account", account);
+            this.startActivity(intent);
             return true;
         } else if (id == R.id.add_element) {
             // show dialog for adding an item
@@ -573,8 +604,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             sortMode = "date";
         } else if (itemClick == R.id.sort_desc) {
             sortMode = "description";
-        } else if (itemClick == R.id.sort_comment) {
-            sortMode = "comment";
+//        } else if (itemClick == R.id.sort_comment) {
+//            sortMode = "comment";
         } else if (itemClick == R.id.sort_make) {
             sortMode = "make";
         } else if (itemClick == R.id.sort_value) {
