@@ -10,9 +10,8 @@ import java.util.HashMap;
  */
 public interface FirestorePuttable {
     /**
-     * Gets the data associated with the object in a format suitable for Firestore
-     * @return
-     * A HashMap containing the object's data that can be added to Firestore
+     * Gets the data associated with the object in a format suitable for Firestore.
+     * @return A HashMap containing the object's data that can be added to Firestore.
      */
     HashMap<String, Object> formatForFirestore();
 

@@ -2,7 +2,12 @@ package com.example.breadheadsinventorymanager;
 
 
 import static android.app.Activity.RESULT_OK;
+import android.Manifest;
 
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
+import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,6 +37,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -231,11 +239,23 @@ public class AddItemFragment extends DialogFragment {
         takePhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // launch camera intent
-                activityResultLauncher.launch(intent);
+                // code adapted from https://stackoverflow.com/a/46197738
+                if (ContextCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity)
+                            getContext(), Manifest.permission.CAMERA)) {
+                    } else {
+                        ActivityCompat.requestPermissions((Activity) getContext(),
+                                new String[]{Manifest.permission.CAMERA},7);
+                    }
+
+                } else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    // launch camera intent
+                    activityResultLauncher.launch(intent);
                 }
-            });
+            }
+        });
 
         // get barcode if a valid barcode is scanned
         ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
