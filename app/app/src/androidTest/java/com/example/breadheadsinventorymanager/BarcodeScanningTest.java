@@ -18,12 +18,14 @@ import static org.hamcrest.CoreMatchers.anything;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.View;
 
 import androidx.activity.result.ActivityResult;
 import androidx.appcompat.widget.MenuPopupWindow;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.intent.Intents;
@@ -51,8 +53,15 @@ import java.util.ArrayList;
 
 @LargeTest
 public class BarcodeScanningTest {
+    public static Intent intent;
+    static {
+        intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("skip_auth", true);
+        intent.putExtras(bundle);
+    }
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<MainActivity>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(intent);
 
     @Mock
     private static FirebaseFirestore firestore;
