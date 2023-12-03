@@ -67,8 +67,12 @@
     <string name="sort_by_comment">Sort by Comment</string>
     <string name="comment_t">Comment</string>
     <string name="confirm">Confirm</string>
+    <string name="scan_serial_text">Scan Serial Nr</string>
+    <string name="select_mode_add_tags">Add Tags</string>
+    <string name="delete">Delete</string>
     <string name="default_web_client_id">934777894439-akkij981rl0rvsehm3623j45s1e7rruq.apps.googleusercontent.com</string>
     <string name="lets_sign_in">Let\'s get you signed in.</string>
     <string name="sign_out">Sign Out</string>
     <string name="currently_signed_in_as">Currently signed in as:</string>
+
 </resources>

@@ -11,10 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.util.CloseGuard;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +38,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
@@ -42,8 +51,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
@@ -386,17 +402,20 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
     private void selectMode() {
         Button confirm_button = findViewById(R.id.select_mode_confirm);
         Button cancel_button = findViewById(R.id.select_mode_cancel);
+        Button add_tags_button = findViewById(R.id.select_mode_add_tags);
 
         // bring ups popup with text to let the user know to select items now
         PopupMenu select_text_popup = new PopupMenu(this, this.findViewById(R.id.delete_item));
         select_text_popup.getMenuInflater().inflate(R.menu.select_item_text, select_text_popup.getMenu());
         select_text_popup.show();
 
-        // make the confirm and cancel button visible and clickable
+        // make all the buttons visible and clickable
         confirm_button.setVisibility(View.VISIBLE);
         confirm_button.setClickable(true);
         cancel_button.setVisibility(View.VISIBLE);
         cancel_button.setClickable(true);
+        add_tags_button.setVisibility(View.VISIBLE);
+        add_tags_button.setClickable(true);
 
         // make the checkbox visible for each item
         for (int i = 0; i < itemList.size(); i++) {
@@ -423,6 +442,82 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
 
             }
         });
+
+        // when the add tags button is pressed
+        add_tags_button.setOnClickListener(v -> {
+            defaultItemClickListener();
+            List<CheckBox> checkBoxes = new ArrayList<>();
+            for (int i = itemList.size()-1; i > -1; i--) {
+                // get the item at position i
+                Item current_item = itemList.get(i);
+                CheckBox checkbox = current_item.getCheckBox();
+                checkBoxes.add(checkbox);
+                Log.d("Checkbox", "Item:" + current_item.getDescription() + " Checkbox:" + checkbox.isChecked());
+            }
+            // reverse the order of the checkbox list to
+            Collections.reverse(checkBoxes);
+            // make the add tags screen appear
+            List<String> selectedTags = new ArrayList<>();
+
+            // Show the tag selection dialog
+            TagList globalTagList = getGlobalTagList();
+            TagSelectionDialog.show_selected(this, selectedTags, globalTagList, (dialog, which) -> {
+                // Handle Confirm button click if needed
+                Log.d("TagSelection", "Selected Tags: " + selectedTags);
+
+                TagList currentTags;
+
+                for (int i = itemList.size()-1; i > -1; i--) {
+                    // get the item at position i
+                    Item current_item = itemList.get(i);
+                    CheckBox checkbox = current_item.getCheckBox();
+
+                    if (checkbox != null){
+                        if(checkBoxes.get(i).isChecked()){
+                            Log.d("AddTagsToMultipleItems", "Item Name: " + current_item.getDescription());
+
+                            // add the the selected tags to the item
+                            Log.d("AddTagsToMultipleItems", "Starting TagList: " + current_item.getTags());
+                            currentTags = current_item.getTags();
+                            TagList selectedTagList = new TagList(selectedTags);
+                            for (Tag aTag : selectedTagList){
+                                currentTags.addTag(aTag);
+
+                            }
+
+                            Log.d("AddTagsToMultipleItems", "End TagList: " + current_item.getTags());
+
+                            // update the tag list for the item in firebase
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference docRef = db.collection("items").document(current_item.getId());
+                            docRef.update("tags",current_item.getTags())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Tags updated successfully!");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error updating tags", e);
+                                    });
+
+                        }
+                        // uncheck and hide the checkbox
+                        checkbox.setChecked(false);
+                        checkbox.setVisibility(View.INVISIBLE);
+                    }
+
+                }
+                updateList();
+            });
+
+            // hide the buttons and make them not clickable so they are not accidentally pressed
+            confirm_button.setVisibility(View.INVISIBLE);
+            confirm_button.setClickable(false);
+            cancel_button.setVisibility(View.INVISIBLE);
+            cancel_button.setClickable(false);
+            add_tags_button.setVisibility(View.INVISIBLE);
+            add_tags_button.setClickable(false);
+            updateList();
+        });
+
         // when the confirm button is pressed
         confirm_button.setOnClickListener(v -> {
             defaultItemClickListener();
@@ -432,6 +527,8 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
+            add_tags_button.setVisibility(View.INVISIBLE);
+            add_tags_button.setClickable(false);
 
             for (int i = itemList.size()-1; i > -1; i--) {
                 // get the item at position i
@@ -464,12 +561,14 @@ public class MainActivity extends AppCompatActivity implements AddItemFragment.O
         // when the cancel button is pressed
         cancel_button.setOnClickListener(v -> {
             defaultItemClickListener();
-
             // hide the buttons and make them not clickable so they aren not accidentally pressed
             confirm_button.setVisibility(View.INVISIBLE);
             confirm_button.setClickable(false);
             cancel_button.setVisibility(View.INVISIBLE);
             cancel_button.setClickable(false);
+            add_tags_button.setVisibility(View.INVISIBLE);
+            add_tags_button.setClickable(false);
+
             for (int i = 0; i < itemList.size(); i++) {
                 // get the item at position i
                 Item current_item = itemList.get(i);
