@@ -73,6 +73,10 @@ public class FirestoreInteract {
 
     /**
      * Initialize firestore database from a provided Google account.
+     * @param account The account to retrieve information from to access the database. If null,
+     *                then test databases will be used instead.
+     * @return The task to put the user and update the values of this class. If the account was
+     *         null, returns null.
      */
     public Task<Void> alignToAccount(GoogleSignInAccount account) {
         if (account == null) {
