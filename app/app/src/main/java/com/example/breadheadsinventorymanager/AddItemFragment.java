@@ -148,8 +148,7 @@ public class AddItemFragment extends DialogFragment {
 
         // check if camera is available, if so, get image taken and add it to image hashmap
         // converting the bitmap into a Uri is from user Uzzam Altaf's stackOverflow post which is modified to suit our needs
-        https:
-//stackoverflow.com/questions/8295773/how-can-i-transform-a-bitmap-into-a-uri
+        https://stackoverflow.com/questions/8295773/how-can-i-transform-a-bitmap-into-a-uri
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -245,12 +244,12 @@ public class AddItemFragment extends DialogFragment {
                 .setTitle("Add Item")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("OK",
-                        new Dialog.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface d, int which) {
-                                //Do nothing here. Override onClick() so we can do things when OK is tapped
-                            }
-                        }).create();
+                    new Dialog.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface d, int which) {
+                            //Do nothing here. Override onClick() so we can do things when OK is tapped
+                        }
+                    }).create();
 
         // Take photo from system camera
         takePhotoBtn.setOnClickListener(new View.OnClickListener() {
@@ -499,7 +498,7 @@ public class AddItemFragment extends DialogFragment {
     /**
      * Function to read the serial number from an image and set the serial number based off the image
      *
-     * @param bitmap
+     * @param bitmap The bitmap for the image containing the serial number and possibly other text.
      */
     private void setSerialNumberFromImage(Bitmap bitmap) {
         // was adapted from https://developers.google.com/ml-kit/vision/text-recognition/v2/android
