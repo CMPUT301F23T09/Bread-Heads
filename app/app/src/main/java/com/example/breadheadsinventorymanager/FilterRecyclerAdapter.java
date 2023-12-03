@@ -26,7 +26,7 @@ public class FilterRecyclerAdapter extends RecyclerView.Adapter<FilterRecyclerAd
     /**
      * Constructor for FilterRecyclerAdapter
      * @param context Context it lives in
-     * @param data Data to popualte with
+     * @param data Data to populate with
      * @param recyclerViewInterface Recycler View Interface to populate
      */
     public FilterRecyclerAdapter(Context context, ArrayList<String> data, AddItemFragment.OnFragmentInteractionListener recyclerViewInterface) {

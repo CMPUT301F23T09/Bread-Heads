@@ -2,6 +2,17 @@ package com.example.breadheadsinventorymanager;
 
 
 import static android.app.Activity.RESULT_OK;
+import android.Manifest;
+
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.Rect;
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
+import android.app.Activity;
+import android.content.pm.PackageManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,7 +43,18 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -76,6 +98,8 @@ public class AddItemFragment extends DialogFragment {
 
     // Buttons
     private Button scanBarcodeBtn;
+    private Button scanSerialBtn;
+    private Boolean scanSerial = false;
     private ImageButton addImageBtn;
     private ImageButton takePhotoBtn;
 
@@ -83,6 +107,7 @@ public class AddItemFragment extends DialogFragment {
     private Button removeTagBtn;
 
     private String barcode;
+
 
     // used for camera usage
     private ActivityResultLauncher<Intent> activityResultLauncher;
@@ -98,6 +123,7 @@ public class AddItemFragment extends DialogFragment {
     /**
      * Called when the fragment is first attached to MainActivity
      * Checks if the fragment has implemented the required listener
+     *
      * @param context context of the dialog that pops up
      */
     @Override
@@ -135,10 +161,9 @@ public class AddItemFragment extends DialogFragment {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                if(result.getResultCode() == RESULT_OK && result.getData() != null) {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     Bundle bundle = result.getData().getExtras();
                     Bitmap bitmap = (Bitmap) bundle.get("data");
-
                     // create a temporary file, populate it with bitmap data, flush it, close it and call it a day
                     File tempFile = null;
                     try {
@@ -171,11 +196,18 @@ public class AddItemFragment extends DialogFragment {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    Uri uri =  Uri.fromFile(tempFile);
+                    Uri uri = Uri.fromFile(tempFile);
 
                     // create key for map
                     String imagePath = "images/" + UUID.randomUUID().toString();
                     imageMap.put(imagePath, uri);
+
+                    // puts the bitmap to globalBitmap so it can be used elsewhere for the serial number scan function
+                    if (scanSerial == true){
+                        setSerialNumberFromImage(bitmap);
+                        scanSerial = false;
+                    }
+
                 }
             }
         });
@@ -183,9 +215,9 @@ public class AddItemFragment extends DialogFragment {
 
     /**
      * Handles dialog creation and input validation
-     * @param savedInstanceState The last saved instance state of the Fragment,
-     * or null if this is a freshly created Fragment.
      *
+     * @param savedInstanceState The last saved instance state of the Fragment,
+     *                           or null if this is a freshly created Fragment.
      * @return the dialog
      */
     @NonNull
@@ -211,6 +243,7 @@ public class AddItemFragment extends DialogFragment {
 
         addTagBtn = view.findViewById(R.id.add_tag);
         removeTagBtn = view.findViewById(R.id.remove_tag);
+        scanSerialBtn = view.findViewById(R.id.scan_serial_button);
 
 
         // addItemDialog builder code modified from this stackOverflow post
@@ -231,11 +264,23 @@ public class AddItemFragment extends DialogFragment {
         takePhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // launch camera intent
-                activityResultLauncher.launch(intent);
+                // code adapted from https://stackoverflow.com/a/46197738
+                if (ContextCompat.checkSelfPermission(getContext(),
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity)
+                            getContext(), Manifest.permission.CAMERA)) {
+                    } else {
+                        ActivityCompat.requestPermissions((Activity) getContext(),
+                                new String[]{Manifest.permission.CAMERA},7);
+                    }
+
+                } else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    // launch camera intent
+                    activityResultLauncher.launch(intent);
                 }
-            });
+            }
+        });
 
         // get barcode if a valid barcode is scanned
         ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result -> {
@@ -265,6 +310,7 @@ public class AddItemFragment extends DialogFragment {
         addImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 mGetContent.launch("image/*");
             }
         });
@@ -280,6 +326,18 @@ public class AddItemFragment extends DialogFragment {
                     // Handle Confirm button click if needed
                     Log.d("TagSelection", "Selected Tags: " + selectedTags);
                 });
+
+            }
+        });
+
+        // user presses on the Scan Serial Number button
+        scanSerialBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanSerial = true;
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // launch camera intent
+                activityResultLauncher.launch(intent);
 
             }
         });
@@ -305,22 +363,22 @@ public class AddItemFragment extends DialogFragment {
 
         // set a listener for the OK button
         addItemDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    Button b1 = addItemDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                    b1.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (checkDataEntry()) {
-                                addItemDialog.dismiss();
-                                errorBox.setVisibility(View.GONE);
-                            } else {
-                                errorBox.setVisibility(View.VISIBLE);
-                            }
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button b1 = addItemDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                b1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (checkDataEntry()) {
+                            addItemDialog.dismiss();
+                            errorBox.setVisibility(View.GONE);
+                        } else {
+                            errorBox.setVisibility(View.VISIBLE);
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
+        });
 
         return addItemDialog;
     }
@@ -400,6 +458,7 @@ public class AddItemFragment extends DialogFragment {
 
     /**
      * Checks data entered in dialog
+     *
      * @return true if the data is valid, false otherwise
      */
     public boolean checkDataEntry() {
@@ -413,7 +472,7 @@ public class AddItemFragment extends DialogFragment {
         String barcode = itemBarcodeBox.getText().toString();
 
         // check for empty fields
-        if(name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
+        if (name.equals("") || make.equals("") || model.equals("") || date.equals("") || value.equals("")) {
             errorBox.setText("Empty Fields");
             return false;
         }
@@ -433,7 +492,7 @@ public class AddItemFragment extends DialogFragment {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
             LocalDate newDate = LocalDate.parse(date, formatter);
             LocalDate currentDate = LocalDate.now();
-            if(newDate.isAfter(currentDate)) {
+            if (newDate.isAfter(currentDate)) {
                 errorBox.setText("Invalid Date");
                 return false;
             }
@@ -453,7 +512,94 @@ public class AddItemFragment extends DialogFragment {
      */
     public interface OnFragmentInteractionListener {
         void onRecyclerItemPressed(int position);
+
         void onOKPressed(Item item, Map<String, Uri> imageMap);
     }
 
+    /**
+     * Function to read the serial number from an image and set the serial number based off the image
+     *
+     * @param bitmap The bitmap for the image containing the serial number and possibly other text.
+     */
+    private void setSerialNumberFromImage(Bitmap bitmap) {
+        // was adapted from https://developers.google.com/ml-kit/vision/text-recognition/v2/android
+        // and https://codelabs.developers.google.com/codelabs/mlkit-android#4 to suit our needs
+
+        InputImage image;
+
+        // turn the bitmap into an image
+//        image = InputImage.fromBitmap(bitmap, 0);
+        if (bitmap != null){
+            image = InputImage.fromBitmap(bitmap, 0);
+        }
+        else {
+            itemSerialNumBox.setText("Null");
+            return;
+        }
+
+        // initialize text recognizer
+        TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+
+        Task<Text> result =
+                recognizer.process(image)
+                        .addOnSuccessListener(new OnSuccessListener<Text>() {
+                            @Override
+                            public void onSuccess(Text texts) {
+                                // Task completed successfully
+                                String textFound = "";
+                                List<Text.TextBlock> blocks = texts.getTextBlocks();
+                                if (blocks.size() == 0) {
+                                    // no text found
+                                    return;
+                                }
+
+                                Boolean isSerialNumText = false;
+                                Boolean hasText = false;
+
+                                itemSerialNumBox.setText(texts.getText());
+                                // all text found is in blocks
+                                for (int i = 0; i < blocks.size(); i++) {
+
+                                    // within the blocks are each of the lines found
+                                    List<Text.Line> lines = blocks.get(i).getLines();
+                                    for (int j = 0; j < lines.size(); j++) {
+
+                                        // if there is only one line of text found in the picture, it will set serial number to that text
+                                        if (blocks.size() == 1){
+                                            if(hasText == false){
+                                                itemSerialNumBox.setText(lines.get(j).getText());
+                                                hasText = true;
+                                            }
+
+                                        }
+                                        else {
+                                            // there is more than one line found and it will look for the word serial number and give the line underneath it
+                                            textFound = textFound + lines.get(j).getText();
+                                            String textLine = lines.get(j).getText();
+                                            String textLineLowercase = textLine.toLowerCase();
+
+                                            if (isSerialNumText == true) {
+                                                // if true here, the current line is the serial number
+                                                itemSerialNumBox.setText(lines.get(j).getText());
+                                                hasText = true;
+                                                // set it to false so any lines after do not overwrite the value
+                                                isSerialNumText = false;
+                                            }
+
+                                            // will be given the text "Serial Number" with the serial number below it
+                                            if (textLineLowercase.contains("serial")) {
+                                                // if the line contains "serial" the next line must be the actual serial number
+                                                isSerialNumText = true;
+                                            }
+
+                                        }
+                                    }
+                                }
+//                                itemSerialNumBox.setText(texts.getText());
+                            }
+                        });
+
+    }
 }
+
