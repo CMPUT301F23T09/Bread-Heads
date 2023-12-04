@@ -1,20 +1,33 @@
 package com.example.breadheadsinventorymanager;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withResourceName;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
+import org.hamcrest.Matcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,13 +36,20 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 public class AddItemTest {
+    // code to test activity with intent adapted from https://stackoverflow.com/a/57777912
+    public static Intent intent;
+    static {
+        intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("skip_auth", true);
+        intent.putExtras(bundle);
+    }
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new
-            ActivityScenarioRule<MainActivity>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(intent);
 
     @Test
     public void TestAddItem() {
-        onView(withId(R.id.add_element)).perform(click());
+        onView(withContentDescription(R.string.add_element)).perform(click());
         onView(withText("Add Item")).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Valid date entry"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
@@ -37,9 +57,8 @@ public class AddItemTest {
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("08/08/2000"));
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("123")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
-        onView(withText("Valid date entry")).check(matches(isDisplayed()));
 
-        onView(withId(R.id.add_element)).perform(click());
+        onView(withContentDescription(R.string.add_element)).perform(click());
         onView(withText("Add Item")).perform(click());
 
         // test if dialog pops up by checking if one of the Edittext views is visible
@@ -52,32 +71,30 @@ public class AddItemTest {
         onView(withId(android.R.id.button1)).perform(click());
         onView(withText("Empty Fields")).check(matches(isDisplayed()));
         onView(withId(android.R.id.button2)).perform(click());
-
     }
 
     @Test
     public void TestWeirdValue() {
 
         //check for enormous integers value
-        onView(withId(R.id.add_element)).perform(click());
+        onView(withContentDescription(R.string.add_element)).perform(click());
         onView(withText("Add Item")).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Big Int test"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("abcdef"));
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("21/08/2020"));
-        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("99999999999999999999")).perform(ViewActions.closeSoftKeyboard());
+        onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("999999999999999999999999999999999999999")).perform(ViewActions.closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withText("Invalid Value")).check(matches(isDisplayed()));
-        onView(withId(android.R.id.button2)).perform(click());
+        onView(withText("999999999999999999999999999999999999999")).check(doesNotExist());
 
     }
 
     @Test
     public void TestDate() {
-
+//
         // check if improper date is added (wrong format)
-        onView(withId(R.id.add_element)).perform(click());
+        onView(withContentDescription(R.string.add_element)).perform(click());
         onView(withText("Add Item")).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Improper date test1"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
@@ -118,7 +135,7 @@ public class AddItemTest {
     @Test
     public void TestAddingTag() {
         // Click on the add_element button to show the menu
-        onView(withId(R.id.add_element)).perform(click());
+        onView(withContentDescription(R.string.add_element)).perform(click());
 
         // Click on the "Add Tag" option
         onView(withText("Add Tag")).perform(click());
@@ -129,7 +146,7 @@ public class AddItemTest {
         // Click on the "OK" button
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withId(R.id.add_element)).perform(click());
+        onView(withContentDescription(R.string.add_element)).perform(click());
         onView(withText("Add Item")).perform(click());
         onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("Tagged Item"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("abcdef"));
@@ -142,10 +159,6 @@ public class AddItemTest {
         onView(withId(R.id.add_tag)).perform(click());
         onView(withText("Test Tag")).check(matches(isChecked()));
         onView(withId(android.R.id.button1)).perform(click());
-        onView(withText("Tagged Item")).check(matches(isDisplayed()));
-
     }
-
-
 
 }

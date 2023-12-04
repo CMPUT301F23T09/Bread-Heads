@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 
@@ -59,18 +60,45 @@ public class FirestoreInteract {
 
 
     /**
-     * Initialize firestore database using defaults.
+     * Initialize firestore database prior to providing it a user.
      * Adapted from lab 5 instructions.
      */
     public FirestoreInteract() {
         database = FirebaseFirestore.getInstance();
-        itemDB = database.collection("items");
         userDB = database.collection("users");
-        testDB = database.collection("test");
-        tagDB = database.collection("tags");
         // Images
         imageStorage = FirebaseStorage.getInstance(); //maybe add an imageDB = storage.getReference("images")?
         storageReference = imageStorage.getReference();
+    }
+
+    /**
+     * Initialize firestore database from a provided Google account.
+     * @param account The account to retrieve information from to access the database. If null,
+     *                then test databases will be used instead.
+     * @return The task to put the user and update the values of this class. If the account was
+     *         null, returns null.
+     */
+    public Task<Void> alignToAccount(GoogleSignInAccount account) {
+        if (account == null) {
+            itemDB = database.collection("testItems");
+            testDB = database.collection("test");
+            tagDB = database.collection("testTags");
+
+            return null;
+        }
+
+        User user = new User(account);
+
+
+        // our databases are subcollections of the user's document, if it exists
+        return putUser(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                itemDB = userDB.document(user.getId()).collection("items");
+                testDB = userDB.document(user.getId()).collection("test");
+                tagDB = userDB.document(user.getId()).collection("tags");
+            }
+        });
     }
 
     /**
@@ -111,7 +139,7 @@ public class FirestoreInteract {
     }
 
     /**
-     * Attempts to put the given object into the items collection on Firestore.
+     * Attempts to put the given object into itemDB.
      *
      * @param obj The object to put into the collection.
      * @return The update task
@@ -125,6 +153,25 @@ public class FirestoreInteract {
             Task<Void> task = doc.set(obj.formatForFirestore());
             return task.addOnCompleteListener(task1 -> {
                 obj.setId(doc.getId()); // make sure this item's ID matches firestore's
+            });
+        }
+    }
+
+    /**
+     * Attempts to put the given object into the users collection on Firestore.
+     *
+     * @param user The user to put into the collection
+     * @return The update task
+     */
+    public Task<Void> putUser(User user) {
+        user.put(userDB);
+        if (user.getId() != null) {
+            return userDB.document(user.getId()).set(user.formatForFirestore());
+        } else {
+            DocumentReference doc = userDB.document(); // firestore will generate ID for us
+            Task<Void> task = doc.set(user.formatForFirestore());
+            return task.addOnCompleteListener(task1 -> {
+                user.setId(doc.getId()); // make sure this user's ID matches firestore's
             });
         }
     }

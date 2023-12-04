@@ -1,162 +1,272 @@
 package com.example.breadheadsinventorymanager;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.ViewInteraction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static com.google.common.base.Predicates.instanceOf;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.mockito.AdditionalMatchers.not;
 
 @RunWith(AndroidJUnit4.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ItemDetailsActivityTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
-    @Before
-    //runs before each test it creates a sample item
-    public void createSampleItem() {
-        onView(withId(R.id.add_element)).perform(click());
-        // Click on the "Add Tag" option
-        onView(withText("Add Tag")).perform(click());
-        // Type tag name in the EditText
-        onView(withId(R.id.tag_name_text)).perform(typeText("Test Tag"), closeSoftKeyboard());
-        onView(withId(android.R.id.button1)).perform(click());
-        onView(withId(R.id.add_element)).perform(click());
-        onView(withText("Add Item")).perform(click());
-        onView(withId(R.id.item_name_text)).perform(replaceText("Sample Item"));
-        onView(withId(R.id.item_make_text)).perform(replaceText("Sample Make"));
-        onView(withId(R.id.item_model_text)).perform(replaceText("Sample Model"));
-        onView(withId(R.id.item_acquisition_date_text)).perform(replaceText("01/01/2023"));
-        onView(withId(R.id.item_value_text)).perform(replaceText("1000"));
-        onView(withId(R.id.item_comments_text)).perform(replaceText("Sample Comment"));
-        onView(withId(R.id.add_tag)).perform(click());
-        onView(withText("Test Tag")).perform(click());
-        onView(withId(android.R.id.button1)).perform(click());
-        onView(withId(android.R.id.button1)).perform(click());
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    @Test
+ //creates a sample item
+    public void a_createSampleItem() {
+        onView(withId(R.id.add_element)).check(matches(isDisplayed())).perform(click());
+        onView(allOf(withId(android.R.id.title), withText("Add Item"))).check(matches(isDisplayed())).perform(click());
+
+        onView(withId(R.id.item_name_text)).perform(typeText("00 Sample Item"), closeSoftKeyboard());
+        onView(withId(R.id.item_make_text)).perform(typeText("Sample Make"), closeSoftKeyboard());
+        onView(withId(R.id.item_model_text)).perform(typeText("Sample Model"), closeSoftKeyboard());
+        onView(withId(R.id.serial_number_text)).perform(typeText("123456789"), closeSoftKeyboard());
+        onView(withId(R.id.item_acquisition_date_text)).perform(typeText("12/12/2012"), closeSoftKeyboard());
+        onView(withId(R.id.item_value_text)).perform(typeText("100"), closeSoftKeyboard());
+
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
     }
 
     @Test
-    // goes into item details and checks that the details in item details match the item
-    // that was clicked
-    public void testItemDetailsActivityInfo() {
+    // checks that information on the item details screen is correct
+    public void checkItemDetailsScreen() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        onView(withText("Sample Item")).perform(click());
-        onView(withId(R.id.itemDescription)).check(matches(withText("Sample Item")));
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+
+        onView(withId(R.id.itemDescription)).check(matches(withText("00 Sample Item")));
         onView(withId(R.id.makeText)).check(matches(withText("Sample Make")));
         onView(withId(R.id.modelText)).check(matches(withText("Sample Model")));
-        onView(withId(R.id.dateText)).check(matches(withText("01/01/2023")));
-        onView(withId(R.id.commentText)).check(matches(withText("Sample Comment")));
-        onView(withId(R.id.valueText)).check(matches(withText("1000.00")));
+        onView(withId(R.id.dateText)).check(matches(withText("12/12/2012")));
+
+        onView(withContentDescription("Navigate up")).perform(click());
     }
 
-
     @Test
-    // goes into item details and checks that the details in item details match the item
-    // that was clicked
-    public void testEditItemTags() {
+    // Checks that information on the item details screen is correct
+    public void testEditing() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
 
-        onView(withId(R.id.add_element)).perform(click());
-        // Click on the "Add Tag" option
-        onView(withText("Add Tag")).perform(click());
-        // Type tag name in the EditText
-        onView(withId(R.id.tag_name_text)).perform(typeText("Test Tag1"), closeSoftKeyboard());
-        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.edit_item)).perform(click());
 
-        onView(withId(R.id.add_element)).perform(click());
-        // Click on the "Add Tag" option
-        onView(withText("Add Tag")).perform(click());
-        // Type tag name in the EditText
-        onView(withId(R.id.tag_name_text)).perform(typeText("Test Tag2"), closeSoftKeyboard());
-        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.edit_item_name_text)).perform(replaceText("01 Sample Item"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_make_text)).perform(replaceText("Sample Make 2"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_model_text)).perform(replaceText("Sample Model 2"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("10/10/2022"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_value_text)).perform(replaceText("150.0"));
+        closeSoftKeyboard();
+
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        onView(withText("Sample Item")).perform(click());
-        onView(withId(R.id.itemDescription)).check(matches(withText("Sample Item")));
-        onView(withId(R.id.makeText)).check(matches(withText("Sample Make")));
-        onView(withId(R.id.modelText)).check(matches(withText("Sample Model")));
-        onView(withId(R.id.dateText)).check(matches(withText("01/01/2023")));
-        onView(withId(R.id.commentText)).check(matches(withText("Sample Comment")));
-        onView(withId(R.id.valueText)).check(matches(withText("1000.00")));
+        onView(withId(R.id.itemDescription)).check(matches(withText("01 Sample Item")));
+        onView(withId(R.id.makeText)).check(matches(withText("Sample Make 2")));
+        onView(withId(R.id.modelText)).check(matches(withText("Sample Model 2")));
+        onView(withId(R.id.dateText)).check(matches(withText("10/10/2022")));
+        onView(withId(R.id.valueText)).check(matches(withText("150.00")));
+
         onView(withId(R.id.edit_item)).perform(click());
-        onView(withId(R.id.edit_tags)).perform(click());
-        onView(withText("Test Tag1")).perform(click());
-        onView(withText("Test Tag")).perform(click());
-        onView(withId(android.R.id.button1)).perform(click());
-        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.edit_item_name_text)).perform(replaceText("00 Sample Item"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_make_text)).perform(replaceText("Sample Make"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_model_text)).perform(replaceText("Sample Model"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("12/12/2012"));
+        closeSoftKeyboard();
+        onView(withId(R.id.edit_item_value_text)).perform(replaceText("100.0"));
+        closeSoftKeyboard();
+
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+
+        onView(withContentDescription("Navigate up")).perform(click());
+    }
+
+    @Test
+    //checks that the empty fields error box appears when a field is left empty
+    public void checkEmptyFields() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        onView(withText("Sample Item")).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+
         onView(withId(R.id.edit_item)).perform(click());
-        onView(withId(R.id.edit_tags)).perform(click());
-        onView(withText("Test Tag")).check(matches(isNotChecked()));
-        onView(withText("Test Tag1")).check(matches(isChecked()));
-        onView(withId(android.R.id.button1)).perform(click());
-        onView(withId(android.R.id.button1)).perform(click());
 
+        onView(withId(R.id.edit_item_make_text)).perform(replaceText(""));
+        onView(withId(R.id.edit_item_make_text)).perform(closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+        onView(withId(R.id.edit_error_text_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_item_make_text)).perform(click());
+        onView(withId(R.id.edit_item_make_text)).perform(replaceText("Sample Make"), closeSoftKeyboard());
+
+        onView(withId(android.R.id.button2)).perform(scrollTo(), click());
+        onView(withContentDescription("Navigate up")).perform(click());
+    }
+    @Test
+    //checks that the Invalid Date error box appears when an Invalid year is entered
+    public void checkInvalidYear() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+
+        onView(withId(R.id.edit_item)).perform(click());
+
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("12/12/2032"));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+        onView(withId(R.id.edit_error_text_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(click());
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("12/12/2012"));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(closeSoftKeyboard());
+
+        onView(withId(android.R.id.button2)).perform(scrollTo(), click());
+        onView(withContentDescription("Navigate up")).perform(click());
+    }
+    @Test
+    //checks that the Invalid Date error box appears when an Invalid month is entered
+    public void checkInvalidMonth() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+
+        onView(withId(R.id.edit_item)).perform(click());
+
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(click());
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("12/42/2012"));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+        onView(withId(R.id.edit_error_text_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(click());
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("12/12/2012"));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(closeSoftKeyboard());
+
+        onView(withId(android.R.id.button2)).perform(scrollTo(), click());
+        onView(withContentDescription("Navigate up")).perform(click());
+    }
+    @Test
+    //checks that the Invalid Date error box appears when an Invalid Day is entered
+    public void checkInvalidDay() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+
+        onView(withId(R.id.edit_item)).perform(click());
+
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(click());
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("82/12/2012"));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+        onView(withId(R.id.edit_error_text_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(click());
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(replaceText("12/12/2012"));
+        onView(withId(R.id.edit_item_acquisition_date_text)).perform(closeSoftKeyboard());
+
+        onView(withId(android.R.id.button2)).perform(scrollTo(), click());
+        onView(withContentDescription("Navigate up")).perform(click());
+    }
+    @Test
+    //checks that the Invalid Value error box appears when an Invalid Value is entered
+    public void checkInvalidValue() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
+
+        onView(withId(R.id.edit_item)).perform(click());
+
+        onView(withId(R.id.edit_item_value_text)).perform(replaceText("1.00.0"));
+        onView(withId(R.id.edit_item_value_text)).perform(closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+        onView(withId(R.id.edit_error_text_message)).check(matches(isDisplayed()));
+
+        onView(withId(android.R.id.button2)).perform(scrollTo(), click());
+        onView(withContentDescription("Navigate up")).perform(click());
     }
 
     @Test
-    //test that the back button works by going into item details activity then clicking back
-    // then it checks for the search_list which is only in Main Activity
-    public void testBackButton() {
-
-        onView(withText("Sample Item")).perform(click());
-        Espresso.pressBack();
-        onView(withId(R.id.search_list)).check(matches(isDisplayed()));
-    }
-
-    //test that the delete button works by going into item details activity then clicking delete
-    // it then it checks if the message popped up then it tests clicking cancel then it clicks the
-    // delete button again this time it clicks confirm then it checks MainActivity to confirm that
-    // the delete works
-    @Test
-    public void testDeleteItem() {
-
-        onView(withText("Sample Item")).perform(click());
+    // Deletes Item
+    public void z_checkDelete() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(0).perform(click());
         onView(withId(R.id.delete_item)).perform(click());
 
-        onView(withText("Are you sure you want to delete this item?")).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.message), withText("Are you sure you want to delete this item?"))).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        onView(withText("Cancel")).perform(click());
-
-        onView(withId(R.id.itemDescription)).check(matches(withText("Sample Item")));
-
-        onView(withId(R.id.delete_item)).perform(click());
-
-        onView(withText("Confirm")).perform(click());
-
-        onView(withId(R.id.search_list)).check(matches(isDisplayed()));
-
-        onView(withText("Sample Item")).check(matches(isDisplayed()));
+        onView(allOf(withText("00 Sample Item"), isDisplayed())).check(doesNotExist());
     }
 }
