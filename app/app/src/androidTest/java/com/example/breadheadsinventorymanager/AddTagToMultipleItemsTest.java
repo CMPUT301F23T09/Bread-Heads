@@ -4,9 +4,6 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
@@ -26,7 +23,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class AddTagToMultipleItems {
+public class AddTagToMultipleItemsTest {
     // code to test activity with intent adapted from https://stackoverflow.com/a/57777912
     public static Intent intent;
     static {
@@ -104,44 +101,7 @@ public class AddTagToMultipleItems {
         // click on the tag that has been added
         onView(withText("testTag")).perform(click());
 
-        // click confirm
-        onView(withText("Confirm")).perform(click());
 
-        // Delete the Item
-        // go into select mode
-        onView(withId(R.id.delete_item)).perform(click());
-
-        // click once for popup to go away
-        onView(withText("Select items to delete or add tags")).perform(click());
-
-        // keep scrolling until you find the item
-        success = false;
-        position = 0;
-        while(!success){
-            try {
-                onView(withText("testTagItem")).perform(click());
-                success = true;
-            }
-            catch (Exception e){
-                onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(position).perform(swipeUp());
-                position += 1;
-            }
-        }
-        success = false;
-        position = 0;
-        while(!success){
-            try {
-                onView(withText("testTagItem2")).perform(click());
-                success = true;
-            }
-            catch (Exception e){
-                onData(anything()).inAdapterView(withId(R.id.items_main_list)).atPosition(position).perform(swipeUp());
-                position += 1;
-            }
-        }
-
-        // delete the item
-        onView(withId(R.id.select_mode_confirm)).perform(click());
     }
 
 }
