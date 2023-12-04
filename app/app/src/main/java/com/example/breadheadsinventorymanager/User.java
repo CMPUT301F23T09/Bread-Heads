@@ -8,6 +8,7 @@ import java.util.HashMap;
 /**
  * Represents a User that can be put onto Firestore.
  * Uses the user's ID retrieved from the GoogleSignInAccount system.
+ *
  * Technically insecure; authentication isn't handled here, but rather in the Firestore database
  * permission settings (so the exact specifics of the validation system depend on the needs
  * of the user). For the project submission, no security measures are in place to ensure testing

@@ -22,8 +22,10 @@ import com.example.breadheadsinventorymanager.Tag;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Fragment for adding and editing tags of an item.
+ */
 public class AddTagFragment extends DialogFragment {
-
     // Remove the listener declaration
     private AddTagFragment.OnFragmentInteractionListener listener;
 
@@ -56,16 +58,13 @@ public class AddTagFragment extends DialogFragment {
                             // Create a Tag object
                             Tag tag = new Tag(tagName);
                             listener.onOKPressed(tag);
-                        }
-                        else{
+                        } else {
                             // Show an error message or prevent adding an empty tag
-                            Toast.makeText(getContext(), "Tag name cannot be empty", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Tag name cannot be empty",
+                                    Toast.LENGTH_SHORT).show();
                             // Optionally, you can dismiss the dialog to prevent adding an empty tag
                             dialog.dismiss();
-
-                            }
-
-
+                        }
                     }
                 })
                 .create();
@@ -74,9 +73,13 @@ public class AddTagFragment extends DialogFragment {
     }
 
     /**
-     * interface for button pressed in dialog
+     * Interface for button pressed in dialog.
      */
     public interface OnFragmentInteractionListener {
+        /**
+         * What the OK button does upon being pressed.
+         * @param tag The associated tag that the button functionality was tied to.
+         */
         void onOKPressed(Tag tag);
     }
 

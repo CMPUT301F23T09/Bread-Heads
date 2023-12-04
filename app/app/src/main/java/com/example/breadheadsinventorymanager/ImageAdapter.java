@@ -1,5 +1,6 @@
 package com.example.breadheadsinventorymanager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,9 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter to display images in a RecyclerView.
+ */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder> {
     private ArrayList<String> imagePaths;
     private Context context;
@@ -28,7 +32,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
     private FirestoreInteract database;
     private boolean showCheckboxes = false;
 
-    public ImageAdapter(Context context, ArrayList<String> imagePaths, ItemClickListener itemClickListener) {
+    /**
+     * Constructor for ImageAdapter based on provided images. Images are provided by path.
+     * @param context Activity context.
+     * @param imagePaths Associated paths to images.
+     * @param itemClickListener Listener for what to do when an item is clicked.
+     */
+    public ImageAdapter(Context context, ArrayList<String> imagePaths,
+                        ItemClickListener itemClickListener) {
         this.context = context;
         this.imagePaths = imagePaths;
         this.itemClickListener = itemClickListener;
@@ -102,12 +113,21 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
         }
     }
 
+    /**
+     * Interface to require images to be clickable.
+     */
     public interface ItemClickListener {
         void onItemClick(String imagePath, int position);
     }
 
+    /**
+     * Changes the visibility of checkboxes in the ImageAdapter to the provided boolean value.
+     * Updates dataset afterward.
+     * @param show Boolean flag to show the textboxes or not.
+     */
+    @SuppressLint("NotifyDataSetChanged")
     public void changeCheckboxVisibility(boolean show) {
         this.showCheckboxes = show;
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // slow, but fine when only 1 call is made
     }
 }

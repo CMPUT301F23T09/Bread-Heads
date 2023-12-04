@@ -7,6 +7,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
+/**
+ * Adapter for RecyclerView meant to show tags such that thy can be horizontally scrolled.
+ */
 public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagViewHolder> {
 
     private List<String> tagList;
@@ -32,6 +35,9 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.TagViewHolder>
         return tagList.size();
     }
 
+    /**
+     * Holds tag views.
+     */
     static class TagViewHolder extends RecyclerView.ViewHolder {
         TextView tagTextView;
 

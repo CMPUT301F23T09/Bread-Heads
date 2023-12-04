@@ -58,7 +58,8 @@ public class FilterRecyclerAdapter extends RecyclerView.Adapter<FilterRecyclerAd
     static class MyHolder extends RecyclerView.ViewHolder {
         TextView filterString;
         ImageButton removeButton;
-        public MyHolder(@NonNull View itemView, AddItemFragment.OnFragmentInteractionListener recyclerViewInterface) {
+        public MyHolder(@NonNull View itemView,
+                        AddItemFragment.OnFragmentInteractionListener recyclerViewInterface) {
             super(itemView);
             filterString = itemView.findViewById(R.id.filter_name);
             removeButton = itemView.findViewById(R.id.remove_filter_item_button);

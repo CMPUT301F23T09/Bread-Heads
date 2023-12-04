@@ -56,10 +56,18 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
     private List<String> selectedTags = new ArrayList<>();
 
 
+    /**
+     * Required empty constructor for EditItemFragment.
+     */
     public EditItemFragment() {
-        // Required empty public constructor
+        // pass
     }
 
+    /**
+     * Creates a new instance of EditItemFragment associated with a given item.
+     * @param item The Item to attach to the fragment
+     * @return The new instance
+     */
     public static EditItemFragment newInstance(Item item) {
         EditItemFragment fragment = new EditItemFragment();
         Bundle args = new Bundle();
@@ -275,6 +283,9 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         return dialog;
     }
 
+    /**
+     * Resets list of images to delete and updates image adapter.
+     */
     private void resetDeleteImages() {
         imagesToDelete.clear();
         deleteImagesMode = false;
@@ -282,6 +293,10 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         imageAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Fetches list of image references.
+     * @return ArrayList of image StorageReferences.
+     */
     private ArrayList<StorageReference> fetchImageReferencesFromStorage() {
         ArrayList<StorageReference> imageRefs = new ArrayList<>();
         for (String imagePath : selectedItem.getImagePaths()) {
@@ -290,7 +305,10 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         return imageRefs;
     }
 
-    // Define the checkDataEntry() method to validate user input
+    /**
+     * Validate user input to determine if there are any empty fields.
+     * @return True if input is valid, else false.
+     */
     private boolean checkEmptyEntry() {
         String name = itemNameBox.getText().toString();
         String make = itemMakeBox.getText().toString();
@@ -309,10 +327,21 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
         return true;
     }
 
+    /**
+     * Interface for interaction with an item fragment. Implements item updating.
+     */
     public interface OnFragmentInteractionListener {
+        /**
+         * Listener for when the item is updated.
+         * @param item Item to listen for updates of.
+         */
         void onItemUpdated(Item item);
     }
 
+    /**
+     * Notifies the given item's listener that the item has been updated.
+     * @param item The item that is updated. Also used to find the listener.
+     */
     private void notifyItemUpdated(Item item) {
         if (listener != null) {
             listener.onItemUpdated(item);

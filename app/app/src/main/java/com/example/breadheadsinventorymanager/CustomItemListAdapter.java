@@ -77,7 +77,8 @@ public class CustomItemListAdapter extends ArrayAdapter<Item> implements Filtera
         View view = convertView;
 
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.main_menu_list_content_constraint, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.main_menu_list_content_constraint,
+                    parent, false);
         }
 
         // Find TextView widgets for each main menu item
