@@ -198,7 +198,7 @@ public class ItemListUI {
                 Item current_item = itemList.get(i);
                 CheckBox checkbox = current_item.getCheckBox();
                 checkBoxes.add(checkbox);
-                Log.d("Checkbox", "Item:" + current_item.getDescription() + " Checkbox:" + checkbox.isChecked());
+                //Log.d("Checkbox", "Item:" + current_item.getDescription() + " Checkbox:" + checkbox.isChecked());
             }
             // reverse the order of the checkbox list to
             Collections.reverse(checkBoxes);

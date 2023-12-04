@@ -119,6 +119,10 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
                 TagSelectionDialog.show_selected(getContext(), selectedTags, globalTagList, (dialog, which) -> {
                     // Handle Confirm button click if needed
                     Log.d("TagSelection", "Selected Tags: " + selectedTags);
+
+                    // Update the selected item tags only when the "Edit Tags" button is clicked
+                    TagList updatedTagList = new TagList(selectedTags);
+                    selectedItem.setTags(updatedTagList);
                 });
 
             }
@@ -209,18 +213,12 @@ public class EditItemFragment extends DialogFragment implements ImageAdapter.Ite
                             // Set the parsed date to the selectedItem
                             selectedItem.setDate(dateText);
 
-                            TagList updatedTagList = new TagList(selectedTags);
-                            selectedItem.setTags(updatedTagList);
-
                         } catch (DateTimeParseException e) {
                             Log.e("EditItemFragment", "Error parsing date", e);
                             errorBox.setText("Invalid Date");
                             errorBox.setVisibility(View.VISIBLE);
                             return;
                         }
-
-                        TagList updatedTagList = new TagList(selectedTags);
-                        selectedItem.setTags(updatedTagList);
 
                         // Validate and parse the value
                         String valueText = itemValueBox.getText().toString();
