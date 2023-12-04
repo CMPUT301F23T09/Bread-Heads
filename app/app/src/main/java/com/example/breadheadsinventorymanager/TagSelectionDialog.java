@@ -10,8 +10,17 @@ import android.widget.LinearLayout;
 
 import java.util.List;
 
+/**
+ * Dialog utility for selecting tags.
+ */
 public class TagSelectionDialog {
-
+    /**
+     * Inflates tag list container to show a list of selected tags.
+     * @param context The context the dialog exists in.
+     * @param selectedTags The selected tags.
+     * @param globalTagList List of all tags; conceptual superset of selectedTags.
+     * @param confirmListener Listener for when confirm button is pressed.
+     */
     public static void show_selected(Context context, List<String> selectedTags, TagList globalTagList, DialogInterface.OnClickListener confirmListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);

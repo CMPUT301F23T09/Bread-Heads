@@ -29,6 +29,11 @@ import java.util.List;
 
 /**
  * Handles UI functions of the item list in the MainActivity.
+ *
+ * Sorting/filtering functionality is not handled directly by this class, but rather by an
+ * associated ItemListFilterer. See UML diagram for a visualization.
+ *
+ * @see MainActivity
  */
 public class ItemListUI {
     private final Activity activity;

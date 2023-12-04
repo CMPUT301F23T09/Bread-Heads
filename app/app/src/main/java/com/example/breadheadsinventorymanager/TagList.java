@@ -46,7 +46,8 @@ public class TagList extends ArrayList<Tag> implements Serializable {
      */
     public boolean addTag(Tag tag) {
         // Check if a tag with the same name already exists
-        boolean tagExists = this.stream().anyMatch(existingTag -> existingTag.getTag().equals(tag.getTag()));
+        boolean tagExists = this.stream().anyMatch(existingTag ->
+                existingTag.getTag().equals(tag.getTag()));
 
         // Check if the exact same Tag object already exists
         //boolean sameTagExists = this.contains(tag);

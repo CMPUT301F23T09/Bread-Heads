@@ -65,7 +65,14 @@ import java.util.concurrent.TimeUnit;
  * Main menu activity. Contains the entire inventory, the ability to filter, sort, and search it,
  * the ability to add new items or delete existing ones, and related functionality.
  *
+ * Much of the actual UI functionality is handled by the ItemListUI class and its associated
+ * ItemListFilterer. This class mostly deals with initial account checking (by calling the
+ * Authenticator class if necessary) and with basic UI interactivity.
+ *
+ *
  * @version 3
+ * @see ItemListUI
+ * @see ItemListFilterer
  */
 public class MainActivity extends AppCompatActivity implements
         AddItemFragment.OnFragmentInteractionListener, AddTagFragment.OnFragmentInteractionListener{

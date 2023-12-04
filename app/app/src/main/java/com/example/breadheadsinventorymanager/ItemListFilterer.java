@@ -24,7 +24,12 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 /**
- * Handles sorting and filtering of the item list in MainActivity.
+ * Handles sorting and filtering logic of the item list in MainActivity.
+ *
+ * Most of the UI logic is done by ItemListUI, but this class contains some utilities for
+ * UI handling as well.
+ *
+ * @see ItemListUI
  */
 public class ItemListFilterer {
     private final Activity activity;
