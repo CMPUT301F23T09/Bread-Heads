@@ -70,6 +70,24 @@ public class FilterListTest {
 
     }
 
+    @Test
+    public void testTagFilter(){
+        onView(withId(R.id.filter_popup)).perform(click());
+        onView(withContentDescription(R.string.tagsTitle)).perform(click());
+        onView(withContentDescription("Test Tag")).perform(click());
+
+        onView(withText("Test Tag")).check(doesNotExist());
+
+        onView(withId(R.id.filter_popup)).perform(click());
+        onView(withContentDescription(R.string.make)).perform(click());
+        onView(withContentDescription("Test Tag1")).perform(click());
+
+        // multiple makes
+        onView(withText("Test Tag")).check(matches(isDisplayed()));
+        onView(withText("Test Tag1")).check(matches(isDisplayed()));
+
+    }
+
     // TODO implement
     @Test
     public void multipleFilter() {

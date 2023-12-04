@@ -43,6 +43,7 @@ dependencies {
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.google.mlkit:vision-common:17.3.0")
     coreLibraryDesugaring("com.android.tools.desugar_jdk:2.0.3")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.12.4")

@@ -16,6 +16,7 @@
         android:id="@+id/sort_value"
         android:contentDescription="@string/sort_by_value"
         android:title="@string/value_t"/>
+
     <item
         android:id="@+id/sort_comment"
         android:contentDescription="@string/sort_by_comment"
