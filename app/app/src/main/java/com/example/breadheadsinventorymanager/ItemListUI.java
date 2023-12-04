@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -149,7 +150,7 @@ public class ItemListUI {
      * Causes checkboxes to appear that allow users to select item elements.
      */
     public void selectMode(Button confirm_button, Button cancel_button, Button add_tags_button,
-                           PopupMenu select_text_popup, int select_item_text) {
+                           PopupMenu select_text_popup, int select_item_text, GoogleSignInAccount account) {
         // bring ups popup with text to let the user know to select items now
         select_text_popup.getMenuInflater().inflate(select_item_text, select_text_popup.getMenu());
         select_text_popup.show();
@@ -234,7 +235,10 @@ public class ItemListUI {
 
                             // update the tag list for the item in firebase
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            DocumentReference docRef = db.collection("items").document(current_item.getId());
+                            User currentUser = new User(account);
+                            currentUser.getId();
+                            DocumentReference docRef = db.collection("users").document(currentUser.getId());
+                            docRef = docRef.collection("items").document(current_item.getId());
                             docRef.update("tags",current_item.getTags())
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("Firestore", "Tags updated successfully!");
