@@ -320,7 +320,7 @@ public class AddItemFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 // Show the tag selection dialog
-                TagList globalTagList = ((MainActivity) getActivity()).getGlobalTagList();
+                TagList globalTagList = ((MainActivity) getActivity()).getItemListUI().getGlobalTagList();
 
                 TagSelectionDialog.show_selected(getContext(), selectedTags, globalTagList, (dialog, which) -> {
                     // Handle Confirm button click if needed
