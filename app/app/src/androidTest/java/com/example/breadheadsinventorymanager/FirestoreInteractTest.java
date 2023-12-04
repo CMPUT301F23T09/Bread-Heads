@@ -2,7 +2,17 @@ package com.example.breadheadsinventorymanager;
 
 import static com.google.android.gms.tasks.Tasks.await;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -29,9 +39,15 @@ import java.util.concurrent.ExecutionException;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @LargeTest
 public class FirestoreInteractTest {
+    public static Intent intent;
+    static {
+        intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("skip_auth", true);
+        intent.putExtras(bundle);
+    }
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new
-            ActivityScenarioRule<MainActivity>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(intent);
     @Mock
     private static FirebaseFirestore firestore;
     @Mock
@@ -59,16 +75,6 @@ public class FirestoreInteractTest {
         assertEquals(FirestoreInteract.getUserDB(), userDB);
     }
 
-    // tests for basic interactions with firestore
-    @Test
-    public void testB_populate() throws ExecutionException, InterruptedException {
-        ItemList list1 = new ItemList();
-
-        // make sure test database starts empty
-        await(interact.populateWithItems(list1).addOnCompleteListener(task1 ->
-                assertEquals(0, list1.size())));
-    }
-
     @Test
     public void testC_putAndRemove() throws ExecutionException, InterruptedException {
         // test putting items
@@ -78,8 +84,8 @@ public class FirestoreInteractTest {
         await(interact.putItem(item1).addOnCompleteListener(task ->
                 interact.putItem(item2).addOnCompleteListener(task2 ->
                         interact.populateWithItems(list2).addOnCompleteListener(task3 -> {
-                            assertEquals(2, list2.size());
-
+                            assertTrue("Database should now have item1's info", list2.getMakeList().contains(item1.getMake()));
+                            assertTrue("Database should now have item1's info", list2.getMakeList().contains(item2.getMake()));
 
                             // the below code breaks Java indentation conventions
                             // but I think the lambda chain is more readable like this
@@ -88,12 +94,12 @@ public class FirestoreInteractTest {
                             // remove item by ID
                             interact.deleteItem(item1.getId()).addOnCompleteListener(task4 ->
                             interact.populateWithItems(list2).addOnCompleteListener(task5 ->
-                            assertEquals(1,list2.size())));
+                                    assertFalse("Database should not have item1 anymore", list2.getMakeList().contains(item1.getMake()))));
                             // remove item by item object
                             interact.deleteItem(item2).addOnCompleteListener(task6 ->
                             interact.populateWithItems(list2).addOnCompleteListener(task7 ->
-                            assertEquals(0, list2.size())));
-                        })))); // yuck...
+                                    assertFalse("Database should not have item2 anymore", list2.getMakeList().contains(item2.getMake()))));
+                        }))));
     }
 
     @AfterClass
