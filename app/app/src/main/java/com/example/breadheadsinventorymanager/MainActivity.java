@@ -292,7 +292,8 @@ public class MainActivity extends AppCompatActivity implements
                                   findViewById(R.id.select_mode_cancel),
                                   findViewById(R.id.select_mode_add_tags),
                     new PopupMenu(this, this.findViewById(R.id.delete_item)),
-                    R.menu.select_item_text);
+                    R.menu.select_item_text,
+                    account);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
