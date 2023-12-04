@@ -13,6 +13,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
 
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.action.ViewActions;
 //import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -25,17 +29,26 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class SelectMultipleItemsTest {
+
+    // code to test activity with intent adapted from https://stackoverflow.com/a/57777912
+    public static Intent intent;
+    static {
+        intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("skip_auth", true);
+        intent.putExtras(bundle);
+    }
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<MainActivity>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(intent);
 
     @Test
     public void testDeletingSingleItem(){
         // Add a item to the list
-        //TODO: update tests, no longer add_item. Instead we click add_element followed by add_new_item
         onView(withId(R.id.add_element)).perform(click());
-        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel4"));
-        onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
-        onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
+        onView(withText("Add Item")).perform(click());
+        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel"));
+        onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make"));
+        onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model"));
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("01/01/2000"));
         onView(withId(R.id.item_value_text)).perform(ViewActions.typeText("5500")).perform(ViewActions.closeSoftKeyboard());
         onView(withText("OK")).perform(click());
@@ -44,14 +57,14 @@ public class SelectMultipleItemsTest {
         onView(withId(R.id.delete_item)).perform(click());
 
         // click once for popup to go away
-        onView(withText("Select all items you wish to delete")).perform(click());
+        onView(withText("Select items to delete or add tags")).perform(click());
 
         // keep scrolling until you find the item
         boolean success = false;
         int position = 0;
         while(!success){
             try {
-                onView(withText("testDel4")).perform(click());
+                onView(withText("testDel")).perform(click());
                 success = true;
             }
             catch (Exception e){
@@ -64,14 +77,15 @@ public class SelectMultipleItemsTest {
         onView(withId(R.id.select_mode_confirm)).perform(click());
 
         //check that it got deleted
-        onView(withText("testDel4")).check(doesNotExist());
+        onView(withText("testDel")).check(doesNotExist());
     }
     @Test
     public void testDeletingMultipleItems(){
         // Add a couple items to the list
         // Add a item to the list
         onView(withId(R.id.add_element)).perform(click());
-        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel1234"));
+        onView(withText("Add Item")).perform(click());
+        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel1"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make1"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model1"));
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("01/01/2000"));
@@ -80,7 +94,8 @@ public class SelectMultipleItemsTest {
 
         // Add another item to the list
         onView(withId(R.id.add_element)).perform(click());
-        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel2456"));
+        onView(withText("Add Item")).perform(click());
+        onView(withId(R.id.item_name_text)).perform(ViewActions.typeText("testDel2"));
         onView(withId(R.id.item_make_text)).perform(ViewActions.typeText("make2"));
         onView(withId(R.id.item_model_text)).perform(ViewActions.typeText("model2"));
         onView(withId(R.id.item_acquisition_date_text)).perform(ViewActions.typeText("02/01/2000"));
@@ -91,7 +106,7 @@ public class SelectMultipleItemsTest {
         onView(withId(R.id.delete_item)).perform(click());
 
         // click once for popup to go away
-        onView(withText("Select all items you wish to delete")).perform(click());
+        onView(withText("Select items to delete or add tags")).perform(click());
 
 
         // Click on first item
@@ -99,7 +114,7 @@ public class SelectMultipleItemsTest {
         int position = 0;
         while(!success){
             try {
-                onView(withText("testDel1234")).perform(click());
+                onView(withText("testDel1")).perform(click());
                 success = true;
             }
             catch (Exception e){
@@ -113,7 +128,7 @@ public class SelectMultipleItemsTest {
         position = 0;
         while(!success){
             try {
-                onView(withText("testDel2456")).perform(click());
+                onView(withText("testDel2")).perform(click());
                 success = true;
             }
             catch (Exception e){
@@ -126,8 +141,8 @@ public class SelectMultipleItemsTest {
         onView(withId(R.id.select_mode_confirm)).perform(click());
 
         // Check that they have been deleted
-        onView(withText("testDel1234")).check(doesNotExist());
-        onView(withText("testDel2456")).check(doesNotExist());
+        onView(withText("testDel1")).check(doesNotExist());
+        onView(withText("testDel2")).check(doesNotExist());
     }
 
 }

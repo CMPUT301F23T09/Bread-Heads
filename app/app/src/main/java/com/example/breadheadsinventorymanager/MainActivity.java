@@ -162,11 +162,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    // ADD ITEM DIALOG HANDLING
-
     @Override
     protected void onResume() {
+        // we need to update the list whenever we return from another activity
         super.onResume();
+        // if we don't make sure we've already done our initial setup,
+        // then we may try to update something that doesn't exist (= crash!)
         if (doneInitial) {
             itemListUI.updateList();
             itemListUI.updateTags();
@@ -214,18 +215,22 @@ public class MainActivity extends AppCompatActivity implements
     public void onRecyclerItemPressed(int position) {
         itemListUI.removeFilter(position);
     }
+
     /**
-     * handles creating the dialog and switching to associated fragment
+     * Handles creating the add item dialog and switching to associated fragment
      */
     private void showAddItem() {
         new AddItemFragment().show(getSupportFragmentManager(), "ADD_ITEM");
     }
 
+    /**
+     * Handles creating the add tag dialog and switching to associated fragment
+     */
     private void showAddTag() {
         AddTagFragment addTagFragment = new AddTagFragment();
         addTagFragment.show(getSupportFragmentManager(), "ADD_TAG");
-
     }
+
 
 
     // TOPBAR MENU HANDLING AND FUNCTIONALITY
@@ -242,6 +247,9 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    /**
+     * Shows the option to add either a new item or a new tag.
+     */
     private void showAddMenu() {
         PopupMenu popup = new PopupMenu(this, findViewById(R.id.add_element));
         popup.setOnMenuItemClickListener(item -> {
@@ -284,17 +292,26 @@ public class MainActivity extends AppCompatActivity implements
                                   findViewById(R.id.select_mode_cancel),
                                   findViewById(R.id.select_mode_add_tags),
                     new PopupMenu(this, this.findViewById(R.id.delete_item)),
-                    R.menu.select_item_text);
+                    R.menu.select_item_text,
+                    account);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
+    /**
+     * Gets the UI handler for the item list.
+     * @return An ItemListUI object tied to the item list.
+     */
     public ItemListUI getItemListUI() {
         return itemListUI;
     }
 
+    /**
+     * Sets the UI handler for the item list.
+     * @param itemListUI An ItemListUI object to change the UI handler to.
+     */
     public void setItemListUI(ItemListUI itemListUI) {
         this.itemListUI = itemListUI;
     }
