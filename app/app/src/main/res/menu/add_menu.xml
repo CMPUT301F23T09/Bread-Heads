@@ -6,7 +6,7 @@
         android:title="@string/add_item"/>
 
     <item android:id="@+id/add_new_tag"
-        android:contentDescription="@string/add_tag"
-        android:title="@string/add_tag"/>
+        android:contentDescription="@string/add_new_tag"
+        android:title="@string/add_new_tag"/>
 
 </menu>

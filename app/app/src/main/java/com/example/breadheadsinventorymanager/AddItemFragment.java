@@ -104,7 +104,6 @@ public class AddItemFragment extends DialogFragment {
     private ImageButton takePhotoBtn;
 
     private Button addTagBtn;
-    private Button removeTagBtn;
 
     private String barcode;
 
@@ -242,7 +241,6 @@ public class AddItemFragment extends DialogFragment {
         addImageBtn = view.findViewById(R.id.add_image_button);
 
         addTagBtn = view.findViewById(R.id.add_tag);
-        removeTagBtn = view.findViewById(R.id.remove_tag);
         scanSerialBtn = view.findViewById(R.id.scan_serial_button);
 
 
