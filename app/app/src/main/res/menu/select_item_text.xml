@@ -2,6 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/select_item_text"
-        android:title="Select all items you wish to delete"
+        android:title="Select items to delete or add tags"
         />
 </menu>

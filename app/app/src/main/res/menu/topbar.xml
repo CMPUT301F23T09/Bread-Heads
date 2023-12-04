@@ -15,7 +15,7 @@
 <!--        app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/delete_item"
-        android:icon="@android:drawable/ic_menu_delete"
+        android:icon="@drawable/multiple_choice"
         android:title="@string/delete_item"
         android:orderInCategory="1"
         android:contentDescription="@string/delete_item"
